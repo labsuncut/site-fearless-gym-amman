@@ -61,8 +61,8 @@ html[lang="ar"] .btn { letter-spacing: 0; font-weight: 800; text-transform: none
 body.stage-4 .site-header { opacity: 1; }
 body.scrolled .site-header { background: rgba(11, 11, 12, .82); backdrop-filter: blur(10px); }
 .header-row { display: flex; align-items: center; justify-content: space-between; min-height: 64px; gap: 16px; }
-.logo { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: var(--bone); font-family: var(--display); font-size: 1.2rem; letter-spacing: .08em; }
-.logo-helmet { width: 20px; height: 24px; fill: var(--blood); }
+.logo { display: inline-flex; direction: ltr; align-items: center; gap: 5px; text-decoration: none; color: var(--bone); font-family: var(--display); font-size: 1.2rem; letter-spacing: .08em; }
+.logo-helmet { width: 22px; height: 26px; fill: var(--blood); flex: none; }
 .nav { display: flex; align-items: center; gap: 24px; font-size: .95rem; }
 .nav > a { color: var(--bone); text-decoration: none; opacity: .8; transition: opacity var(--t-ui); }
 .nav > a:hover { opacity: 1; }
@@ -72,12 +72,12 @@ html[lang="ar"] .nav-call { letter-spacing: 0; font-weight: 800; text-transform:
 .lang:hover { border-color: var(--bone); }
 
 /* ---------- Intro, act one: the helmet ---------- */
-.intro-helmet { position: absolute; left: 50%; top: 50%; width: min(58vw, 46vh); transform: translate(-50%, -50%) scale(1); color: #1c1c20; z-index: 3; pointer-events: none;
+.intro-helmet { position: absolute; left: 50%; top: 50%; width: min(70vw, 54vh); transform: translate(-50%, -50%) scale(1); color: #1c1c20; z-index: 3; pointer-events: none;
   transition: transform 1000ms cubic-bezier(.6, 0, .9, .4), opacity 700ms ease-in 250ms, color 300ms; }
 .intro-helmet svg { width: 100%; height: auto; fill: currentColor; filter: drop-shadow(0 0 30px rgba(228, 32, 43, .25)); }
-.intro-helmet .eye { position: absolute; top: 42.5%; width: 19.5%; height: 11%; background: var(--ember); opacity: 0; clip-path: polygon(0 0, 100% 45%, 100% 100%, 10% 65%);
+.intro-helmet .eye { position: absolute; top: 42.4%; width: 25.2%; height: 12.3%; background: var(--ember); opacity: 0; clip-path: polygon(0 0, 100% 38%, 83% 100%, 17% 46%);
   box-shadow: 0 0 16px 3px rgba(228, 32, 43, .9), 0 0 60px rgba(228, 32, 43, .6); transition: opacity 700ms ease-out; }
-.intro-helmet .eye-l { left: 24.5%; } .intro-helmet .eye-r { right: 24.5%; transform: scaleX(-1); }
+.intro-helmet .eye-l { left: 20.5%; } .intro-helmet .eye-r { right: 20.5%; transform: scaleX(-1); }
 body.stage-0 .intro-helmet .eye { opacity: 1; animation: breathe 1.1s ease-in-out infinite alternate; }
 body.stage-0 .intro-helmet { color: #202024; }
 /* Act two: you put it on. The helmet rushes past the camera; the slit is what remains. */
@@ -146,7 +146,9 @@ html.intro-seen .aperture, html.intro-seen .wm, html.intro-seen .aperture-helmet
 .rail { position: sticky; top: 96px; }
 .numeral { display: block; font-family: 'Anton', var(--display); font-size: 1rem; letter-spacing: .3em; color: var(--ember); margin-bottom: 18px; padding-bottom: 10px; border-bottom: 2px solid currentColor; width: 2.6em; }
 .chapter-bone .numeral { color: var(--blood); }
+.chapter-bone .plate-line, .chapter-bone .hours-title { color: #6c675f; }
 h2.display { font-size: clamp(2.6rem, 6vw, 5rem); line-height: .95; margin-bottom: .35em; }
+html[lang="ar"] h2.display { line-height: 1.2; }
 .rail-text { font-size: 1.1rem; max-width: 28em; }
 
 /* Aperture reveal: things open from a line, like the slit. */
@@ -161,7 +163,8 @@ h2.display { font-size: clamp(2.6rem, 6vw, 5rem); line-height: .95; margin-botto
 .band-img::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(11, 11, 12, .25), transparent 35%, transparent 65%, rgba(11, 11, 12, .35)); }
 .band:hover .band-img, .band.is-open .band-img, .band:focus-visible .band-img { height: 420px; }
 .band-img-floor { background-image: url('../img/floor.jpg'); background-position: center 55%; }
-.band-img-combat { background-image: url('../img/combat.jpg'); }
+.band-img-combat { background-image: url('../img/bag.jpg'); background-position: center 35%; }
+.band-img-kitchen { background-image: url('../img/kitchen.jpg'); background-position: center 30%; }
 .band figcaption { padding: 16px 0 0; }
 .band h3 { font-size: clamp(1.5rem, 2.6vw, 2.2rem); margin-bottom: .2em; }
 .band p { margin-bottom: .4em; max-width: 36em; }
@@ -169,42 +172,57 @@ h2.display { font-size: clamp(2.6rem, 6vw, 5rem); line-height: .95; margin-botto
 .recovery h3 { font-size: 1.3rem; margin: 0; } .recovery p { margin: 0; max-width: 34em; }
 .photo-note { font-size: .8rem; }
 
-/* Chapter II: PLAY HARD, outlined, fills as you scroll past */
-.wall { position: relative; font-family: 'Anton', var(--display); font-size: clamp(3.4rem, 11vw, 10.5rem); line-height: .92; text-transform: uppercase; letter-spacing: .02em; margin: -.1em 0 .4em; direction: ltr; }
+/* Chapter II: Fearless time, the class timetable as day columns */
+.team + .team { margin-top: 44px; }
+.team h3 { font-size: clamp(1.5rem, 2.6vw, 2.1rem); margin-bottom: .15em; }
+.team > .note { margin-bottom: 18px; }
+.tt { display: grid; grid-template-columns: repeat(auto-fit, minmax(116px, 1fr)); gap: 18px 18px; }
+.tt-day { border-top: 2px solid var(--blood); padding-top: 8px; }
+.tt-day h4 { margin: 0 0 4px; font-family: var(--display); font-weight: 400; font-size: 1rem; letter-spacing: .18em; text-transform: uppercase; }
+html[lang="ar"] .tt-day h4 { letter-spacing: 0; font-weight: 800; text-transform: none; }
+.tt ul { list-style: none; margin: 0; padding: 0; }
+.tt li { display: flex; gap: 8px; align-items: baseline; padding: 7px 0; border-top: 1px solid var(--line-dark); font-size: .92rem; line-height: 1.35; }
+.tt time { font-family: 'Anton', var(--display); font-size: .85rem; letter-spacing: .05em; color: var(--ember); min-width: 3.9em; flex: none; direction: ltr; }
+html[lang="ar"] .tt time { text-align: end; }
+
+/* Chapter III: PLAY HARD, outlined, fills as you scroll past */
+.wall { position: relative; color: inherit; font-family: 'Anton', var(--display); font-size: clamp(3.4rem, 11vw, 10.5rem); line-height: .92; text-transform: uppercase; letter-spacing: .02em; margin: -.1em 0 .4em; direction: ltr; }
 .wall span { display: block; white-space: nowrap; }
-.wall-outline { color: transparent; -webkit-text-stroke: 1.5px var(--bone); }
-.wall-fill { position: absolute; inset: 0; color: var(--bone); clip-path: inset(0 calc(100% - var(--fill)) 0 0); }
+.wall-outline { color: transparent; -webkit-text-stroke: 1.5px currentColor; }
+.wall-fill { position: absolute; inset: 0; color: inherit; clip-path: inset(0 calc(100% - var(--fill)) 0 0); }
 .rules { list-style: none; margin: 0; padding: 0; counter-reset: r; }
 .rules li { display: flex; gap: 18px; align-items: baseline; padding: 14px 0; border-top: 1px solid var(--line-dark); font-family: var(--display); font-size: clamp(1.4rem, 2.8vw, 2.2rem); text-transform: uppercase; line-height: 1.1; }
 html[lang="ar"] .rules li { text-transform: none; font-weight: 800; }
 .rules li::before { counter-increment: r; content: counter(r, upper-roman); font-family: 'Anton', var(--display); font-size: .75rem; letter-spacing: .25em; color: var(--ember); min-width: 2.2em; }
 .rules li:last-child { border-bottom: 1px solid var(--line-dark); }
+.chapter-bone .rules li { border-color: var(--line-light); }
+.chapter-bone .rules li::before { color: var(--blood); }
 
-/* Chapter III: first session */
+/* Chapter IV: first session (on black) */
 .contact-lines { font-size: 1.15rem; font-weight: 700; margin-top: 8px; }
-.trial-form { display: grid; gap: 18px; padding: 28px; border: 1.5px solid var(--ink); border-radius: 2px; background: rgba(255, 255, 255, .35); }
+.trial-form { display: grid; gap: 18px; padding: 28px; border: 1.5px solid var(--line-dark); border-radius: 2px; background: var(--black-2); }
 .trial-form label, .trial-form legend { display: block; font-weight: 700; font-size: .95rem; margin-bottom: 6px; }
 .trial-form fieldset { border: 0; padding: 0; margin: 0; }
-.trial-form input[type="text"] { width: 100%; font: inherit; font-size: 1.05rem; padding: 12px 14px; border-radius: 2px; border: 1.5px solid var(--line-light); background: #fff; color: var(--ink); }
-.trial-form input[type="text"]:focus { border-color: var(--ink); outline: none; }
+.trial-form input[type="text"] { width: 100%; font: inherit; font-size: 1.05rem; padding: 12px 14px; border-radius: 2px; border: 1.5px solid var(--line-dark); background: var(--black); color: var(--bone); }
+.trial-form input[type="text"]:focus { border-color: var(--bone); outline: none; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-.chip span { display: inline-block; padding: 9px 16px; border: 1.5px solid var(--ink); border-radius: 2px; cursor: pointer; transition: background var(--t-ui), color var(--t-ui); }
-.chip input:checked + span { background: var(--ink); color: var(--bone); }
+.chip span { display: inline-block; padding: 9px 16px; border: 1.5px solid var(--bone); border-radius: 2px; cursor: pointer; transition: background var(--t-ui), color var(--t-ui); }
+.chip input:checked + span { background: var(--bone); color: var(--ink); }
 .chip input:focus-visible + span { outline: 3px solid var(--ember); outline-offset: 2px; }
 
-/* Chapter IV: visit */
+/* Chapter V: visit (on bone) */
 .address { font-size: 1.15rem; font-weight: 500; margin-bottom: .3em; }
 .plate-line { margin: 0 0 .3em; color: var(--concrete); }
 .plate-line + p { margin-top: 20px; }
 .hours-title { font-size: .8rem; text-transform: uppercase; letter-spacing: .22em; color: var(--concrete); margin: 6px 0 10px; }
 html[lang="ar"] .hours-title { letter-spacing: 0; text-transform: none; font-size: .95rem; }
 .hours { border-collapse: collapse; width: 100%; margin-bottom: 28px; }
-.hours th, .hours td { text-align: start; padding: 9px 0; border-bottom: 1px solid var(--line-dark); font-weight: 400; }
+.hours th, .hours td { text-align: start; padding: 9px 0; border-bottom: 1px solid var(--line-light); font-weight: 400; }
 .hours td { text-align: end; }
-.hours th small { color: var(--ember); font-size: .78rem; margin-inline-start: 8px; letter-spacing: .1em; text-transform: uppercase; }
-.hours .today { color: #fff; font-weight: 700; }
-.map { width: 100%; aspect-ratio: 16 / 9; min-height: 280px; border: 0; border-radius: 2px; filter: grayscale(1) invert(.92) contrast(1.1); }
+.hours th small { color: var(--blood); font-size: .78rem; margin-inline-start: 8px; letter-spacing: .1em; text-transform: uppercase; }
+.hours .today { color: #000; font-weight: 700; }
+.map { width: 100%; aspect-ratio: 16 / 9; min-height: 280px; border: 0; border-radius: 2px; filter: grayscale(1) contrast(1.05); }
 
 /* Footer and call bar */
 .site-footer { border-top: 1px solid var(--line-dark); padding: 32px 0 110px; color: var(--concrete); font-size: .92rem; }
@@ -234,6 +252,7 @@ html[lang="ar"] .call-bar { letter-spacing: 0; font-weight: 800; text-transform:
   .call-bar { display: block; }
   body.past-hero .call-bar { transform: none; }
   .map { min-height: 240px; }
+  .tt { grid-template-columns: 1fr 1fr; gap: 14px 16px; }
 }
 @media (prefers-reduced-motion: reduce) {
   /* The intro still happens (team rule) but as cross-fades: nothing moves, the slit does not drift. */
