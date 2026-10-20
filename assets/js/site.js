@@ -87,11 +87,11 @@
   });
 
   // ---------- The intro: you are inside the helmet ----------
-  // Stage 0: dark, the two slit edges breathe (anticipation).  Stage 1: the slit opens and the gym appears.
+  // Stage 0: the helmet in the dark, its eyes light up (anticipation).  Stage 1: you put it on; the helmet rushes past and the slit opens on the gym.
   // Stage 2: stillness, the picture drifts.  Stage 3: FEAR and LESS take their places around the slit.
-  // Stage 4: place, line, buttons and header arrive. About 4.6 s on a first visit; 2 s with reduced motion.
+  // Stage 4: place, line, buttons and header arrive. About 5.3 s on a first visit; 2.2 s with reduced motion.
   // The hero is the intro's last frame, so there is no hand-off: the page simply continues.
-  const STAGES = calm ? [0, 300, 700, 1100, 1700] : [0, 900, 1900, 3000, 3900];
+  const STAGES = calm ? [0, 500, 900, 1300, 1900] : [0, 1400, 2700, 3700, 4600];
   const timers = [];
   function setStage(n) { body.className = body.className.replace(/\bstage-\d\b/g, '').trim() + ' stage-' + n; }
   function finishIntro() {
