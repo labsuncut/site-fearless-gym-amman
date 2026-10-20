@@ -3,13 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- PREVIEW BUILD: not public until Fearless Gym agrees. Remove the two lines below (and robots.txt Disallow) at launch. -->
+  <!-- PREVIEW BUILD: not public until Fearless Gym agrees. Remove the robots line below (and robots.txt Disallow) at launch. -->
   <meta name="robots" content="noindex, nofollow">
   <title>Fearless Gym | Gym and martial arts school in Khalda, Amman</title>
   <meta name="description" content="Fearless Gym in Khalda, Amman: Technogym strength floor and a combat room with a martial arts school. Open 7 days, 6 AM to 11 PM. Call 079 292 5017.">
   <meta name="theme-color" content="#0b0b0c">
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/fonts/anton-latin-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/img/floor.jpg" as="image">
   <link rel="stylesheet" href="assets/css/fonts.css">
   <link rel="stylesheet" href="assets/css/site.css">
   <!-- Remembers the visitor's language before the page paints, so there is no flash. -->
@@ -18,6 +19,9 @@
       var l = null; try { l = localStorage.getItem('fearless-lang'); } catch (e) {}
       if (!l && /^ar\b/i.test(navigator.language || '')) l = 'ar';
       if (l === 'ar') { document.documentElement.lang = 'ar'; document.documentElement.dir = 'rtl'; }
+      // Intro state before first paint: returning visitors (same tab) land on the finished hero.
+      var seen = false; try { seen = sessionStorage.getItem('fearless-intro') === '1'; } catch (e) {}
+      document.documentElement.className += seen ? ' intro-seen' : ' intro-fresh';
     })();
   </script>
   <!-- Facts for Google search results. Keep in sync with business.json. -->
@@ -38,13 +42,7 @@
   }
   </script>
 </head>
-<body>
-  <!-- Intro: the helmet's eyes light up in the dark, the lights snap on, the wordmark stamps in. Once per tab. -->
-  <div id="intro" class="intro" aria-hidden="true">
-    <div class="intro-helmet"><svg viewBox="0 0 100 120"><use href="#helmet"/></svg><span class="eye eye-l"></span><span class="eye eye-r"></span></div>
-    <button id="skip" class="skip" type="button" data-t="skip"></button>
-  </div>
-
+<body class="stage-0">
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <symbol id="helmet" viewBox="0 0 100 120">
       <path fill-rule="evenodd" d="M50 2C28 2 14 20 14 48v30c0 12 4 22 14 30l4 10h36l4-10c10-8 14-18 14-30V48C86 20 72 2 50 2zM24 50l20 7v8l-18-5zm52 0-20 7v8l18-5zM38 72h7v46h-7zm17 0h7v46h-7z"/>
@@ -55,111 +53,97 @@
     <div class="wrap header-row">
       <a class="logo" href="#top" aria-label="Fearless Gym"><svg class="logo-helmet" viewBox="0 0 100 120" aria-hidden="true"><use href="#helmet"/></svg><span class="logo-word">FEARLESS</span></a>
       <nav class="nav" aria-label="Main">
-        <a href="#train" data-t="nav_train"></a>
-        <a href="#floor" data-t="nav_floor"></a>
+        <a href="#rooms" data-t="nav_rooms"></a>
+        <a href="#rule" data-t="nav_rule"></a>
         <a href="#visit" data-t="nav_visit"></a>
         <button id="lang" class="lang" type="button" data-t="lang_btn"></button>
-        <a class="btn btn-small call-link" href="#" data-t="nav_call"></a>
+        <a class="nav-call call-link" href="#" data-t="nav_call"></a>
       </nav>
     </div>
   </header>
 
   <main id="top">
-    <section class="hero" id="hero">
-      <div class="hero-bg" role="img" aria-label="Fearless Gym strength floor"></div>
-      <div class="wrap hero-inner">
-        <p class="kicker" data-t="hero_kicker"></p>
+    <!-- Hero and intro are the same thing: you are inside the helmet, looking out through the visor.
+         The intro opens the slit; scrolling lifts the visor until the gym fills the screen. -->
+    <section class="visor-scene" id="hero" aria-label="Fearless Gym">
+      <div class="visor">
+        <p class="hero-place" data-t="hero_place"></p>
         <h1 class="wordmark" aria-label="Fearless">
-          <span class="wm-fear" data-t="hero_fear"></span>
-          <svg class="wm-helmet" viewBox="0 0 100 120" aria-hidden="true"><use href="#helmet"/></svg>
-          <span class="wm-less" data-t="hero_less"></span>
+          <span class="wm wm-fear" data-t="hero_fear"></span>
+          <span class="aperture" id="aperture">
+            <span class="aperture-img" role="img" aria-label="Fearless Gym strength floor"></span>
+            <span class="aperture-edge aperture-edge-t"></span>
+            <span class="aperture-edge aperture-edge-b"></span>
+            <svg class="aperture-helmet" viewBox="0 0 100 120" aria-hidden="true"><use href="#helmet"/></svg>
+          </span>
+          <span class="wm wm-less" data-t="hero_less"></span>
         </h1>
-        <p class="hero-sub" data-t="hero_sub"></p>
-        <div class="hero-actions">
-          <a class="btn call-link" href="#" data-t="cta_call"></a>
-          <a class="btn btn-ghost wa-link" href="#" target="_blank" rel="noopener" data-t="cta_wa"></a>
-          <span id="open-badge" class="open-badge" hidden></span>
+        <div class="hero-meta">
+          <p class="hero-line" data-t="hero_line"></p>
+          <div class="hero-actions">
+            <a class="btn btn-primary call-link" href="#" data-t="cta_call"></a>
+            <a class="btn wa-link" href="#" target="_blank" rel="noopener" data-t="cta_wa"></a>
+            <span id="open-badge" class="open-badge" hidden></span>
+          </div>
+        </div>
+        <p class="hero-hint" data-t="hero_hint"></p>
+        <button id="skip" class="skip" type="button" data-t="skip"></button>
+      </div>
+    </section>
+
+    <section id="rooms" class="chapter chapter-bone">
+      <div class="wrap chapter-grid">
+        <div class="rail"><span class="numeral" data-t="rooms_num"></span><h2 class="display ap" data-t="rooms_title"></h2><p class="rail-text" data-t="rooms_text"></p></div>
+        <div class="bands">
+          <figure class="band ap" id="band-strength" tabindex="0">
+            <div class="band-img band-img-floor"></div>
+            <figcaption><h3 class="display" data-t="strength_title"></h3><p data-t="strength_text"></p></figcaption>
+          </figure>
+          <figure class="band ap" id="band-combat" tabindex="0">
+            <div class="band-img band-img-combat"></div>
+            <figcaption><h3 class="display" data-t="combat_title"></h3><p data-t="combat_text"></p><p class="note" data-t="combat_note"></p></figcaption>
+          </figure>
+          <div class="recovery"><h3 class="display" data-t="recovery_title"></h3><p data-t="recovery_text"></p></div>
+          <p class="note photo-note" data-t="photo_note"></p>
         </div>
       </div>
-      <div class="slit" aria-hidden="true"></div>
     </section>
 
-    <!-- "PLAY HARD" is painted on the gym's wall; the strip repeats it like the sign. -->
-    <div class="wall" aria-hidden="true"><div class="wall-track" id="wall-track"></div></div>
-
-    <section id="train" class="section">
-      <div class="wrap">
-        <p class="kicker" data-t="train_kicker"></p>
-        <h2 class="display" data-t="train_title"></h2>
-        <p class="lead" data-t="train_text"></p>
-      </div>
-      <div class="rooms" id="floor">
-        <article class="room room-strength">
-          <div class="room-bg"></div>
-          <div class="room-body">
-            <h3 class="display" data-t="strength_title"></h3>
-            <p data-t="strength_text"></p>
-          </div>
-        </article>
-        <div class="vs display" aria-hidden="true">+</div>
-        <article class="room room-combat">
-          <div class="room-bg"></div>
-          <div class="room-body">
-            <h3 class="display" data-t="combat_title"></h3>
-            <p data-t="combat_text"></p>
-            <p class="note" data-t="combat_note"></p>
-          </div>
-        </article>
-      </div>
-      <div class="wrap recovery">
-        <h3 class="display" data-t="recovery_title"></h3>
-        <p data-t="recovery_text"></p>
-      </div>
-    </section>
-
-    <section class="facts">
-      <div class="wrap">
-        <p class="kicker" data-t="facts_kicker"></p>
-        <dl class="facts-grid" id="facts"></dl>
-      </div>
-    </section>
-
-    <section class="rules">
-      <div class="wrap">
-        <p class="kicker" data-t="rules_kicker"></p>
-        <ol class="rules-list display" id="rules"></ol>
-      </div>
-    </section>
-
-    <section id="trial" class="section section-red">
-      <div class="wrap split">
+    <section id="rule" class="chapter chapter-black">
+      <div class="wrap chapter-grid">
+        <div class="rail"><span class="numeral" data-t="wall_num"></span><h2 class="display ap" data-t="wall_title"></h2><p class="rail-text" data-t="wall_text"></p></div>
         <div>
-          <p class="kicker" data-t="trial_kicker"></p>
-          <h2 class="display" data-t="trial_title"></h2>
-          <p class="lead" data-t="trial_text"></p>
-          <p class="contact-lines" id="contact-lines"></p>
+          <!-- The two words painted on the gym's wall. Outlined type that fills as you scroll past. -->
+          <div class="wall" id="wall" aria-hidden="true"><span class="wall-outline" data-t="wall"></span><span class="wall-fill" data-t="wall"></span></div>
+          <ol class="rules" id="rules"></ol>
         </div>
-        <form class="trial-form" id="trial-form">
+      </div>
+    </section>
+
+    <section id="trial" class="chapter chapter-bone">
+      <div class="wrap chapter-grid">
+        <div class="rail"><span class="numeral" data-t="trial_num"></span><h2 class="display ap" data-t="trial_title"></h2><p class="rail-text" data-t="trial_text"></p><p class="contact-lines" id="contact-lines"></p></div>
+        <form class="trial-form ap" id="trial-form">
           <label><span data-t="f_name"></span><input name="name" type="text" autocomplete="name" maxlength="60"></label>
           <fieldset><legend data-t="f_goal"></legend><div class="chips" id="goal-chips"></div></fieldset>
           <fieldset><legend data-t="f_when"></legend><div class="chips" id="when-chips"></div></fieldset>
-          <button class="btn btn-dark" type="submit" data-t="f_send"></button>
+          <button class="btn btn-ink" type="submit" data-t="f_send"></button>
         </form>
       </div>
     </section>
 
-    <section id="visit" class="section">
-      <div class="wrap split">
+    <section id="visit" class="chapter chapter-black">
+      <div class="wrap chapter-grid">
+        <div class="rail"><span class="numeral" data-t="visit_num"></span><h2 class="display ap" data-t="visit_title"></h2>
+          <p class="address" data-t="address"></p><p class="note" data-t="address_note"></p>
+          <p class="plate-line" data-t="every_day"></p><p class="plate-line" data-t="since"></p>
+          <p><a class="btn" id="directions" href="#" target="_blank" rel="noopener" data-t="directions"></a></p>
+        </div>
         <div>
-          <p class="kicker" data-t="visit_kicker"></p>
-          <h2 class="display" data-t="visit_title"></h2>
-          <p class="address" data-t="address"></p>
-          <p class="note" data-t="address_note"></p>
           <h3 class="hours-title" data-t="hours_title"></h3>
           <table class="hours" id="hours"></table>
-          <p><a class="btn btn-ghost" id="directions" href="#" target="_blank" rel="noopener" data-t="directions"></a></p>
+          <iframe class="map" id="map" title="Map to Fearless Gym" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src=""></iframe>
         </div>
-        <iframe class="map" id="map" title="Map to Fearless Gym" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src=""></iframe>
       </div>
     </section>
   </main>
@@ -167,7 +151,7 @@
   <footer class="site-footer">
     <div class="wrap foot-row">
       <p><svg class="logo-helmet" viewBox="0 0 100 120" aria-hidden="true"><use href="#helmet"/></svg> <span data-t="foot_line"></span> &middot; <span id="year">2026</span></p>
-      <p class="foot-links" id="foot-links"></p>
+      <p class="foot-links"><span id="foot-links"></span> &middot; <button id="replay" class="linkbtn" type="button" data-t="replay"></button></p>
     </div>
     <p class="wrap foot-preview" data-t="foot_preview"></p>
   </footer>
