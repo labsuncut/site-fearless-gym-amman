@@ -1,26 +1,24 @@
-// FEARLESS site behaviour: language, intro, open badge, WhatsApp trial form, hours table.
+// FEARLESS v2: language, the visor intro and scroll scene, aperture reveals, open badge, WhatsApp form, hours.
 (function () {
   'use strict';
   const $ = (s, r) => (r || document).querySelector(s);
   const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  // Team rule: the intro plays even when the phone asks for reduced motion ("the intros make us unique").
-  // It is short (under 2 s), has a Skip button and never hides page content behind it.
-  const introSeen = () => { try { const v = sessionStorage.getItem('fearless-intro') === '1'; sessionStorage.setItem('fearless-intro', '1'); return v; } catch (e) { return false; } };
+  const html = document.documentElement, body = document.body;
+  const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  let lang = document.documentElement.lang === 'ar' ? 'ar' : 'en';
+  let lang = html.lang === 'ar' ? 'ar' : 'en';
   let T = TEXT[lang];
 
   function applyLang() {
     T = TEXT[lang];
-    document.documentElement.lang = lang;
-    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    html.lang = lang;
+    html.dir = lang === 'ar' ? 'rtl' : 'ltr';
     try { localStorage.setItem('fearless-lang', lang); } catch (e) {}
     $$('[data-t]').forEach((el) => { const v = T[el.dataset.t]; if (v !== undefined) el.textContent = v; });
     document.title = lang === 'ar' ? 'فيرلس جيم | نادي رياضي ومدرسة فنون قتالية في خلدا، عمّان' : 'Fearless Gym | Gym and martial arts school in Khalda, Amman';
     $('#map').title = T.map_title;
 
-    // Links that depend on the business facts.
     $$('.call-link').forEach((a) => { a.href = 'tel:' + BUSINESS.phone; });
     const wa = `https://wa.me/${BUSINESS.whatsapp}?text=${encodeURIComponent(T.wa_msg)}`;
     $$('.wa-link').forEach((a) => { a.href = wa; });
@@ -29,9 +27,6 @@
     $('#contact-lines').innerHTML = `<a href="tel:${esc(BUSINESS.phone)}" dir="ltr">${esc(BUSINESS.phoneDisplay)}</a>` +
       ` · <a href="https://wa.me/${esc(BUSINESS.whatsapp)}" target="_blank" rel="noopener">${esc(T.cta_wa)}</a>`;
 
-    // Lists built from content.
-    $('#wall-track').innerHTML = Array(12).fill(`<span>${esc(T.wall)}</span>`).join('');
-    $('#facts').innerHTML = T.facts.map((f) => `<div class="fact"><dt class="display">${esc(f.big)}</dt><dd>${esc(f.small)}</dd></div>`).join('');
     $('#rules').innerHTML = T.rules.map((r) => `<li>${esc(r)}</li>`).join('');
     const links = [];
     if (BUSINESS.facebook) links.push(`<a href="${esc(BUSINESS.facebook)}" target="_blank" rel="noopener">${esc(T.foot_fb)}</a>`);
@@ -59,16 +54,13 @@
   const toMins = (hhmm) => { const [h, m] = hhmm.split(':').map(Number); return h * 60 + m; };
   const fmt = (hhmm) => {
     const [h, m] = hhmm.split(':').map(Number);
-    const s = lang === 'ar' ? `${h}:${String(m).padStart(2, '0')}` : `${((h + 11) % 12) + 1}${m ? ':' + String(m).padStart(2, '0') : ''} ${h < 12 ? 'AM' : 'PM'}`;
-    return s;
+    return lang === 'ar' ? `${h}:${String(m).padStart(2, '0')}` : `${((h + 11) % 12) + 1}${m ? ':' + String(m).padStart(2, '0') : ''} ${h < 12 ? 'AM' : 'PM'}`;
   };
-
   function hoursTable() {
     const { day } = ammanNow();
     $('#hours').innerHTML = BUSINESS.hours.map(([o, c], i) =>
       `<tr${i === day ? ' class="today"' : ''}><th>${esc(T.days[i])}${i === day ? ` <small>${esc(T.today)}</small>` : ''}</th><td dir="ltr">${esc(fmt(o))} – ${esc(fmt(c))}</td></tr>`).join('');
   }
-
   function openBadge() {
     const b = $('#open-badge');
     const { day, mins } = ammanNow();
@@ -94,28 +86,73 @@
     window.open(`https://wa.me/${BUSINESS.whatsapp}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener');
   });
 
-  // Intro sequence. Timings: eyes 700 ms, snap 150 ms, stamp 600 ms. Total under 2 s.
-  (function intro() {
-    const el = $('#intro');
-    const finish = () => {
-      if (el.classList.contains('is-done')) return;
-      el.classList.add('is-done');
-      document.body.classList.add('is-ready');
-      setTimeout(() => el.remove(), 500);
-    };
-    if (introSeen()) { el.remove(); document.body.classList.add('is-ready', 'no-intro'); return; }
-    document.body.classList.add('intro-on');
-    requestAnimationFrame(() => el.classList.add('is-eyes'));
-    setTimeout(() => el.classList.add('is-snap'), 800);
-    setTimeout(finish, 1050);
-    $('#skip').addEventListener('click', finish);
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') finish(); });
-  })();
+  // ---------- The intro: you are inside the helmet ----------
+  // Stage 0: dark, the two slit edges breathe (anticipation).  Stage 1: the slit opens and the gym appears.
+  // Stage 2: stillness, the picture drifts.  Stage 3: FEAR and LESS take their places around the slit.
+  // Stage 4: place, line, buttons and header arrive. About 4.6 s on a first visit; 2 s with reduced motion.
+  // The hero is the intro's last frame, so there is no hand-off: the page simply continues.
+  const STAGES = calm ? [0, 300, 700, 1100, 1700] : [0, 900, 1900, 3000, 3900];
+  const timers = [];
+  function setStage(n) { body.className = body.className.replace(/\bstage-\d\b/g, '').trim() + ' stage-' + n; }
+  function finishIntro() {
+    timers.forEach(clearTimeout);
+    setStage(4);
+    body.classList.remove('intro-lock');
+    try { sessionStorage.setItem('fearless-intro', '1'); } catch (e) {}
+  }
+  function playIntro() {
+    body.classList.add('intro-lock');
+    window.scrollTo(0, 0);
+    STAGES.forEach((t, i) => timers.push(setTimeout(() => { setStage(i); if (i === 4) finishIntro(); }, t)));
+    // Safety: nothing may block the site. If the timeline never completes, open anyway.
+    timers.push(setTimeout(finishIntro, STAGES[4] + 1500));
+  }
+  if (html.classList.contains('intro-seen')) { setStage(4); }
+  else { playIntro(); }
+  $('#skip').addEventListener('click', finishIntro);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !body.classList.contains('stage-4')) finishIntro(); });
+  $('#replay').addEventListener('click', () => {
+    try { sessionStorage.removeItem('fearless-intro'); } catch (e) {}
+    html.classList.remove('intro-seen'); html.classList.add('intro-fresh');
+    window.scrollTo({ top: 0, behavior: 'auto' });
+    setStage(0); playIntro();
+  });
 
-  // The phone call bar waits until the hero (which has its own call button) has scrolled away.
-  if ('IntersectionObserver' in window) {
-    new IntersectionObserver((es) => { document.body.classList.toggle('past-hero', !es[0].isIntersecting); }, { threshold: 0.15 }).observe($('#hero'));
-  } else { document.body.classList.add('past-hero'); }
+  // ---------- Scroll: lift the visor, fill PLAY HARD, show the call bar ----------
+  const scene = $('#hero'), visor = $('.visor'), wall = $('#wall');
+  const clamp = (v) => Math.max(0, Math.min(1, v));
+  let ticking = false;
+  function onScroll() {
+    if (ticking) return; ticking = true;
+    requestAnimationFrame(() => {
+      ticking = false;
+      const y = window.scrollY, vh = window.innerHeight;
+      const range = scene.offsetHeight - vh;
+      const open = clamp(y / range);
+      visor.style.setProperty('--open', open.toFixed(4));
+      body.classList.toggle('past-hero', y > range);
+      body.classList.toggle('visor-open', open > 0.3);
+      body.classList.toggle('scrolled', y > 40);
+      const r = wall.getBoundingClientRect();
+      const fill = clamp((vh * 0.85 - r.top) / (vh * 0.6));
+      wall.style.setProperty('--fill', (fill * 100).toFixed(1) + '%');
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  onScroll();
+
+  // Aperture reveals: sections open from a line when they come into view.
+  if ('IntersectionObserver' in window && !calm) {
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0, rootMargin: '0px 0px -10% 0px' });
+    $$('.ap').forEach((el) => io.observe(el));
+  } else { $$('.ap').forEach((el) => el.classList.add('in')); }
+
+  // Photo bands open on tap (phones have no hover).
+  $$('.band').forEach((b) => {
+    b.addEventListener('click', () => { $$('.band').forEach((o) => { if (o !== b) o.classList.remove('is-open'); }); b.classList.toggle('is-open'); });
+    b.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); b.click(); } });
+  });
 
   applyLang();
   setInterval(openBadge, 60000);
