@@ -34,6 +34,7 @@
     $('#foot-links').innerHTML = links.join(' · ');
     chips('#goal-chips', 'goal', T.goals);
     chips('#when-chips', 'when', T.whens);
+    timetables();
     hoursTable();
     openBadge();
   }
@@ -56,6 +57,17 @@
     const [h, m] = hhmm.split(':').map(Number);
     return lang === 'ar' ? `${h}:${String(m).padStart(2, '0')}` : `${((h + 11) % 12) + 1}${m ? ':' + String(m).padStart(2, '0') : ''} ${h < 12 ? 'AM' : 'PM'}`;
   };
+  // Class timetable: one column per day that has classes, Saturday first (the gym's own order).
+  function timetables() {
+    const order = [6, 0, 1, 2, 3, 4, 5];
+    $('#timetables').innerHTML = SCHEDULE.map((team) => {
+      const days = order.filter((d) => team.classes.some((c) => c[0] === d)).map((d) => {
+        const items = team.classes.filter((c) => c[0] === d).sort((a, b) => toMins(a[1]) - toMins(b[1]));
+        return `<div class="tt-day"><h4>${esc(T.day_short[d])}</h4><ul>${items.map((c) => `<li><time>${esc(fmt(c[1]))}</time><span>${esc(T.cls[c[2]] || c[2])}</span></li>`).join('')}</ul></div>`;
+      });
+      return `<div class="team"><h3 class="display">${esc(T[team.team])}</h3><p class="note">${esc(T[team.note])}</p><div class="tt">${days.join('')}</div></div>`;
+    }).join('');
+  }
   function hoursTable() {
     const { day } = ammanNow();
     $('#hours').innerHTML = BUSINESS.hours.map(([o, c], i) =>

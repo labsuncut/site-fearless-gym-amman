@@ -1,6 +1,6 @@
 // FEARLESS: every word, number and fact on the site lives here, in English (en) and Arabic (ar).
 // Sources (2026-10-20, search snippets only): Tipntag, Accessible Jordan, Tapology, Fitely, the gym's Facebook page
-// and three photos from its Instagram. Anything marked CONFIRM is waiting for the gym to confirm. Never replace it with a guess.
+// and screenshots from its Instagram (photos, the official logo and two class timetables, undated). Anything marked CONFIRM is waiting for the gym to confirm. Never replace it with a guess.
 
 const BUSINESS = {
   name: 'Fearless Gym',
@@ -18,11 +18,31 @@ const BUSINESS = {
   hours: [['06:00', '23:00'], ['06:00', '23:00'], ['06:00', '23:00'], ['06:00', '23:00'], ['06:00', '23:00'], ['06:00', '23:00'], ['06:00', '23:00']]
 };
 
+// Group classes, copied from two timetable posts on the gym's Instagram (undated, CONFIRM the current week at the desk).
+// Days use the same index as hours: 0 = Sunday ... 6 = Saturday. Class names are TEXT keys under cls.
+const SCHEDULE = [
+  { team: 'team_martial', note: 'team_martial_note', classes: [
+    [6, '17:00', 'muay_kids'], [1, '17:00', 'muay_kids'], [3, '17:00', 'muay_kids'],
+    [6, '18:00', 'muay_adults'], [1, '18:00', 'muay_adults'], [3, '18:00', 'muay_adults'],
+    [6, '19:00', 'muay_adults2'], [6, '19:00', 'boxing'], [1, '19:00', 'muay_adults2'], [1, '19:00', 'boxing'], [3, '19:00', 'muay_adults2'], [3, '19:00', 'boxing'],
+    [6, '20:00', 'muay_adv'], [6, '20:00', 'kickboxing'], [1, '20:00', 'muay_adv'], [1, '20:00', 'kickboxing'], [3, '20:00', 'muay_adv'], [3, '20:00', 'kickboxing']
+  ] },
+  { team: 'team_combat', note: 'team_combat_note', classes: [
+    [6, '12:00', 'bjj_adults'], [3, '12:00', 'bjj_kids'],
+    [1, '16:00', 'bjj_kids'], [3, '16:00', 'mma'],
+    [6, '17:00', 'bjj_kids'], [3, '17:00', 'bjj_adults'],
+    [4, '17:30', 'wrestling'],
+    [6, '18:00', 'mma'], [0, '18:00', 'wrestling'], [1, '18:00', 'mma'], [2, '18:00', 'wrestling'],
+    [4, '18:30', 'bjj_adults'],
+    [0, '19:00', 'bjj_adults'], [2, '19:00', 'bjj_adults']
+  ] }
+];
+
 const TEXT = {
   en: {
     lang_btn: 'عربي',
     skip: 'Skip intro', replay: 'Replay the intro',
-    nav_rooms: 'The rooms', nav_rule: 'The rule', nav_visit: 'Visit', nav_call: 'Call',
+    nav_rooms: 'The rooms', nav_classes: 'Classes', nav_rule: 'The rule', nav_visit: 'Visit', nav_call: 'Call',
     hero_place: 'Khalda · Amman',
     hero_fear: 'FEAR', hero_less: 'LESS',
     hero_line: 'A gym and a martial arts school. Put the helmet on.',
@@ -30,23 +50,31 @@ const TEXT = {
     cta_call: 'Call the gym', cta_wa: 'WhatsApp', cta_trial: 'Book a first session',
     open_now: 'Open now', closed_now: 'Closed now', closes: 'closes', opens: 'opens',
     rooms_num: 'I', rooms_title: 'Two rooms',
-    rooms_text: 'The strength floor upstairs. The combat room below. One membership, both doors.',
+    rooms_text: 'The strength floor upstairs. The combat room below. A kitchen for after. One membership, every door.',
     strength_title: 'The strength floor', strength_text: 'Free weights, racks and machines by Technogym. Built for bodybuilding and strength training.',
-    combat_title: 'The combat room', combat_text: 'Heavy bags, mats and a martial arts school. Classes for beginners and for fighters.',
-    combat_note: 'Class list and times: confirm at the desk.',
+    combat_title: 'The combat room', combat_text: 'Heavy bags, mats and a martial arts school: Muay Thai, boxing, kickboxing, BJJ, MMA and wrestling. Classes for kids, beginners and fighters.',
+    combat_note: 'See the class times',
+    kitchen_title: 'The kitchen', kitchen_text: 'Eat better. Fresh bowls made at the gym, for after training.',
     recovery_title: 'Recovery', recovery_text: 'Cryosauna sessions to recover faster between hard days.',
     photo_note: 'Photos from the gym\'s Instagram, low resolution. Originals to come.',
-    wall_num: 'II', wall_title: 'The rule on the wall',
+    classes_num: 'II', classes_title: 'Fearless time',
+    classes_text: 'Group classes in the combat room, by day. Save your spot: call or WhatsApp the gym.',
+    classes_note: 'Times copied from the gym\'s Instagram timetable. Check the current week at the desk.',
+    team_martial: 'Team Martial Arts', team_martial_note: 'Muay Thai by Kru Team · Boxing by Coach Osama · Kickboxing by Coach Mohd Wasfi',
+    team_combat: 'Team Combat', team_combat_note: 'Taught by Team Combat',
+    cls: { muay_kids: 'Muay Thai kids', muay_adults: 'Muay Thai adults', muay_adults2: 'Muay Thai adults 2', muay_adv: 'Muay Thai advanced', boxing: 'Boxing', kickboxing: 'Kickboxing', bjj_adults: 'BJJ adults', bjj_kids: 'BJJ kids', mma: 'MMA', wrestling: 'Wrestling' },
+    day_short: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    wall_num: 'III', wall_title: 'The rule on the wall',
     wall: 'PLAY HARD',
     wall_text: 'Two words, painted above the racks. Everything else follows from them.',
     rules: ['Show up.', 'Lift heavier than last week.', 'Respect the mat.', 'Leave the fear at the door.'],
-    trial_num: 'III', trial_title: 'Come and see it',
+    trial_num: 'IV', trial_title: 'Come and see it',
     trial_text: 'Call or send a WhatsApp and say when you want to come. A coach will walk you through both rooms.',
     f_name: 'Your name', f_goal: 'I want to train', f_when: 'I can come', f_send: 'Send on WhatsApp',
-    goals: ['Strength', 'Combat', 'Both'], whens: ['Mornings', 'Afternoons', 'Evenings'],
+    goals: ['Strength', 'Combat', 'Both', 'A class'], whens: ['Mornings', 'Afternoons', 'Evenings'],
     wa_msg: 'Hi Fearless, I want to book a first session.',
     wa_tpl: 'Hi Fearless, I am {name}. I want to train: {goal}. I can come: {when}.',
-    visit_num: 'IV', visit_title: 'Khalda',
+    visit_num: 'V', visit_title: 'Khalda',
     address: 'Wasfi At-Tall Street, Building 347, Khalda, Amman', address_note: 'Same building as Buffalo Wings & Rings. Step-free access.',
     hours_title: 'Hours', days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], today: 'today',
     every_day: 'Seven days a week', since: 'Training in Amman since 2013',
@@ -58,7 +86,7 @@ const TEXT = {
   ar: {
     lang_btn: 'English',
     skip: 'تخطي المقدمة', replay: 'أعد المقدمة',
-    nav_rooms: 'القاعتان', nav_rule: 'القاعدة', nav_visit: 'الموقع', nav_call: 'اتصل',
+    nav_rooms: 'القاعتان', nav_classes: 'الحصص', nav_rule: 'القاعدة', nav_visit: 'الموقع', nav_call: 'اتصل',
     hero_place: 'خلدا · عمّان',
     hero_fear: 'بلا', hero_less: 'خوف',
     hero_line: 'نادي رياضي ومدرسة فنون قتالية. البس الخوذة.',
@@ -66,23 +94,31 @@ const TEXT = {
     cta_call: 'اتصل بالنادي', cta_wa: 'واتساب', cta_trial: 'احجز حصتك الأولى',
     open_now: 'مفتوح الآن', closed_now: 'مغلق الآن', closes: 'يغلق', opens: 'يفتح',
     rooms_num: 'I', rooms_title: 'قاعتان',
-    rooms_text: 'صالة القوة في الأعلى. قاعة القتال في الأسفل. اشتراك واحد، بابان.',
+    rooms_text: 'صالة القوة في الأعلى. قاعة القتال في الأسفل. ومطبخ لما بعد التمرين. اشتراك واحد، كل الأبواب.',
     strength_title: 'صالة القوة', strength_text: 'أوزان حرة وأجهزة من Technogym. مجهزة لكمال الأجسام وتدريب القوة.',
-    combat_title: 'قاعة القتال', combat_text: 'أكياس ثقيلة وبساط ومدرسة فنون قتالية. حصص للمبتدئين وللمقاتلين.',
-    combat_note: 'قائمة الحصص ومواعيدها: تأكد منها عند الاستقبال.',
+    combat_title: 'قاعة القتال', combat_text: 'أكياس ثقيلة وبساط ومدرسة فنون قتالية: مواي تاي، ملاكمة، كيك بوكسينغ، جوجيتسو، MMA ومصارعة. حصص للأطفال والمبتدئين والمقاتلين.',
+    combat_note: 'شاهد مواعيد الحصص',
+    kitchen_title: 'المطبخ', kitchen_text: 'كُل أفضل. أطباق طازجة تُحضَّر في النادي، لما بعد التمرين.',
     recovery_title: 'الاستشفاء', recovery_text: 'جلسات كرايو ساونا لتتعافى أسرع بين الأيام الصعبة.',
     photo_note: 'الصور من إنستغرام النادي بدقة منخفضة. الأصلية قادمة.',
-    wall_num: 'II', wall_title: 'القاعدة على الحائط',
+    classes_num: 'II', classes_title: 'وقت فيرلس',
+    classes_text: 'الحصص الجماعية في قاعة القتال، حسب اليوم. احجز مكانك: اتصل أو أرسل واتساب للنادي.',
+    classes_note: 'المواعيد منقولة من جدول النادي على إنستغرام. تأكد من جدول الأسبوع الحالي عند الاستقبال.',
+    team_martial: 'فريق الفنون القتالية', team_martial_note: 'مواي تاي مع فريق كرو · ملاكمة مع الكوتش أسامة · كيك بوكسينغ مع الكوتش محمد وصفي',
+    team_combat: 'فريق القتال', team_combat_note: 'بإشراف فريق القتال',
+    cls: { muay_kids: 'مواي تاي أطفال', muay_adults: 'مواي تاي كبار', muay_adults2: 'مواي تاي كبار ٢', muay_adv: 'مواي تاي متقدم', boxing: 'ملاكمة', kickboxing: 'كيك بوكسينغ', bjj_adults: 'جوجيتسو كبار', bjj_kids: 'جوجيتسو أطفال', mma: 'MMA', wrestling: 'مصارعة' },
+    day_short: ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'],
+    wall_num: 'III', wall_title: 'القاعدة على الحائط',
     wall: 'PLAY HARD',
     wall_text: 'كلمتان مرسومتان فوق الرفوف. كل ما عداهما يأتي بعدهما.',
     rules: ['احضر.', 'ارفع أثقل من الأسبوع الماضي.', 'احترم البساط.', 'اترك الخوف عند الباب.'],
-    trial_num: 'III', trial_title: 'تعال وشاهد بنفسك',
+    trial_num: 'IV', trial_title: 'تعال وشاهد بنفسك',
     trial_text: 'اتصل أو أرسل واتساب وقل متى تريد أن تأتي. سيأخذك مدرب في جولة على القاعتين.',
     f_name: 'اسمك', f_goal: 'أريد أن أتدرب', f_when: 'أستطيع الحضور', f_send: 'أرسل على واتساب',
-    goals: ['قوة', 'قتال', 'الاثنين'], whens: ['صباحاً', 'بعد الظهر', 'مساءً'],
+    goals: ['قوة', 'قتال', 'الاثنين', 'حصة جماعية'], whens: ['صباحاً', 'بعد الظهر', 'مساءً'],
     wa_msg: 'مرحباً فيرلس، أريد حجز حصة أولى.',
     wa_tpl: 'مرحباً فيرلس، أنا {name}. أريد أن أتدرب: {goal}. أستطيع الحضور: {when}.',
-    visit_num: 'IV', visit_title: 'خلدا',
+    visit_num: 'V', visit_title: 'خلدا',
     address: 'شارع وصفي التل، عمارة ٣٤٧، خلدا، عمّان', address_note: 'في نفس عمارة Buffalo Wings & Rings. مدخل بدون درج.',
     hours_title: 'ساعات العمل', days: ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'], today: 'اليوم',
     every_day: 'سبعة أيام في الأسبوع', since: 'ندرّب في عمّان منذ ٢٠١٣',

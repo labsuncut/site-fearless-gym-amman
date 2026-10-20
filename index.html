@@ -6,7 +6,7 @@
   <!-- PREVIEW BUILD: not public until Fearless Gym agrees. Remove the robots line below (and robots.txt Disallow) at launch. -->
   <meta name="robots" content="noindex, nofollow">
   <title>Fearless Gym | Gym and martial arts school in Khalda, Amman</title>
-  <meta name="description" content="Fearless Gym in Khalda, Amman: Technogym strength floor and a combat room with a martial arts school. Open 7 days, 6 AM to 11 PM. Call 079 292 5017.">
+  <meta name="description" content="Fearless Gym in Khalda, Amman: Technogym strength floor, a combat room with Muay Thai, boxing, kickboxing, BJJ, MMA and wrestling classes, and a kitchen. Open 7 days, 6 AM to 11 PM. Call 079 292 5017.">
   <meta name="theme-color" content="#0b0b0c">
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/fonts/anton-latin-400.woff2" as="font" type="font/woff2" crossorigin>
@@ -45,15 +45,16 @@
 <body class="stage-0">
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <symbol id="helmet" viewBox="0 0 100 120">
-      <path fill-rule="evenodd" d="M50 2C28 2 14 20 14 48v30c0 12 4 22 14 30l4 10h36l4-10c10-8 14-18 14-30V48C86 20 72 2 50 2zM24 50l20 7v8l-18-5zm52 0-20 7v8l18-5zM38 72h7v46h-7zm17 0h7v46h-7z"/>
+      <path d="M50 2L24.1 27Q15.4 36.1 15.4 49.8L15.4 79.3L36.3 118L39.9 118L41.4 65.7L24.8 57.7L20.5 50.9L45.7 56.6L50 88.4L54.3 56.6L79.5 50.9L75.2 57.7L58.6 65.7L60.1 118L63.7 118L84.6 79.3L84.6 49.8Q84.6 36.1 75.9 27Z"/>
     </symbol>
   </svg>
 
   <header class="site-header">
     <div class="wrap header-row">
-      <a class="logo" href="#top" aria-label="Fearless Gym"><svg class="logo-helmet" viewBox="0 0 100 120" aria-hidden="true"><use href="#helmet"/></svg><span class="logo-word">FEARLESS</span></a>
+      <a class="logo" href="#top" aria-label="Fearless Gym"><span class="logo-word">FEAR</span><svg class="logo-helmet" viewBox="0 0 100 120" aria-hidden="true"><use href="#helmet"/></svg><span class="logo-word">LESS</span></a>
       <nav class="nav" aria-label="Main">
         <a href="#rooms" data-t="nav_rooms"></a>
+        <a href="#classes" data-t="nav_classes"></a>
         <a href="#rule" data-t="nav_rule"></a>
         <a href="#visit" data-t="nav_visit"></a>
         <button id="lang" class="lang" type="button" data-t="lang_btn"></button>
@@ -103,7 +104,11 @@
           </figure>
           <figure class="band ap" id="band-combat" tabindex="0">
             <div class="band-img band-img-combat"></div>
-            <figcaption><h3 class="display" data-t="combat_title"></h3><p data-t="combat_text"></p><p class="note" data-t="combat_note"></p></figcaption>
+            <figcaption><h3 class="display" data-t="combat_title"></h3><p data-t="combat_text"></p><p><a class="note" href="#classes" data-t="combat_note"></a></p></figcaption>
+          </figure>
+          <figure class="band ap" id="band-kitchen" tabindex="0">
+            <div class="band-img band-img-kitchen"></div>
+            <figcaption><h3 class="display" data-t="kitchen_title"></h3><p data-t="kitchen_text"></p></figcaption>
           </figure>
           <div class="recovery"><h3 class="display" data-t="recovery_title"></h3><p data-t="recovery_text"></p></div>
           <p class="note photo-note" data-t="photo_note"></p>
@@ -111,7 +116,15 @@
       </div>
     </section>
 
-    <section id="rule" class="chapter chapter-black">
+    <section id="classes" class="chapter chapter-black">
+      <div class="wrap chapter-grid">
+        <div class="rail"><span class="numeral" data-t="classes_num"></span><h2 class="display ap" data-t="classes_title"></h2><p class="rail-text" data-t="classes_text"></p><p class="note" data-t="classes_note"></p></div>
+        <!-- Group classes, read from SCHEDULE in content.js and drawn per day. -->
+        <div class="timetables" id="timetables"></div>
+      </div>
+    </section>
+
+    <section id="rule" class="chapter chapter-bone">
       <div class="wrap chapter-grid">
         <div class="rail"><span class="numeral" data-t="wall_num"></span><h2 class="display ap" data-t="wall_title"></h2><p class="rail-text" data-t="wall_text"></p></div>
         <div>
@@ -122,19 +135,19 @@
       </div>
     </section>
 
-    <section id="trial" class="chapter chapter-bone">
+    <section id="trial" class="chapter chapter-black">
       <div class="wrap chapter-grid">
         <div class="rail"><span class="numeral" data-t="trial_num"></span><h2 class="display ap" data-t="trial_title"></h2><p class="rail-text" data-t="trial_text"></p><p class="contact-lines" id="contact-lines"></p></div>
         <form class="trial-form ap" id="trial-form">
           <label><span data-t="f_name"></span><input name="name" type="text" autocomplete="name" maxlength="60"></label>
           <fieldset><legend data-t="f_goal"></legend><div class="chips" id="goal-chips"></div></fieldset>
           <fieldset><legend data-t="f_when"></legend><div class="chips" id="when-chips"></div></fieldset>
-          <button class="btn btn-ink" type="submit" data-t="f_send"></button>
+          <button class="btn btn-primary" type="submit" data-t="f_send"></button>
         </form>
       </div>
     </section>
 
-    <section id="visit" class="chapter chapter-black">
+    <section id="visit" class="chapter chapter-bone">
       <div class="wrap chapter-grid">
         <div class="rail"><span class="numeral" data-t="visit_num"></span><h2 class="display ap" data-t="visit_title"></h2>
           <p class="address" data-t="address"></p><p class="note" data-t="address_note"></p>
