@@ -9,3 +9,9 @@ Showcase site for Fearless Gym (Khalda, Amman), built by FellowFlow. **Preview o
 - Brand sheet is at the top of `assets/css/site.css`.
 
 Preview: https://labsuncut.github.io/site-fearless-gym-amman/
+
+## After changing words or layout
+
+Run `NODE_PATH=$(npm root -g) node tools/prerender.cjs` before committing. It bakes the English words into `index.html` so Google and link previews see them without JavaScript. Running it twice changes nothing.
+
+The link preview (WhatsApp, Instagram, iMessage) uses `assets/img/og.jpg` and the `og:` tags in `index.html`. Their URLs are absolute: change them when the site moves to the gym's own domain.

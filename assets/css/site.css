@@ -11,6 +11,7 @@
   --concrete: #8f8a82;
   --blood: #b3121b;
   --ember: #e4202b;
+  --ember-text: #ff5a5f;           /* red for small text on black (WCAG AA) */
   --line-dark: rgba(233, 227, 214, 0.14);
   --line-light: rgba(20, 20, 22, 0.16);
   --display: 'Anton', 'Changa', Impact, sans-serif;
@@ -39,7 +40,7 @@ html[lang="ar"] .display { font-weight: 800; text-transform: none; letter-spacin
 .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--gutter); }
 .note { color: var(--concrete); font-size: .92rem; }
 :focus-visible { outline: 3px solid var(--ember); outline-offset: 3px; }
-.linkbtn { background: none; border: 0; padding: 0; font: inherit; color: inherit; text-decoration: underline; cursor: pointer; }
+.linkbtn { background: none; border: 0; padding: 12px 0; font: inherit; color: inherit; text-decoration: underline; cursor: pointer; }
 
 /* Buttons: square, quiet. The slit underline grows on hover. Red is never a button. */
 .btn { position: relative; display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 12px 22px; border: 1.5px solid currentColor; border-radius: 2px;
@@ -59,7 +60,7 @@ html[lang="ar"] .btn { letter-spacing: 0; font-weight: 800; text-transform: none
 /* Header: transparent, appears after the intro */
 .site-header { position: fixed; top: 0; left: 0; right: 0; z-index: 20; opacity: 0; transition: opacity 600ms var(--ease), background 300ms; }
 body.stage-4 .site-header { opacity: 1; }
-body.scrolled .site-header { background: rgba(11, 11, 12, .82); backdrop-filter: blur(10px); }
+body.scrolled .site-header { background: var(--black); box-shadow: 0 1px 0 var(--line-dark); }
 .header-row { display: flex; align-items: center; justify-content: space-between; min-height: 64px; gap: 16px; }
 .logo { display: inline-flex; direction: ltr; align-items: center; gap: 5px; text-decoration: none; color: var(--bone); font-family: var(--display); font-size: 1.2rem; letter-spacing: .08em; }
 .logo-helmet { width: 22px; height: 26px; fill: var(--blood); flex: none; }
@@ -89,8 +90,8 @@ html.intro-seen .intro-helmet { display: none; }
 .visor-scene { height: 220vh; position: relative; }
 .visor { position: sticky; top: 0; height: 100svh; overflow: hidden; background: var(--black); }
 .wordmark { position: absolute; inset: 0; margin: 0; font-family: var(--display); font-weight: 400; text-transform: uppercase; color: var(--bone);
-  font-size: clamp(4.5rem, min(20vw, 24vh), 17rem); line-height: 1; letter-spacing: .02em; }
-html[lang="ar"] .wordmark { font-weight: 800; text-transform: none; font-size: clamp(4rem, min(18vw, 19vh), 15rem); line-height: 1.1; }
+  font-size: clamp(3.5rem, min(20vw, calc((100svh - var(--ap-h)) / 2 - 140px)), 17rem); line-height: 1; letter-spacing: .02em; }
+html[lang="ar"] .wordmark { font-weight: 800; text-transform: none; font-size: clamp(3.2rem, min(18vw, calc((100svh - var(--ap-h) - 270px) / 2.4)), 15rem); line-height: 1.1; }
 html[lang="ar"] .wm-fear { bottom: calc(50% + var(--aph) / 2 + .22em); }
 html[lang="ar"] .wm-less { top: calc(50% + var(--aph) / 2 - .05em); }
 .wm { position: absolute; left: 0; right: 0; text-align: center; white-space: nowrap; opacity: 0; transition: opacity 700ms var(--ease), transform 700ms var(--ease); }
@@ -126,7 +127,9 @@ html[lang="ar"] .hero-place { letter-spacing: 0; font-size: .95rem; }
 .open-badge { display: inline-flex; align-items: center; gap: 8px; font-size: .88rem; color: var(--concrete); padding: 6px 4px; }
 .open-badge::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--concrete); }
 .open-badge.is-open { color: var(--bone); } .open-badge.is-open::before { background: #3fd27a; box-shadow: 0 0 10px #3fd27a; }
-.hero-hint { position: absolute; top: 50%; inset-inline-end: 16px; margin: 0; writing-mode: vertical-rl; font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; color: var(--concrete); transform: translateY(-50%); }
+/* Vertical text: inline offsets follow the text, not the page, so place it with left/right. It sits in the black below the slit. */
+.hero-hint { position: absolute; top: calc(50% + var(--aph) / 2 + 24px); right: 18px; margin: 0; writing-mode: vertical-rl; font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; color: var(--concrete); }
+html[dir="rtl"] .hero-hint { right: auto; left: 18px; }
 html[lang="ar"] .hero-hint { letter-spacing: 0; font-size: .85rem; }
 .hero-place, .hero-meta, .hero-hint { opacity: 0; transition: opacity 600ms var(--ease); }
 body.stage-4 .hero-place, body.stage-4 .hero-meta, body.stage-4 .hero-hint { opacity: calc(1 - var(--open) * 4); }
@@ -144,7 +147,7 @@ html.intro-seen .aperture, html.intro-seen .wm, html.intro-seen .aperture-helmet
 .chapter-black { background: var(--black); color: var(--bone); }
 .chapter-grid { position: relative; display: grid; grid-template-columns: minmax(260px, 1fr) 2fr; gap: 48px clamp(32px, 6vw, 96px); align-items: start; }
 .rail { position: sticky; top: 96px; }
-.numeral { display: block; font-family: 'Anton', var(--display); font-size: 1rem; letter-spacing: .3em; color: var(--ember); margin-bottom: 18px; padding-bottom: 10px; border-bottom: 2px solid currentColor; width: 2.6em; }
+.numeral { display: block; font-family: 'Anton', var(--display); font-size: 1rem; letter-spacing: .3em; color: var(--ember-text); margin-bottom: 18px; padding-bottom: 10px; border-bottom: 2px solid currentColor; width: 2.6em; }
 .chapter-bone .numeral { color: var(--blood); }
 .chapter-bone .plate-line, .chapter-bone .hours-title { color: #6c675f; }
 h2.display { font-size: clamp(2.6rem, 6vw, 5rem); line-height: .95; margin-bottom: .35em; }
@@ -182,7 +185,7 @@ html[lang="ar"] h2.display { line-height: 1.2; }
 html[lang="ar"] .tt-day h4 { letter-spacing: 0; font-weight: 800; text-transform: none; }
 .tt ul { list-style: none; margin: 0; padding: 0; }
 .tt li { display: flex; gap: 8px; align-items: baseline; padding: 7px 0; border-top: 1px solid var(--line-dark); font-size: .92rem; line-height: 1.35; }
-.tt time { font-family: 'Anton', var(--display); font-size: .85rem; letter-spacing: .05em; color: var(--ember); min-width: 3.9em; flex: none; direction: ltr; }
+.tt time { font-family: 'Anton', var(--display); font-size: .85rem; letter-spacing: .05em; color: var(--ember-text); min-width: 3.9em; flex: none; direction: ltr; }
 html[lang="ar"] .tt time { text-align: end; }
 
 /* Chapter III: PLAY HARD, outlined, fills as you scroll past */
@@ -193,7 +196,7 @@ html[lang="ar"] .tt time { text-align: end; }
 .rules { list-style: none; margin: 0; padding: 0; counter-reset: r; }
 .rules li { display: flex; gap: 18px; align-items: baseline; padding: 14px 0; border-top: 1px solid var(--line-dark); font-family: var(--display); font-size: clamp(1.4rem, 2.8vw, 2.2rem); text-transform: uppercase; line-height: 1.1; }
 html[lang="ar"] .rules li { text-transform: none; font-weight: 800; }
-.rules li::before { counter-increment: r; content: counter(r, upper-roman); font-family: 'Anton', var(--display); font-size: .75rem; letter-spacing: .25em; color: var(--ember); min-width: 2.2em; }
+.rules li::before { counter-increment: r; content: counter(r, upper-roman); font-family: 'Anton', var(--display); font-size: .75rem; letter-spacing: .25em; color: var(--ember-text); min-width: 2.2em; }
 .rules li:last-child { border-bottom: 1px solid var(--line-dark); }
 .chapter-bone .rules li { border-color: var(--line-light); }
 .chapter-bone .rules li::before { color: var(--blood); }
@@ -224,12 +227,19 @@ html[lang="ar"] .hours-title { letter-spacing: 0; text-transform: none; font-siz
 .hours .today { color: #000; font-weight: 700; }
 .map { width: 100%; aspect-ratio: 16 / 9; min-height: 280px; border: 0; border-radius: 2px; filter: grayscale(1) contrast(1.05); }
 
+/* 404 */
+.lost { min-height: 100svh; display: grid; place-items: center; text-align: center; padding: 40px var(--gutter); }
+.lost svg { width: 64px; height: 77px; margin: 0 auto 22px; fill: var(--blood); filter: drop-shadow(0 0 16px rgba(228, 32, 43, .5)); }
+.lost h1 { font-size: clamp(2.4rem, 8vw, 4.5rem); }
+.lost p { color: var(--concrete); }
+
 /* Footer and call bar */
 .site-footer { border-top: 1px solid var(--line-dark); padding: 32px 0 110px; color: var(--concrete); font-size: .92rem; }
 .foot-row { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: center; }
 .foot-row p { margin: 0; display: flex; align-items: center; gap: 8px; }
-.foot-links a { color: var(--bone); }
-.foot-preview { margin: 16px auto 0; font-size: .8rem; opacity: .7; }
+.foot-links a { color: var(--bone); display: inline-block; padding: 12px 0; }
+.more-link { display: inline-block; padding: 11px 0; }
+.foot-preview { margin: 16px auto 0; font-size: .8rem; }
 .call-bar { display: none; position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 30; background: var(--bone); color: var(--ink); text-align: center; padding: 15px; border-radius: 2px;
   font-family: var(--display); font-size: 1.15rem; letter-spacing: .05em; text-transform: uppercase; text-decoration: none; box-shadow: 0 10px 30px rgba(0, 0, 0, .5); border-bottom: 3px solid var(--ember);
   transform: translateY(130%); transition: transform 250ms var(--ease); }
@@ -238,9 +248,10 @@ html[lang="ar"] .call-bar { letter-spacing: 0; font-weight: 800; text-transform:
 @media (min-width: 761px) { .site-footer { padding-bottom: 40px; } }
 @media (max-width: 760px) {
   :root { --ap-h: clamp(90px, 18vh, 160px); }
-  .nav > a:not(.nav-call) { display: none; }
-  .wordmark { font-size: clamp(4rem, min(24vw, 12vh), 7rem); }
-  html[lang="ar"] .wordmark { font-size: clamp(3.6rem, min(22vw, 11vh), 6.5rem); }
+  .nav { gap: 16px; }
+  .nav > a:not(.nav-call):not(.nav-classes) { display: none; }
+  .wordmark { font-size: clamp(3rem, min(24vw, calc((100svh - var(--ap-h)) / 2 - 200px)), 7rem); }
+  html[lang="ar"] .wordmark { font-size: clamp(2.8rem, min(22vw, calc((100svh - var(--ap-h) - 320px) / 2.4)), 6.5rem); }
   .hero-meta { bottom: 24px; }
   .hero-hint { display: none; }
   .skip { bottom: auto; top: 76px; }
