@@ -1,2 +1,6 @@
+# PREVIEW: blocks all crawlers until Fearless Gym agrees to launch. At launch, change "Disallow: /" to
+# "Allow: /" and point the Sitemap line at the gym's own domain.
 User-agent: *
 Disallow: /
+
+Sitemap: https://fearless-gym-amman.pages.dev/sitemap.xml
