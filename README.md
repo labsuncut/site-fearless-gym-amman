@@ -11,6 +11,8 @@ Showcase site for Fearless Gym (Khalda, Amman), built by FellowFlow. **Preview o
 - The landing word is a second canvas (`#brand`): the word in blood red with the hero reel showing through its letters (luminosity blend, then a text mask). The real `<h1>` stays in the HTML for search engines and screen readers. On portrait screens the word stacks as FEAR / LESS so it can be several times bigger. Scrolling flies the camera through the hole inside the A (found on the text mask; in Arabic, the hole nearest the middle) at a steady speed until only the reel is left.
 - Every release that changes the CSS or JS bumps the `?v=` number on their links in `index.html` and `404.html`, so visitors never get new HTML with cached old styles.
 - Chapter I (two warriors) is two full-width layers clipped to their halves with `clip-path`; the split leans toward the pointer, or toward the side tapped on a phone.
+- Chapter V (Ask the coach) is a chat: tap a question, it appears as your message, the gym "types" and answers. Questions and answers are `TEXT.faq` in `content.js`; answers marked `wait: true` are placeholders until the gym answers (swap them in at launch). `tools/prerender.cjs` writes the FAQPage JSON-LD (`#faq-ld`) from the English answers, leaving out the `wait` ones.
+- At launch, also change the `canonical` link, `og:url` and `og:image` in `index.html` to the gym's own domain.
 - Everything that moves on scroll or pointer (the word, the veil, the split, the PLAY HARD fill) is written straight to the elements as `clip-path`, `transform` and `opacity`; nothing animates its size.
 
 Preview: https://labsuncut.github.io/site-fearless-gym-amman/
