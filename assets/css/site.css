@@ -1,7 +1,8 @@
-/* FEARLESS GYM, v2 "Through the visor".
+/* FEARLESS GYM, v6 "Forged".
    Brand sheet: black #0b0b0c, bone #e9e3d6, ink #141416, blood #b3121b, ember #e4202b, concrete #8f8a82.
    Display: Anton (EN) / Changa (AR). Body: IBM Plex Sans Arabic. Signature: the helmet's eye slit, an aperture
-   that opens. Red is light, not paint: it only glows from the slit and lives in the helmet. Bone and black alternate. */
+   that opens. Red is light, not paint: it only glows from the slit, the sparks and the helmet. Bone and black alternate.
+   Motion rules: only transform, opacity and clip-path animate; nothing changes its height. Hover only on fine pointers. */
 :root {
   --black: #0b0b0c;
   --black-2: #141416;
@@ -12,6 +13,7 @@
   --blood: #b3121b;
   --ember: #e4202b;
   --ember-text: #ff5a5f;           /* red for small text on black (WCAG AA) */
+  --hot: #ffb347;                  /* white-hot metal, sparks */
   --line-dark: rgba(233, 227, 214, 0.14);
   --line-light: rgba(20, 20, 22, 0.16);
   --display: 'Anton', 'Changa', Impact, sans-serif;
@@ -19,19 +21,19 @@
   --wrap: 1240px;
   --gutter: 24px;
   --ease: cubic-bezier(.2, .8, .2, 1);
-  --t-ui: 200ms var(--ease);
+  --ease-out: cubic-bezier(.23, 1, .32, 1);
+  --ease-in-out: cubic-bezier(.77, 0, .175, 1);
+  --t-ui: 180ms var(--ease-out);
   --ap-h: clamp(110px, 24vh, 280px);  /* the slit at rest */
-  --open: 0;                          /* 0 = slit, 1 = visor fully lifted (set by scroll) */
-  --fill: 0%;                         /* PLAY HARD fill (set by scroll) */
   --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
 }
 html[lang="ar"] { --display: 'Changa', 'Anton', sans-serif; }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; background: var(--black); }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; background: var(--black); }
 body { margin: 0; font-family: var(--body); font-size: 17px; line-height: 1.6; color: var(--bone); background: var(--black); overflow-x: clip; }
 body.intro-lock { overflow: hidden; }
-img, svg { max-width: 100%; display: block; }
+img, svg, video { max-width: 100%; display: block; }
 a { color: inherit; }
 h1, h2, h3 { line-height: 1.05; margin: 0 0 .4em; }
 p { margin: 0 0 1em; }
@@ -41,103 +43,120 @@ html[lang="ar"] .display { font-weight: 800; text-transform: none; letter-spacin
 .note { color: var(--concrete); font-size: .92rem; }
 :focus-visible { outline: 3px solid var(--ember); outline-offset: 3px; }
 .linkbtn { background: none; border: 0; padding: 12px 0; font: inherit; color: inherit; text-decoration: underline; cursor: pointer; }
+/* Controls feel native on a phone: no 300 ms wait, no text selection on a long press, press feedback on the way down. */
+button, a, [role="button"], .chip span, .day-tab { touch-action: manipulation; }
+button, .btn, .chip span, .day-tab, .call-bar, .lang { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
 
 /* Buttons: square, quiet. The slit underline grows on hover. Red is never a button. */
 .btn { position: relative; display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 12px 22px; border: 1.5px solid currentColor; border-radius: 2px;
   font-family: var(--display); font-size: 1.05rem; letter-spacing: .05em; text-transform: uppercase; text-decoration: none; color: inherit; background: transparent; cursor: pointer;
-  transition: background var(--t-ui), color var(--t-ui), transform var(--t-ui); }
+  transition: background var(--t-ui), color var(--t-ui), transform 120ms var(--ease-out); }
 html[lang="ar"] .btn { letter-spacing: 0; font-weight: 800; text-transform: none; }
-.btn::after { content: ''; position: absolute; left: 10px; right: 10px; bottom: -7px; height: 2px; background: var(--ember); transform: scaleX(0); transition: transform 250ms var(--ease); box-shadow: 0 0 10px var(--ember); }
-.btn:hover::after, .btn:focus-visible::after { transform: scaleX(1); }
-.btn:active { transform: translateY(1px); }
+.btn::after { content: ''; position: absolute; left: 10px; right: 10px; bottom: -7px; height: 2px; background: var(--ember); transform: scaleX(0); transition: transform 250ms var(--ease-out); box-shadow: 0 0 10px var(--ember); }
+.btn:focus-visible::after { transform: scaleX(1); }
+.btn:active { transform: scale(.97); }
 .btn-primary { background: var(--bone); color: var(--ink); border-color: var(--bone); }
-.btn-primary:hover { background: #fff; }
 .chapter-bone .btn { color: var(--ink); }
 .btn-ink { background: var(--ink); color: var(--bone); border-color: var(--ink); }
-.btn-ink:hover { background: #000; }
 .chapter-bone .btn-ink { color: var(--bone); }
 
 /* Header: transparent, appears after the intro */
-.site-header { position: fixed; top: 0; left: 0; right: 0; z-index: 20; opacity: 0; transition: opacity 600ms var(--ease), background 300ms; }
-body.stage-4 .site-header { opacity: 1; }
+.site-header { position: fixed; top: 0; left: 0; right: 0; z-index: 20; opacity: 0; padding-top: env(safe-area-inset-top, 0px); transition: opacity 600ms var(--ease), background 300ms; }
+body.stage-5 .site-header { opacity: 1; }
 body.scrolled .site-header { background: var(--black); box-shadow: 0 1px 0 var(--line-dark); }
 .header-row { display: flex; align-items: center; justify-content: space-between; min-height: 64px; gap: 16px; }
 .logo { display: inline-flex; direction: ltr; align-items: center; gap: 5px; text-decoration: none; color: var(--bone); font-family: var(--display); font-size: 1.2rem; letter-spacing: .08em; }
 .logo-helmet { width: 22px; height: 26px; fill: var(--blood); flex: none; }
-.nav { display: flex; align-items: center; gap: 24px; font-size: .95rem; }
+.nav { display: flex; align-items: center; gap: 22px; font-size: .95rem; }
 .nav > a { color: var(--bone); text-decoration: none; opacity: .8; transition: opacity var(--t-ui); }
-.nav > a:hover { opacity: 1; }
 .nav-call { font-family: var(--display); letter-spacing: .06em; text-transform: uppercase; border-bottom: 2px solid var(--ember); opacity: 1 !important; }
 html[lang="ar"] .nav-call { letter-spacing: 0; font-weight: 800; text-transform: none; }
-.lang { background: none; border: 1px solid var(--line-dark); color: var(--bone); padding: 5px 11px; border-radius: 2px; font: inherit; font-size: .88rem; cursor: pointer; transition: border-color var(--t-ui); }
-.lang:hover { border-color: var(--bone); }
+.lang { background: none; border: 1px solid var(--line-dark); color: var(--bone); padding: 5px 11px; border-radius: 2px; font: inherit; font-size: .88rem; cursor: pointer; transition: border-color var(--t-ui), transform 120ms var(--ease-out); }
+.lang:active { transform: scale(.95); }
 
-/* ---------- Intro, act one: the helmet ---------- */
-.intro-helmet { position: absolute; left: 50%; top: 50%; width: min(70vw, 54vh); transform: translate(-50%, -50%) scale(1); color: #1c1c20; z-index: 3; pointer-events: none;
-  transition: transform 1000ms cubic-bezier(.6, 0, .9, .4), opacity 700ms ease-in 250ms, color 300ms; }
-.intro-helmet svg { width: 100%; height: auto; fill: currentColor; filter: drop-shadow(0 0 30px rgba(228, 32, 43, .25)); }
+/* ---------- Intro, act one: the forge ----------
+   Stage 0: dark, one ember at the top.  Stage 1: sparks draw the helmet's outline in white-hot metal.
+   Stage 2: the metal cools and fills in; the eyes ignite.  Stage 3: you put it on; the helmet rushes past,
+   and its slit opens on the gym.  Stage 4: FEAR and LESS stamp in.  Stage 5: everything else arrives. */
+.forge { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 4; pointer-events: none; }
+body.stage-4 .forge, body.stage-5 .forge, html.intro-seen .forge { display: none; }
+.intro-helmet { position: absolute; left: 50%; top: 50%; width: min(70vw, 54vh); transform: translate(-50%, -50%) scale(1); z-index: 3; pointer-events: none; will-change: transform;
+  transition: transform 1000ms cubic-bezier(.6, 0, .9, .4), opacity 600ms ease-in 350ms; }
+.intro-helmet svg { width: 100%; height: auto; overflow: visible; }
+.intro-helmet::before { content: ''; position: absolute; left: 50%; top: 1.6%; width: 6px; height: 6px; margin-left: -3px; border-radius: 50%; background: var(--hot); opacity: 0;
+  box-shadow: 0 0 10px 3px rgba(255, 179, 71, .9), 0 0 30px 8px rgba(228, 32, 43, .6); transition: opacity 300ms; }
+body.stage-0 .intro-helmet::before { opacity: 1; animation: ember 700ms ease-in-out infinite alternate; }
+@keyframes ember { from { transform: scale(.7); opacity: .6; } to { transform: scale(1.15); opacity: 1; } }
+.hm-fill { fill: #1a1a1e; opacity: 0; transition: opacity 900ms var(--ease); }
+.hm-glow { fill: none; stroke: var(--ember); stroke-width: 3.2; stroke-linejoin: round; opacity: .55; transition: opacity 900ms, stroke 900ms; }
+.hm-line { fill: none; stroke: var(--hot); stroke-width: 1.1; stroke-linejoin: round; transition: stroke 900ms; }
+.intro-helmet:not(.drawn) .hm-line, .intro-helmet:not(.drawn) .hm-glow { opacity: 0; }
+body.stage-2 .hm-fill, body.stage-3 .hm-fill { opacity: 1; }
+body.stage-2 .hm-glow, body.stage-3 .hm-glow { opacity: .22; stroke: var(--blood); }
+body.stage-2 .hm-line, body.stage-3 .hm-line { stroke: #8a2a2f; }
 .intro-helmet .eye { position: absolute; top: 42.4%; width: 25.2%; height: 12.3%; background: var(--ember); opacity: 0; clip-path: polygon(0 0, 100% 38%, 83% 100%, 17% 46%);
-  box-shadow: 0 0 16px 3px rgba(228, 32, 43, .9), 0 0 60px rgba(228, 32, 43, .6); transition: opacity 700ms ease-out; }
+  box-shadow: 0 0 16px 3px rgba(228, 32, 43, .9), 0 0 60px rgba(228, 32, 43, .6); }
 .intro-helmet .eye-l { left: 20.5%; } .intro-helmet .eye-r { right: 20.5%; transform: scaleX(-1); }
-body.stage-0 .intro-helmet .eye { opacity: 1; animation: breathe 1.1s ease-in-out infinite alternate; }
-body.stage-0 .intro-helmet { color: #202024; }
+body.stage-2 .intro-helmet .eye, body.stage-3 .intro-helmet .eye { animation: ignite 900ms var(--ease-out) 250ms both, breathe 1.1s ease-in-out 1150ms infinite alternate; }
+@keyframes ignite { 0% { opacity: 0; } 35% { opacity: 1; box-shadow: 0 0 26px 8px rgba(255, 179, 71, .95), 0 0 90px rgba(228, 32, 43, .8); } 100% { opacity: 1; } }
+@keyframes breathe { from { opacity: .4; } to { opacity: 1; } }
 /* Act two: you put it on. The helmet rushes past the camera; the slit is what remains. */
-body.stage-1 .intro-helmet, body.stage-2 .intro-helmet, body.stage-3 .intro-helmet, body.stage-4 .intro-helmet { transform: translate(-50%, -50%) scale(16); opacity: 0; }
-body.stage-1 .intro-helmet .eye { opacity: 1; }
-html.intro-seen .intro-helmet { display: none; }
+body.stage-3 .intro-helmet, body.stage-4 .intro-helmet, body.stage-5 .intro-helmet { transform: translate(-50%, -50%) scale(18); opacity: 0; }
+body.stage-4 .intro-helmet, body.stage-5 .intro-helmet, html.intro-seen .intro-helmet { display: none; }
 
 /* ---------- Hero: the visor ---------- */
 .visor-scene { height: 220vh; position: relative; }
 .visor { position: sticky; top: 0; height: 100svh; overflow: hidden; background: var(--black); }
+.ap-probe { position: absolute; height: var(--ap-h); width: 0; visibility: hidden; pointer-events: none; }
 .wordmark { position: absolute; inset: 0; margin: 0; font-family: var(--display); font-weight: 400; text-transform: uppercase; color: var(--bone);
   font-size: clamp(3.5rem, min(20vw, calc((100svh - var(--ap-h)) / 2 - 140px)), 17rem); line-height: 1; letter-spacing: .02em; }
 html[lang="ar"] .wordmark { font-weight: 800; text-transform: none; font-size: clamp(3.2rem, min(18vw, calc((100svh - var(--ap-h) - 270px) / 2.4)), 15rem); line-height: 1.1; }
-html[lang="ar"] .wm-fear { bottom: calc(50% + var(--aph) / 2 + .22em); }
-html[lang="ar"] .wm-less { top: calc(50% + var(--aph) / 2 - .05em); }
-.wm { position: absolute; left: 0; right: 0; text-align: center; white-space: nowrap; opacity: 0; transition: opacity 700ms var(--ease), transform 700ms var(--ease); }
-.wm-fear { bottom: calc(50% + var(--aph) / 2 + .02em); transform: translateY(-.3em); }
-.wm-less { top: calc(50% + var(--aph) / 2 + .02em); transform: translateY(.3em); }
-body.stage-3 .wm, body.stage-4 .wm { opacity: calc(1 - var(--open) * 2.5); transform: none; }
-body.stage-3 .wm-fear, body.stage-4 .wm-fear { transform: translateY(calc(var(--open) * -40vh)); }
-body.stage-3 .wm-less, body.stage-4 .wm-less { transform: translateY(calc(var(--open) * 40vh)); }
+html[lang="ar"] .wm-fear { bottom: calc(50% + var(--ap-h) / 2 + .22em); }
+html[lang="ar"] .wm-less { top: calc(50% + var(--ap-h) / 2 - .05em); }
+.wm { position: absolute; left: 0; right: 0; text-align: center; white-space: nowrap; opacity: 0; transform: scale(1.14); will-change: transform, opacity;
+  transition: opacity 420ms var(--ease-out), transform 520ms var(--ease-out); }
+.wm-fear { bottom: calc(50% + var(--ap-h) / 2 + .02em); }
+.wm-less { top: calc(50% + var(--ap-h) / 2 + .02em); transition-delay: 90ms; }
+body.stage-4 .wm, body.stage-5 .wm { opacity: 1; transform: none; }
 
-.visor { --aph: calc(var(--ap-h) * (1 - var(--open)) + 100svh * var(--open)); }
-.aperture { position: absolute; left: 0; right: 0; top: 50%; height: 0; transform: translateY(-50%); overflow: hidden; background: var(--black); transition: height 900ms var(--ease); }
-body.stage-1 .aperture { transition-delay: 450ms; }
-body.stage-1 .aperture, body.stage-2 .aperture, body.stage-3 .aperture, body.stage-4 .aperture { height: var(--aph); }
-.aperture-img { position: absolute; inset: -6% 0; background: url('../img/floor.jpg') center 60% / cover no-repeat; filter: saturate(1.15) contrast(1.05); transform: scale(1.06); }
-body.stage-1 .aperture-img, body.stage-2 .aperture-img, body.stage-3 .aperture-img, body.stage-4 .aperture-img { animation: drift 14s ease-in-out infinite alternate; }
+/* The slit: a full-size photo layer, clipped. Only the clip moves; the photo never changes size. */
+.aperture { position: absolute; inset: 0; display: block; overflow: hidden; background: var(--black);
+  clip-path: inset(50% 0 50% 0); transition: clip-path 800ms var(--ease); }
+body.stage-3 .aperture, body.stage-4 .aperture, body.stage-5 .aperture { clip-path: inset(calc(50% - var(--ap-h) / 2) 0 calc(50% - var(--ap-h) / 2) 0); }
+body.stage-3 .aperture { transition-delay: 500ms; }
+.aperture-img { position: absolute; inset: -6% 0; background: url('../img/floor.jpg') center 60% / cover no-repeat; transform: scale(1.06); will-change: transform; }
+body.stage-3 .aperture-img, body.stage-4 .aperture-img, body.stage-5 .aperture-img { animation: drift 16s ease-in-out infinite alternate; }
 @keyframes drift { from { transform: scale(1.06) translateX(-1.5%); } to { transform: scale(1.1) translateX(1.5%); } }
 .aperture-img::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(11, 11, 12, .35), transparent 30%, transparent 70%, rgba(11, 11, 12, .45)),
   radial-gradient(70% 60% at 50% 50%, transparent 40%, rgba(179, 18, 27, .18) 100%); }
-.aperture-edge { position: absolute; left: 0; right: 0; height: 2px; background: var(--ember); box-shadow: 0 0 14px 2px rgba(228, 32, 43, .9), 0 0 40px rgba(228, 32, 43, .5); opacity: .9; transition: opacity 900ms; }
-.aperture-edge-t { top: 0; } .aperture-edge-b { bottom: 0; }
-body.stage-0 .aperture-edge { opacity: 0; }
-body.stage-1 .aperture-edge { animation: breathe 1.2s ease-in-out infinite alternate; }
-@keyframes breathe { from { opacity: .35; } to { opacity: 1; } }
-body.stage-4 .aperture-edge { opacity: calc(.9 - var(--open)); }
+.aperture-edge { position: absolute; left: 0; right: 0; top: 50%; height: 2px; margin-top: -1px; background: var(--ember); box-shadow: 0 0 14px 2px rgba(228, 32, 43, .9), 0 0 40px rgba(228, 32, 43, .5);
+  opacity: 0; transform: translateY(0); transition: transform 800ms var(--ease), opacity 400ms; }
+body.stage-3 .aperture-edge { transition-delay: 500ms, 500ms; }
+body.stage-3 .aperture-edge, body.stage-4 .aperture-edge, body.stage-5 .aperture-edge { opacity: .9; }
+body.stage-3 .aperture-edge-t, body.stage-4 .aperture-edge-t, body.stage-5 .aperture-edge-t { transform: translateY(calc(var(--ap-h) / -2)); }
+body.stage-3 .aperture-edge-b, body.stage-4 .aperture-edge-b, body.stage-5 .aperture-edge-b { transform: translateY(calc(var(--ap-h) / 2)); }
 .aperture-helmet { position: absolute; left: 50%; top: 50%; width: clamp(28px, 4.5vw, 56px); height: auto; transform: translate(-50%, -50%); fill: var(--blood); opacity: 0; transition: opacity 600ms; filter: drop-shadow(0 0 12px rgba(228, 32, 43, .7)); }
-body.stage-3 .aperture-helmet, body.stage-4 .aperture-helmet { opacity: calc(1 - var(--open) * 2); }
+body.stage-4 .aperture-helmet, body.stage-5 .aperture-helmet { opacity: 1; }
 
-.hero-place { position: absolute; top: calc(64px + 16px); left: 0; right: 0; margin: 0; text-align: center; font-size: .8rem; letter-spacing: .22em; text-transform: uppercase; color: var(--concrete); }
+.hero-place { position: absolute; top: calc(64px + 16px + env(safe-area-inset-top, 0px)); left: 0; right: 0; margin: 0; text-align: center; font-size: .8rem; letter-spacing: .22em; text-transform: uppercase; color: var(--concrete); }
 html[lang="ar"] .hero-place { letter-spacing: 0; font-size: .95rem; }
-.hero-meta { position: absolute; left: 0; right: 0; bottom: max(28px, env(safe-area-inset-bottom)); padding: 0 var(--gutter); text-align: center; }
+.hero-meta { position: absolute; left: 0; right: 0; bottom: max(28px, env(safe-area-inset-bottom, 0px)); padding: 0 var(--gutter); text-align: center; }
 .hero-line { font-size: clamp(1rem, 1.4vw, 1.2rem); color: var(--bone); margin: 0 auto 16px; max-width: 32em; }
 .hero-actions { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px; }
 .open-badge { display: inline-flex; align-items: center; gap: 8px; font-size: .88rem; color: var(--concrete); padding: 6px 4px; }
 .open-badge::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--concrete); }
 .open-badge.is-open { color: var(--bone); } .open-badge.is-open::before { background: #3fd27a; box-shadow: 0 0 10px #3fd27a; }
 /* Vertical text: inline offsets follow the text, not the page, so place it with left/right. It sits in the black below the slit. */
-.hero-hint { position: absolute; top: calc(50% + var(--aph) / 2 + 24px); right: 18px; margin: 0; writing-mode: vertical-rl; font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; color: var(--concrete); }
+.hero-hint { position: absolute; top: calc(50% + var(--ap-h) / 2 + 24px); right: 18px; margin: 0; writing-mode: vertical-rl; font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; color: var(--concrete); }
 html[dir="rtl"] .hero-hint { right: auto; left: 18px; }
 html[lang="ar"] .hero-hint { letter-spacing: 0; font-size: .85rem; }
 .hero-place, .hero-meta, .hero-hint { opacity: 0; transition: opacity 600ms var(--ease); }
-body.stage-4 .hero-place, body.stage-4 .hero-meta, body.stage-4 .hero-hint { opacity: calc(1 - var(--open) * 4); }
+body.stage-5 .hero-place, body.stage-5 .hero-meta, body.stage-5 .hero-hint { opacity: 1; }
 body.visor-open .hero-meta, body.visor-open .hero-place { visibility: hidden; }
-.skip { position: absolute; bottom: max(28px, env(safe-area-inset-bottom)); inset-inline-end: 20px; z-index: 5; background: none; border: 1px solid var(--line-dark); color: var(--concrete); padding: 8px 14px; border-radius: 2px; font: inherit; font-size: .85rem; cursor: pointer; }
-body.stage-4 .skip, html.intro-seen .skip { display: none; }
-/* Returning visitor: no sequence, everything already in place. */
-html.intro-seen .aperture, html.intro-seen .wm, html.intro-seen .aperture-helmet, html.intro-seen .hero-place, html.intro-seen .hero-meta, html.intro-seen .site-header { transition-duration: 400ms; }
+.skip { position: absolute; bottom: max(28px, env(safe-area-inset-bottom, 0px)); inset-inline-end: 20px; z-index: 5; background: none; border: 1px solid var(--line-dark); color: var(--concrete); padding: 8px 14px; border-radius: 2px; font: inherit; font-size: .85rem; cursor: pointer; }
+body.stage-5 .skip, html.intro-seen .skip { display: none; }
+/* After the intro the scroll drives these directly (inline styles), so no transition may fight it. */
+.visor.live .aperture, .visor.live .aperture-edge, .visor.live .wm, .visor.live .aperture-helmet, .visor.live .hero-meta, .visor.live .hero-place, .visor.live .hero-hint { transition: none; }
 
 /* ---------- Chapters ---------- */
 .chapter { position: relative; padding: clamp(80px, 11vw, 150px) 0; }
@@ -146,6 +165,7 @@ html.intro-seen .aperture, html.intro-seen .wm, html.intro-seen .aperture-helmet
 .chapter-bone .note { color: #6c675f; }
 .chapter-black { background: var(--black); color: var(--bone); }
 .chapter-grid { position: relative; display: grid; grid-template-columns: minmax(260px, 1fr) 2fr; gap: 48px clamp(32px, 6vw, 96px); align-items: start; }
+.chapter-grid > * { min-width: 0; }  /* grid items shrink below their content (the day tabs scroll instead of widening the page) */
 .rail { position: sticky; top: 96px; }
 .numeral { display: block; font-family: 'Anton', var(--display); font-size: 1rem; letter-spacing: .3em; color: var(--ember-text); margin-bottom: 18px; padding-bottom: 10px; border-bottom: 2px solid currentColor; width: 2.6em; }
 .chapter-bone .numeral { color: var(--blood); }
@@ -153,21 +173,23 @@ html.intro-seen .aperture, html.intro-seen .wm, html.intro-seen .aperture-helmet
 h2.display { font-size: clamp(2.6rem, 6vw, 5rem); line-height: .95; margin-bottom: .35em; }
 html[lang="ar"] h2.display { line-height: 1.2; }
 .rail-text { font-size: 1.1rem; max-width: 28em; }
+.eyebrow { font-family: 'Anton', var(--display); font-size: .85rem; letter-spacing: .25em; text-transform: uppercase; color: var(--ember-text); margin: 0 0 12px; }
+html[lang="ar"] .eyebrow { letter-spacing: 0; font-size: .95rem; }
 
 /* Aperture reveal: things open from a line, like the slit. */
 /* Chrome's IntersectionObserver counts the clip, so the closed state keeps a hairline open. */
 .ap { clip-path: inset(49.9% 0 49.9% 0); transition: clip-path 700ms var(--ease); }
 .ap.in { clip-path: inset(0 0 0 0); }
 
-/* Chapter I: the rooms, as slit-shaped photo bands that open */
+/* Chapter I: the rooms, as slit-shaped photo bands. Fixed height; the photo breathes on hover, the page never moves. */
 .bands { display: grid; gap: 28px; }
-.band { margin: 0; cursor: pointer; outline-offset: 6px; }
-.band-img { height: 150px; background: center / cover no-repeat; position: relative; transition: height 650ms var(--ease); border-top: 2px solid var(--blood); }
-.band-img::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(11, 11, 12, .25), transparent 35%, transparent 65%, rgba(11, 11, 12, .35)); }
-.band:hover .band-img, .band.is-open .band-img, .band:focus-visible .band-img { height: 420px; }
-.band-img-floor { background-image: url('../img/floor.jpg'); background-position: center 55%; }
-.band-img-combat { background-image: url('../img/bag.jpg'); background-position: center 35%; }
-.band-img-kitchen { background-image: url('../img/kitchen.jpg'); background-position: center 30%; }
+.band { margin: 0; position: relative; }
+.band-img { position: relative; height: clamp(200px, 26vw, 340px); overflow: hidden; border-top: 2px solid var(--blood); background: var(--black); }
+.band-pic { position: absolute; inset: 0; background: center / cover no-repeat; transform: scale(1.02); transition: transform 900ms var(--ease-out); will-change: transform; }
+.band-img::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(11, 11, 12, .25), transparent 35%, transparent 65%, rgba(11, 11, 12, .35)); pointer-events: none; }
+.band-pic-floor { background-image: url('../img/floor.jpg'); background-position: center 55%; }
+.band-pic-combat { background-image: url('../img/handwrap.jpg'); background-position: center 40%; }
+.band-pic-kitchen { background-image: url('../img/kitchen.jpg'); background-position: center 30%; }
 .band figcaption { padding: 16px 0 0; }
 .band h3 { font-size: clamp(1.5rem, 2.6vw, 2.2rem); margin-bottom: .2em; }
 .band p { margin-bottom: .4em; max-width: 36em; }
@@ -175,24 +197,52 @@ html[lang="ar"] h2.display { line-height: 1.2; }
 .recovery h3 { font-size: 1.3rem; margin: 0; } .recovery p { margin: 0; max-width: 34em; }
 .photo-note { font-size: .8rem; }
 
-/* Chapter II: Fearless time, the class timetable as day columns */
-.team + .team { margin-top: 44px; }
-.team h3 { font-size: clamp(1.5rem, 2.6vw, 2.1rem); margin-bottom: .15em; }
-.team > .note { margin-bottom: 18px; }
-.tt { display: grid; grid-template-columns: repeat(auto-fit, minmax(116px, 1fr)); gap: 18px 18px; }
-.tt-day { border-top: 2px solid var(--blood); padding-top: 8px; }
-.tt-day h4 { margin: 0 0 4px; font-family: var(--display); font-weight: 400; font-size: 1rem; letter-spacing: .18em; text-transform: uppercase; }
-html[lang="ar"] .tt-day h4 { letter-spacing: 0; font-weight: 800; text-transform: none; }
-.tt ul { list-style: none; margin: 0; padding: 0; }
-.tt li { display: flex; gap: 8px; align-items: baseline; padding: 7px 0; border-top: 1px solid var(--line-dark); font-size: .92rem; line-height: 1.35; }
-.tt time { font-family: 'Anton', var(--display); font-size: .85rem; letter-spacing: .05em; color: var(--ember-text); min-width: 3.9em; flex: none; direction: ltr; }
-html[lang="ar"] .tt time { text-align: end; }
+/* Chapter II: the coach. Black and white stage footage, grain, the pro card leaning on the frame. */
+.chapter-coach { overflow: hidden; }
+.chapter-coach::before { content: ''; position: absolute; inset: 0; background: radial-gradient(60% 50% at 30% 50%, rgba(179, 18, 27, .14), transparent 70%); pointer-events: none; }
+.coach-grid { position: relative; display: grid; grid-template-columns: minmax(260px, 5fr) 7fr; gap: 48px clamp(32px, 6vw, 110px); align-items: center; }
+.coach-media { margin: 0; position: relative; padding-inline-end: 12%; }
+.coach-frame { position: relative; aspect-ratio: 456 / 750; max-height: 82vh; overflow: hidden; background: #000; border-top: 2px solid var(--blood); }
+.coach-video { width: 100%; height: 100%; object-fit: cover; }
+.coach-frame::after { content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, rgba(11, 11, 12, .55), transparent 28%, transparent 72%, rgba(11, 11, 12, .7)), radial-gradient(80% 70% at 50% 45%, transparent 50%, rgba(179, 18, 27, .22) 100%); }
+.coach-grain { position: absolute; inset: 0; background: var(--noise); opacity: .16; mix-blend-mode: overlay; pointer-events: none; }
+.coach-card { position: absolute; inset-inline-end: 0; bottom: 8%; width: 36%; height: auto; transform: rotate(6deg); border: 5px solid var(--bone); box-shadow: 0 24px 60px rgba(0, 0, 0, .65); }
+html[dir="rtl"] .coach-card { transform: rotate(-6deg); }
+.coach-cap { margin: 14px 0 0; }
+.coach-name { font-size: clamp(1.6rem, 3vw, 2.6rem); line-height: 1.05; margin: 0 0 .7em; }
+.coach-actions { justify-content: flex-start; margin: 8px 0 20px; }
 
-/* Chapter III: PLAY HARD, outlined, fills as you scroll past */
+/* Chapter III: Fearless time. A photo strip opens the chapter; the week is one day at a time. */
+.chapter-classes { padding-top: 0; border-top: 1px solid var(--line-dark); }
+.strip { position: relative; height: clamp(150px, 22vw, 320px); overflow: hidden; margin-bottom: clamp(56px, 8vw, 110px); border-bottom: 2px solid var(--blood); }
+.strip-pic { position: absolute; inset: 0; background: url('../img/boxing.jpg') center 35% / cover no-repeat; }
+.strip::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(11, 11, 12, .55), transparent 40%, transparent 60%, rgba(11, 11, 12, .6)); }
+.day-tabs { position: relative; display: flex; gap: 2px; border-bottom: 1px solid var(--line-dark); margin-bottom: 14px; overflow-x: auto; scrollbar-width: none; }
+.day-tabs::-webkit-scrollbar { display: none; }
+.day-tab { position: relative; flex: 1 0 auto; min-width: 54px; padding: 12px 8px 14px; background: none; border: 0; color: var(--concrete); font-family: var(--display); font-size: 1rem; letter-spacing: .14em; text-transform: uppercase; cursor: pointer; line-height: 1.2;
+  transition: color 160ms, transform 120ms var(--ease-out); }
+html[lang="ar"] .day-tab { letter-spacing: 0; font-weight: 800; text-transform: none; }
+.day-tab:active { transform: scale(.95); }
+.day-tab[aria-selected="true"] { color: var(--bone); }
+.day-tab small { display: block; font-family: var(--body); font-weight: 700; font-size: .62rem; letter-spacing: .12em; color: var(--ember-text); margin-top: 2px; }
+html[lang="ar"] .day-tab small { letter-spacing: 0; font-size: .7rem; }
+.tab-ink { position: absolute; left: 0; bottom: -1px; width: 1px; height: 2px; background: var(--ember); box-shadow: 0 0 10px var(--ember); transform-origin: 0 50%; transition: transform 280ms var(--ease-out); pointer-events: none; }
+.day-list ul { list-style: none; margin: 0; padding: 0; }
+.day-list li { display: grid; grid-template-columns: 5.4em 1fr auto; gap: 6px 16px; align-items: baseline; padding: 13px 0; border-top: 1px solid var(--line-dark); animation: rise 380ms var(--ease-out) both; }
+.day-list li:last-child { border-bottom: 1px solid var(--line-dark); }
+.day-list time { font-family: 'Anton', var(--display); font-size: .95rem; letter-spacing: .05em; color: var(--ember-text); direction: ltr; }
+html[lang="ar"] .day-list time { text-align: end; }
+.day-list .cls { font-size: 1.05rem; font-weight: 500; }
+.day-list .team { color: var(--concrete); font-size: .85rem; text-align: end; white-space: nowrap; }
+.day-empty { margin: 0; padding: 22px 0; color: var(--concrete); border-top: 1px solid var(--line-dark); border-bottom: 1px solid var(--line-dark); animation: rise 380ms var(--ease-out) both; }
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* Chapter IV: PLAY HARD, outlined, fills as you scroll past */
 .wall { position: relative; color: inherit; font-family: 'Anton', var(--display); font-size: clamp(3.4rem, 11vw, 10.5rem); line-height: .92; text-transform: uppercase; letter-spacing: .02em; margin: -.1em 0 .4em; direction: ltr; }
 .wall span { display: block; white-space: nowrap; }
-.wall-outline { color: transparent; -webkit-text-stroke: 1.5px currentColor; }
-.wall-fill { position: absolute; inset: 0; color: inherit; clip-path: inset(0 calc(100% - var(--fill)) 0 0); }
+.wall-outline { color: transparent; -webkit-text-stroke: 1.5px var(--ink); }  /* currentColor would be the transparent fill */
+.wall-fill { position: absolute; inset: 0; color: inherit; clip-path: inset(0 100% 0 0); }
 .rules { list-style: none; margin: 0; padding: 0; counter-reset: r; }
 .rules li { display: flex; gap: 18px; align-items: baseline; padding: 14px 0; border-top: 1px solid var(--line-dark); font-family: var(--display); font-size: clamp(1.4rem, 2.8vw, 2.2rem); text-transform: uppercase; line-height: 1.1; }
 html[lang="ar"] .rules li { text-transform: none; font-weight: 800; }
@@ -201,7 +251,7 @@ html[lang="ar"] .rules li { text-transform: none; font-weight: 800; }
 .chapter-bone .rules li { border-color: var(--line-light); }
 .chapter-bone .rules li::before { color: var(--blood); }
 
-/* Chapter IV: first session (on black) */
+/* Chapter V: first session (on black) */
 .contact-lines { font-size: 1.15rem; font-weight: 700; margin-top: 8px; }
 .trial-form { display: grid; gap: 18px; padding: 28px; border: 1.5px solid var(--line-dark); border-radius: 2px; background: var(--black-2); }
 .trial-form label, .trial-form legend { display: block; font-weight: 700; font-size: .95rem; margin-bottom: 6px; }
@@ -210,11 +260,12 @@ html[lang="ar"] .rules li { text-transform: none; font-weight: 800; }
 .trial-form input[type="text"]:focus { border-color: var(--bone); outline: none; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-.chip span { display: inline-block; padding: 9px 16px; border: 1.5px solid var(--bone); border-radius: 2px; cursor: pointer; transition: background var(--t-ui), color var(--t-ui); }
+.chip span { display: inline-block; padding: 9px 16px; border: 1.5px solid var(--bone); border-radius: 2px; cursor: pointer; transition: background var(--t-ui), color var(--t-ui), transform 120ms var(--ease-out); }
+.chip span:active { transform: scale(.96); }
 .chip input:checked + span { background: var(--bone); color: var(--ink); }
 .chip input:focus-visible + span { outline: 3px solid var(--ember); outline-offset: 2px; }
 
-/* Chapter V: visit (on bone) */
+/* Chapter VI: visit (on bone) */
 .address { font-size: 1.15rem; font-weight: 500; margin-bottom: .3em; }
 .plate-line { margin: 0 0 .3em; color: var(--concrete); }
 .plate-line + p { margin-top: 20px; }
@@ -234,16 +285,28 @@ html[lang="ar"] .hours-title { letter-spacing: 0; text-transform: none; font-siz
 .lost p { color: var(--concrete); }
 
 /* Footer and call bar */
-.site-footer { border-top: 1px solid var(--line-dark); padding: 32px 0 110px; color: var(--concrete); font-size: .92rem; }
+.site-footer { border-top: 1px solid var(--line-dark); padding: 32px 0 calc(110px + env(safe-area-inset-bottom, 0px)); color: var(--concrete); font-size: .92rem; }
 .foot-row { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: center; }
 .foot-row p { margin: 0; display: flex; align-items: center; gap: 8px; }
 .foot-links a { color: var(--bone); display: inline-block; padding: 12px 0; }
 .more-link { display: inline-block; padding: 11px 0; }
 .foot-preview { margin: 16px auto 0; font-size: .8rem; }
-.call-bar { display: none; position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 30; background: var(--bone); color: var(--ink); text-align: center; padding: 15px; border-radius: 2px;
+.call-bar { display: none; position: fixed; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 30; background: var(--bone); color: var(--ink); text-align: center; padding: 15px; border-radius: 2px;
   font-family: var(--display); font-size: 1.15rem; letter-spacing: .05em; text-transform: uppercase; text-decoration: none; box-shadow: 0 10px 30px rgba(0, 0, 0, .5); border-bottom: 3px solid var(--ember);
-  transform: translateY(130%); transition: transform 250ms var(--ease); }
+  transform: translateY(130%); transition: transform 250ms var(--ease-out); }
 html[lang="ar"] .call-bar { letter-spacing: 0; font-weight: 800; text-transform: none; }
+.call-bar:active { transform: scale(.97); }
+
+/* Hover only where a pointer can hover; on a phone the first tap would otherwise stick. */
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover::after { transform: scaleX(1); }
+  .btn-primary:hover { background: #fff; }
+  .btn-ink:hover { background: #000; }
+  .nav > a:hover { opacity: 1; }
+  .lang:hover { border-color: var(--bone); }
+  .band:hover .band-pic { transform: scale(1.06); }
+  .day-tab:hover { color: var(--bone); }
+}
 
 @media (min-width: 761px) { .site-footer { padding-bottom: 40px; } }
 @media (max-width: 760px) {
@@ -252,28 +315,39 @@ html[lang="ar"] .call-bar { letter-spacing: 0; font-weight: 800; text-transform:
   .nav > a:not(.nav-call):not(.nav-classes) { display: none; }
   .wordmark { font-size: clamp(3rem, min(24vw, calc((100svh - var(--ap-h)) / 2 - 200px)), 7rem); }
   html[lang="ar"] .wordmark { font-size: clamp(2.8rem, min(22vw, calc((100svh - var(--ap-h) - 320px) / 2.4)), 6.5rem); }
-  .hero-meta { bottom: 24px; }
+  .hero-meta { bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
   .hero-hint { display: none; }
-  .skip { bottom: auto; top: 76px; }
+  .skip { bottom: auto; top: calc(76px + env(safe-area-inset-top, 0px)); }
   .chapter-grid { grid-template-columns: 1fr; gap: 28px; }
   .rail { position: static; }
-  .band-img { height: 110px; }
-  .band:hover .band-img, .band.is-open .band-img, .band:focus-visible .band-img { height: 300px; }
+  .band-img { height: 200px; }
+  .coach-grid { grid-template-columns: 1fr; gap: 36px; }
+  .coach-media { padding-inline-end: 10%; }
+  .coach-frame { aspect-ratio: 4 / 5; max-height: 70svh; }
+  .coach-card { width: 40%; bottom: 6%; }
+  .coach-actions .btn { flex: 1 1 100%; }
+  .day-tab { min-width: 48px; padding: 12px 6px 13px; font-size: .92rem; letter-spacing: .08em; }
+  .day-list li { grid-template-columns: 4.8em 1fr; }
+  .day-list .team { grid-column: 2; text-align: start; white-space: normal; }
   .wall { font-size: clamp(3rem, 19vw, 5rem); }
   .call-bar { display: block; }
   body.past-hero .call-bar { transform: none; }
   .map { min-height: 240px; }
-  .tt { grid-template-columns: 1fr 1fr; gap: 14px 16px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  /* The intro still happens (team rule) but as cross-fades: nothing moves, the slit does not drift. */
-  .aperture-img, body.stage-1 .aperture-img, body.stage-4 .aperture-img { animation: none; transform: scale(1.06); }
-  .wm, .wm-fear, .wm-less { transition: opacity 500ms !important; }
-  body.stage-3 .wm-fear, body.stage-4 .wm-fear, body.stage-3 .wm-less, body.stage-4 .wm-less { transform: none !important; }
-  body.stage-1 .aperture-edge { animation: none; opacity: .8; }
+  /* The intro still happens (team rule) but as cross-fades: nothing flies, nothing drifts. The sparks are off. */
+  .forge { display: none; }
   .intro-helmet { transition: opacity 500ms !important; }
-  body.stage-1 .intro-helmet, body.stage-2 .intro-helmet, body.stage-3 .intro-helmet, body.stage-4 .intro-helmet { transform: translate(-50%, -50%) scale(1); }
-  body.stage-0 .intro-helmet .eye { animation: none; }
+  .intro-helmet::before { animation: none !important; }
+  .hm-line, .hm-glow { transition: stroke 500ms, opacity 500ms; }
+  body.stage-3 .intro-helmet, body.stage-4 .intro-helmet, body.stage-5 .intro-helmet { transform: translate(-50%, -50%) scale(1); }
+  body.stage-2 .intro-helmet .eye, body.stage-3 .intro-helmet .eye { animation: none; opacity: 1; }
+  .aperture { transition: clip-path 600ms ease !important; }
+  .aperture-img, body.stage-3 .aperture-img, body.stage-4 .aperture-img, body.stage-5 .aperture-img { animation: none; transform: scale(1.06); }
+  .aperture-edge { transition: transform 600ms ease, opacity 400ms !important; }
+  .wm { transform: none; transition: opacity 500ms !important; }
   .ap { clip-path: none; transition: none; }
-  .band-img, .btn, .call-bar { transition: none; }
+  .band-pic, .btn, .call-bar, .chip span, .day-tab { transition: none; }
+  .day-list li, .day-empty { animation: none; }
+  .tab-ink { transition: none; }
 }
