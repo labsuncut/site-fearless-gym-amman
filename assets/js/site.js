@@ -162,6 +162,9 @@
     const mask = document.createElement('canvas'), mctx = mask.getContext('2d');
     const poster = new Image(); poster.src = canvas.dataset.poster;
     let W = 0, H = 0, dpr = 1, font = '', word = '', px = 0, py = 0, tx = 0, ty = 0, raf = 0, on = false;
+    // Where the camera flies through (a hole inside a letter, found on the mask) and how far it must zoom
+    // for that hole to cover the screen. box = the word's top and bottom, for the stamp's sparks.
+    const hole = { x: .5, y: .5, zoom: 18 }, box = { top: 0, bottom: 0 };
     function size() {
       dpr = Math.min(window.devicePixelRatio || 1, 2);
       W = canvas.clientWidth; H = canvas.clientHeight;
@@ -173,12 +176,56 @@
     function fit() {
       word = T.hero_brand;
       const ar = lang === 'ar', fam = ar ? "'Changa', 'IBM Plex Sans Arabic', sans-serif" : "'Anton', Impact, sans-serif", weight = ar ? 800 : 400;
+      // Portrait screens stack the word (FEAR / LESS, like the gym's logo) so it can be several times bigger.
+      const lines = W / H < .8 ? T.hero_brand_lines.split('|') : [word];
       ctx.font = `${weight} 100px ${fam}`;
-      const w = ctx.measureText(word).width || 1;
-      const fs = Math.min(100 * (W * (W < 761 ? .95 : .9)) / w, H * (ar ? .6 : .72));
+      const w = Math.max(...lines.map((l) => ctx.measureText(l).width)) || 1;
+      const lh = ar ? 1.15 : .92, n = lines.length;
+      const fs = Math.min(100 * (W * (W < 761 ? .92 : .9)) / w, (H * (n > 1 ? .56 : (ar ? .6 : .72))) / (n * lh));
       font = `${weight} ${fs.toFixed(1)}px ${fam}`;
       mctx.clearRect(0, 0, W, H); mctx.font = font; mctx.textAlign = 'center'; mctx.textBaseline = 'middle'; mctx.fillStyle = '#fff';
-      mctx.fillText(word, W / 2, H / 2 + H * (ar ? -.02 : .015));
+      const cy = n > 1 ? H * .45 : H / 2 + H * (ar ? -.02 : .015);
+      lines.forEach((l, i) => mctx.fillText(l, W / 2, cy + (i - (n - 1) / 2) * fs * lh));
+      box.top = cy - n * fs * lh / 2; box.bottom = cy + n * fs * lh / 2;
+      // Fly through the inside of the A when there is one (the English word): its column is where the A is drawn.
+      let aim = null;
+      lines.forEach((l, i) => { const j = l.indexOf('A'); if (j < 0 || aim) return;
+        const left = W / 2 - mctx.measureText(l).width / 2 + mctx.measureText(l.slice(0, j)).width;
+        aim = { x: left + mctx.measureText('A').width / 2, y: cy + (i - (n - 1) / 2) * fs * lh, h: fs * lh }; });
+      findHole(fs, aim);
+    }
+    // Scan the mask for the hole to fly through: an empty run fully enclosed by a letter. With an A, the topmost
+    // hole in its column (the triangle above the crossbar); otherwise (Arabic) the hole nearest the middle of the
+    // screen, or the middle itself if there is none.
+    function findHole(fs, aim) {
+      hole.x = .5; hole.y = .5; hole.zoom = 18;
+      let data;
+      try { data = mctx.getImageData(0, 0, mask.width, mask.height).data; } catch (e) { return; }
+      const mw = mask.width, mh = mask.height, k = dpr, at = (x, y) => data[(y * mw + x) * 4 + 3] > 127;
+      // Scan only the A's own line, so the gap under its legs (closed off by the line below) does not count.
+      const top = aim ? aim.y - aim.h / 2 : box.top, bottom = aim ? aim.y + aim.h / 2 : box.bottom;
+      const y0 = Math.max(0, Math.floor(top * k)), y1 = Math.min(mh - 1, Math.ceil(bottom * k));
+      // A real hole is closed left and right too, within one letter's width (not the gap between two lines).
+      const reach = fs * k * .5;
+      const closedSides = (x, y) => { let l = x, r = x; while (l > 0 && x - l < reach && !at(l - 1, y)) l--; while (r < mw - 1 && r - x < reach && !at(r + 1, y)) r++; return l > 0 && x - l < reach && r < mw - 1 && r - x < reach; };
+      let best = null;
+      const xs = aim ? [Math.round(aim.x * k)] : Array.from({ length: Math.ceil(mw / 2) }, (_, i) => i * 2);
+      for (const x of xs) {
+        let inside = false, start = -1;
+        for (let y = y0; y <= y1; y++) {
+          const o = at(x, y);
+          if (o) { if (start >= 0 && inside) { const len = y - start; if (len > fs * k * .06 && closedSides(x, Math.round((start + y) / 2))) { const c = { x, y: (start + y) / 2, len }; const d = aim ? c.y : Math.hypot(c.x - mw / 2, c.y - mh / 2); if (!best || d < best.d) best = { ...c, d }; } } inside = true; start = -1; }
+          else if (inside && start < 0) start = y;
+        }
+      }
+      if (!best) return;
+      // Width of the hole at its middle: walk left and right until the letter.
+      const yy = Math.round(best.y); let l = best.x, r = best.x;
+      while (l > 0 && !at(l - 1, yy)) l--; while (r < mw - 1 && !at(r + 1, yy)) r++;
+      const cx = (l + r + 1) / 2, hw = Math.max(2, r - l + 1) / k, hh = best.len / k;
+      hole.x = cx / k / W; hole.y = best.y / k / H;
+      // Zoom until the hole is wider and taller than the screen.
+      hole.zoom = Math.min(160, Math.max(18, 1.25 * Math.max(W / hw, H / hh)));
     }
     function draw() {
       tx += (px - tx) * .06; ty += (py - ty) * .06;
@@ -213,7 +260,7 @@
       heroVideo.addEventListener('playing', () => { if (on) draw(); });
     }
     poster.onload = () => { if (on || calm) draw(); };
-    return { el: canvas, size, run, refit, draw };
+    return { el: canvas, size, run, refit, draw, hole, box };
   })();
   window.brand = brand;
 
@@ -264,8 +311,8 @@
       }
       if (mode === 'stamp') {
         // The word lands: sparks fly off its top and bottom edges.
-        const k = (now - stampStart) / 800, hh = Math.min(W * .11, H * .3);
-        if (k < .14) for (let i = 0; i < 26; i++) { const top = Math.random() < .5; const x = W / 2 + (Math.random() - .5) * W * .86, y = H / 2 + (top ? -hh : hh); const a = (top ? -Math.PI / 2 : Math.PI / 2) + (Math.random() - .5) * 1.6; const v = 160 + Math.random() * 420; parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: .4 + Math.random() * .5, t: 0, s: 2, hot: Math.random() }); }
+        const k = (now - stampStart) / 800, bt = brand.box.top || H / 2 - Math.min(W * .11, H * .3), bb = brand.box.bottom || H / 2 + Math.min(W * .11, H * .3);
+        if (k < .14) for (let i = 0; i < 26; i++) { const top = Math.random() < .5; const x = W / 2 + (Math.random() - .5) * W * .86, y = top ? bt : bb; const a = (top ? -Math.PI / 2 : Math.PI / 2) + (Math.random() - .5) * 1.6; const v = 160 + Math.random() * 420; parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: .4 + Math.random() * .5, t: 0, s: 2, hot: Math.random() }); }
         if (k >= 1 && parts.length === 0) { stop(); return; }
       }
       for (let i = parts.length - 1; i >= 0; i--) {
@@ -297,7 +344,7 @@
   // Stage 0: dark, an ember at the top of the helmet.  Stage 1: sparks draw the outline.  Stage 2: the metal cools and fills, the eyes ignite.
   // Stage 3: you put it on; the helmet rushes past.  Stage 4: FEARLESS stamps down, the reel moving inside it.  Stage 5: everything else.
   // About 5.3 s on a first visit; 2.5 s with reduced motion (cross-fades only). The hero is the intro's last frame.
-  const STAGES = calm ? [0, 300, 900, 1500, 2000, 2500] : [0, 350, 1800, 2900, 3800, 4600];
+  const STAGES = calm ? [0, 300, 900, 1500, 2000, 2500] : [0, 350, 1800, 2900, 3450, 4300];
   const timers = [];
   const visor = $('.visor');
   let live = false;
@@ -350,10 +397,12 @@
     body.classList.toggle('visor-open', open > 0.3);
     body.classList.toggle('scrolled', y > 40);
     if (live) {
-      // The word grows toward you (ease-in, so it starts slow and rushes at the end); you pass between the letters.
-      const e = open * open, s = calm ? 1 : 1 + e * 16;
+      // The camera flies toward the hole inside a letter at a steady speed (scale grows exponentially) and passes
+      // through it: by the end the hole is bigger than the screen and only the gym is left.
+      const s = calm ? 1 : Math.pow(brand.hole.zoom, Math.min(1, open / .86));
+      brand.el.style.transformOrigin = `${(brand.hole.x * 100).toFixed(2)}% ${(brand.hole.y * 100).toFixed(2)}%`;
       brand.el.style.transform = `scale(${s.toFixed(3)})`;
-      brand.el.style.opacity = (calm ? clamp(1 - open * 1.6) : clamp(1 - Math.max(0, open - .7) * 3.4)).toFixed(3);
+      brand.el.style.opacity = (calm ? clamp(1 - open * 1.6) : clamp(1 - Math.max(0, open - .8) * 6)).toFixed(3);
       veil.style.opacity = (.9 - open * .62).toFixed(3);
       meta.style.opacity = place.style.opacity = hint.style.opacity = clamp(1 - open * 4).toFixed(3);
       brand.run(y < range + vh);
@@ -403,6 +452,7 @@
       });
     }
     window.addEventListener('resize', () => { vw = versus.clientWidth; apply(); });
+    apply();  // the line starts in the middle, before anyone touches it
   }
 
   // Aperture reveals: sections open from a line when they come into view.
