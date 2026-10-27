@@ -1,0 +1,13 @@
+# Security headers for Cloudflare Pages (GitHub Pages ignores this file; it cannot send custom headers).
+# The script-src hash is the inline language/intro script in index.html's <head>. tools/prerender.cjs
+# recomputes it on every run, so editing that script never silently breaks the page.
+# PREVIEW: X-Robots-Tag noindex keeps this address out of Google. Remove it at launch, with the
+# meta robots tag in index.html and the Disallow line in robots.txt.
+/*
+  Strict-Transport-Security: max-age=31536000
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-R74qunI/r1GMrigfK5ywbKzE9TvzRu5Fm6T+nFqsClI='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; frame-src https://www.google.com https://maps.google.com; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+  X-Robots-Tag: noindex

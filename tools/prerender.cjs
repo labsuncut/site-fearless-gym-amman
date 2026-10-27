@@ -56,6 +56,12 @@ const root = join(__dirname, '..');
   if (end < 0) throw new Error('index.html has no </body>');
   const out = html.slice(0, start) + body.replace(/^\s*/, '\n  ').replace(/\s+$/, '\n') + html.slice(end);
   writeFileSync(file, out);
+  // Keep the Content-Security-Policy in _headers in step with the inline <head> script: hash every inline script that runs.
+  const { createHash } = require('crypto');
+  const hashes = [...out.matchAll(/<script(?![^>]*\bsrc=)(?![^>]*application\/ld\+json)[^>]*>([\s\S]*?)<\/script>/g)]
+    .map((m) => `'sha256-${createHash('sha256').update(m[1], 'utf8').digest('base64')}'`);
+  const hf = join(root, '_headers');
+  if (existsSync(hf)) writeFileSync(hf, readFileSync(hf, 'utf8').replace(/script-src 'self'( 'sha256-[^']+')*/, `script-src 'self' ${hashes.join(' ')}`.trim()));
   const words = body.replace(/<script[\s\S]*?<\/script>|<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
   console.log(`index.html prerendered: ${words} words in the HTML (${Math.round(out.length / 1024)} KB).`);
 })();
