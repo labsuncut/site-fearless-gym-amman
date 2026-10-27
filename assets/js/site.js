@@ -48,6 +48,7 @@
     renderDay();
     hoursTable();
     openBadge();
+    faq.render();
     measure();
     if (window.brand) brand.refit();
   }
@@ -138,6 +139,53 @@
     const msg = T.wa_tpl.replace('{name}', name).replace('{goal}', goal).replace('{when}', when);
     window.open(`https://wa.me/${BUSINESS.whatsapp}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener');
   });
+
+  // ---------- Ask the coach: tap a question, it appears as your message, the gym "types" and answers ----------
+  // The thread keeps a fixed height and scrolls inside, so the page never jumps. Asked questions leave the list.
+  // The first question asks itself when the chat comes into view, so people see how it works.
+  const faq = (() => {
+    const thread = $('#chat-thread'), asks = $('#chat-asks'), all = $('#faq-all');
+    let asked = [], pending = null, run = 0;
+    const msg = (cls, text) => `<p class="msg ${cls}">${esc(text)}</p>`;
+    const toEnd = () => thread.scrollTo({ top: thread.scrollHeight, behavior: calm ? 'auto' : 'smooth' });
+    function list() {
+      const wa = `https://wa.me/${BUSINESS.whatsapp}?text=${encodeURIComponent(T.faq_wa)}`;
+      asks.innerHTML = T.faq.map((f, i) => (asked.includes(i) ? '' : `<button class="ask" type="button" data-i="${i}">${esc(f.q)}</button>`)).join('') +
+        `<a class="ask ask-wa" href="${esc(wa)}" target="_blank" rel="noopener">${esc(T.faq_more)}</a>`;
+    }
+    function render() {
+      run++; pending = null;
+      thread.innerHTML = msg('msg-in', T.faq_hello) + asked.map((i) => msg('msg-out', T.faq[i].q) + msg('msg-in', T.faq[i].a)).join('');
+      thread.setAttribute('aria-label', T.faq_title);
+      asks.setAttribute('aria-label', T.faq_asks);
+      all.innerHTML = T.faq.map((f) => `<dt>${esc(f.q)}</dt><dd>${esc(f.a)}</dd>`).join('');
+      list();
+      thread.scrollTop = thread.scrollHeight;
+    }
+    function ask(i, keepFocus) {
+      if (pending !== null || asked.includes(i)) return;
+      const pos = Array.prototype.indexOf.call(asks.children, asks.querySelector(`[data-i="${i}"]`));
+      asked.push(i); pending = i;
+      thread.insertAdjacentHTML('beforeend', msg('msg-out new', T.faq[i].q) + '<p class="typing" aria-hidden="true"><i></i><i></i><i></i></p>');
+      list();
+      if (keepFocus) { const next = asks.children[Math.min(pos, asks.children.length - 1)]; if (next) next.focus(); }
+      toEnd();
+      const me = run;
+      setTimeout(() => {
+        if (me !== run) return;  // the language changed meanwhile: render() already wrote the answer
+        const dots = $('.typing', thread); if (dots) dots.remove();
+        thread.insertAdjacentHTML('beforeend', msg('msg-in new', T.faq[i].a));
+        pending = null;
+        toEnd();
+      }, calm ? 0 : 650);
+    }
+    asks.addEventListener('click', (e) => { const b = e.target.closest('button.ask'); if (b) ask(+b.dataset.i, e.detail === 0); });
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); if (!asked.length) setTimeout(() => ask(0), calm ? 0 : 500); } }, { threshold: .6 });
+      io.observe($('#chat'));
+    }
+    return { render };
+  })();
 
   // ---------- Reels: each loads only when its chapter is near and plays only while on screen. Never with Reduce Motion or Data Saver. ----------
   const reels = !calm && !saveData;

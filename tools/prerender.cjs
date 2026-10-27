@@ -27,7 +27,7 @@ const root = join(__dirname, '..');
   await page.goto(`http://localhost:${port}/index.html`, { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => document.querySelectorAll('#day-list li, #day-list .day-empty').length > 0 && document.querySelectorAll('#hours tr').length === 7, null, { timeout: 15000 });
   // Only words are baked, never state: no reveal/open classes, no scroll styles, no "today", no open/closed badge, no map URL.
-  const body = await page.evaluate(() => {
+  const { body, faq } = await page.evaluate(() => {
     document.querySelectorAll('.ap.in').forEach((el) => el.classList.remove('in'));
     // The intro has already run in this page: undo its traces so a first visit starts from the dark.
     document.querySelectorAll('.visor.live').forEach((el) => el.classList.remove('live'));
@@ -45,7 +45,7 @@ const root = join(__dirname, '..');
     const b = document.getElementById('open-badge'); b.textContent = ''; b.className = 'open-badge'; b.hidden = true;
     document.getElementById('map').setAttribute('src', '');
     document.querySelectorAll('.wa-link').forEach((a) => a.setAttribute('href', '#'));
-    return document.body.innerHTML;
+    return { body: document.body.innerHTML, faq: TEXT.en.faq };
   });
   await browser.close(); server.close();
 
@@ -54,7 +54,10 @@ const root = join(__dirname, '..');
   const open = html.match(/<body[^>]*>/);
   const start = open.index + open[0].length, end = html.lastIndexOf('</body>');
   if (end < 0) throw new Error('index.html has no </body>');
-  const out = html.slice(0, start) + body.replace(/^\s*/, '\n  ').replace(/\s+$/, '\n') + html.slice(end);
+  let out = html.slice(0, start) + body.replace(/^\s*/, '\n  ').replace(/\s+$/, '\n') + html.slice(end);
+  // FAQ data for Google, from the same words as the chat. Answers still marked wait (placeholders until the gym answers) stay out.
+  const faqLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.filter((f) => !f.wait).map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) };
+  out = out.replace(/(<script type="application\/ld\+json" id="faq-ld">)[\s\S]*?(<\/script>)/, (m, a, b) => `${a}\n  ${JSON.stringify(faqLd, null, 2).replace(/\n/g, '\n  ')}\n  ${b}`);
   writeFileSync(file, out);
   // Keep the Content-Security-Policy in _headers in step with the inline <head> script: hash every inline script that runs.
   const { createHash } = require('crypto');
