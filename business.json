@@ -1,5 +1,5 @@
 {
-  "_note": "Facts about Fearless Gym from public listings, search snippets and the gym's Instagram (2026-10-20). CONFIRM marks facts the gym has not confirmed. Empty fields are unknown; never guess them. The site reads its words and the class timetable from assets/js/content.js.",
+  "_note": "Facts about Fearless Gym from public listings, search snippets and the gym's Instagram (2026-10-20, timetable and coach updated 2026-10-26). CONFIRM marks facts the gym has not confirmed. Empty fields are unknown; never guess them. The site reads its words and the class timetable from assets/js/content.js.",
   "name": "Fearless Gym",
   "tagline": "Fear less. Play hard.",
   "category": "Gym and martial arts school",
@@ -17,7 +17,7 @@
   ],
   "services": [
     "Strength floor (Technogym)",
-    "Combat room and martial arts school: Muay Thai, boxing, kickboxing, BJJ, MMA, wrestling (classes per Instagram timetable, CONFIRM)",
+    "Combat room and martial arts school: Muay Thai (Team Kru), boxing (Team Osama Maaita), kickboxing (Team Sultan Mashaqi), BJJ, MMA and wrestling (Team Kombat); October 2026 timetable from Instagram, CONFIRM",
     "Kitchen: fresh bowls (CONFIRM)",
     "Cryosauna"
   ],
@@ -32,10 +32,19 @@
   },
   "links": {
     "google": "https://www.google.com/maps/search/?api=1&query=Fearless+Gym+Khalda+Amman",
-    "instagram": "",
+    "instagram": "https://www.instagram.com/fearlessgymjo/ (CONFIRM)",
     "facebook": "https://www.facebook.com/fearlessgymjo/",
     "website": ""
   },
   "domain": "",
-  "status": "Preview only. noindex. Not shown publicly until Fearless Gym agrees."
+  "status": "Preview only. noindex. Not shown publicly until Fearless Gym agrees.",
+  "coaches": [
+    {
+      "name": "Murad Khmous (spelling CONFIRM)",
+      "role": "Bodybuilding coach",
+      "credential": "IFBB Pro card, Classic Physique, earned at the Lyft Oman Pro Qualifier, Muscat, October 2026 (from his own Instagram post; CONFIRM with Murad and the gym)",
+      "instagram": "https://www.instagram.com/ifbb_pro_murad_khmous/",
+      "media": "assets/img/murad-card.jpg, murad-poster.jpg and murad-loop.mp4 come from his Instagram (screen recordings); need his permission before launch"
+    }
+  ]
 }

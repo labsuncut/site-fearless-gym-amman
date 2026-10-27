@@ -25,11 +25,18 @@ const root = join(__dirname, '..');
   const page = await ctx.newPage();
   await page.route(/^(?!http:\/\/localhost)/, (r) => r.abort()); // nothing leaves the machine
   await page.goto(`http://localhost:${port}/index.html`, { waitUntil: 'domcontentloaded' });
-  await page.waitForFunction(() => document.querySelectorAll('#timetables .tt-day').length > 0 && document.querySelectorAll('#hours tr').length === 7, null, { timeout: 15000 });
+  await page.waitForFunction(() => document.querySelectorAll('#day-list li, #day-list .day-empty').length > 0 && document.querySelectorAll('#hours tr').length === 7, null, { timeout: 15000 });
   // Only words are baked, never state: no reveal/open classes, no scroll styles, no "today", no open/closed badge, no map URL.
   const body = await page.evaluate(() => {
     document.querySelectorAll('.ap.in').forEach((el) => el.classList.remove('in'));
-    document.querySelectorAll('.is-open').forEach((el) => el.classList.remove('is-open'));
+    // The intro has already run in this page: undo its traces so a first visit starts from the dark.
+    document.querySelectorAll('.visor.live').forEach((el) => el.classList.remove('live'));
+    document.querySelectorAll('.intro-helmet.drawn').forEach((el) => el.classList.remove('drawn'));
+    document.querySelectorAll('.ap-probe').forEach((el) => el.remove());
+    const forge = document.getElementById('forge'); if (forge) { forge.removeAttribute('width'); forge.removeAttribute('height'); }
+    // The timetable opens on today's day: bake Saturday (the gym's first day) with no 'today' mark instead.
+    window.fearless.showDay(6);
+    document.querySelectorAll('.day-tab small').forEach((s) => s.remove());
     document.querySelectorAll('[style]').forEach((el) => { if (el.closest('svg[width="0"]')) return; el.removeAttribute('style'); });
     document.querySelectorAll('#hours tr.today').forEach((tr) => { tr.classList.remove('today'); if (!tr.getAttribute('class')) tr.removeAttribute('class'); const s = tr.querySelector('small'); if (s) { s.previousSibling && s.previousSibling.nodeType === 3 && (s.previousSibling.textContent = s.previousSibling.textContent.replace(/\s+$/, '')); s.remove(); } });
     const b = document.getElementById('open-badge'); b.textContent = ''; b.className = 'open-badge'; b.hidden = true;

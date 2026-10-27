@@ -2,17 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <!-- PREVIEW BUILD: not public until Fearless Gym agrees. Remove the robots line below (and robots.txt Disallow) at launch. -->
   <meta name="robots" content="noindex, nofollow">
   <title>Fearless Gym | Gym and martial arts school in Khalda, Amman</title>
-  <meta name="description" content="Fearless Gym in Khalda, Amman: Technogym strength floor, a combat room with Muay Thai, boxing, kickboxing, BJJ, MMA and wrestling classes, and a kitchen. Open 7 days, 6 AM to 11 PM. Call 079 292 5017.">
+  <meta name="description" content="Fearless Gym in Khalda, Amman: Technogym strength floor, a combat room with Muay Thai, boxing, kickboxing, BJJ, MMA and wrestling classes, bodybuilding coaching with IFBB Pro Murad Khmous, and a kitchen. Open 7 days, 6 AM to 11 PM. Call 079 292 5017.">
   <meta name="theme-color" content="#0b0b0c">
+  <meta name="color-scheme" content="dark">
   <!-- Link previews (WhatsApp, Instagram, Facebook, iMessage). Absolute URLs; change them when the site moves to the gym's domain. -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Fearless Gym">
   <meta property="og:title" content="Fearless Gym · Khalda, Amman">
-  <meta property="og:description" content="Strength floor, combat room and the class timetable. Open 7 days. Call or WhatsApp in one tap.">
+  <meta property="og:description" content="Strength floor, combat room, IFBB Pro coaching and the class timetable. Open 7 days. Call or WhatsApp in one tap.">
   <meta property="og:url" content="https://labsuncut.github.io/site-fearless-gym-amman/">
   <meta property="og:image" content="https://labsuncut.github.io/site-fearless-gym-amman/assets/img/og.jpg">
   <meta property="og:image:width" content="1200">
@@ -38,7 +39,7 @@
     })();
   </script>
   <!-- Without JavaScript the intro never runs: show the finished hero and every section. -->
-  <noscript><style>.wm, .hero-place, .hero-meta, .site-header { opacity: 1 !important; transform: none !important; } .aperture { height: var(--ap-h) !important; } .aperture-helmet { opacity: 1; } .intro-helmet, .skip, .hero-hint, #replay { display: none !important; } .ap { clip-path: none !important; } .visor-scene { height: auto; } .visor { position: relative; }</style></noscript>
+  <noscript><style>.wm, .hero-place, .hero-meta, .site-header { opacity: 1 !important; transform: none !important; } .aperture { clip-path: inset(calc(50% - var(--ap-h) / 2) 0 calc(50% - var(--ap-h) / 2) 0) !important; } .aperture-helmet { opacity: 1; } .intro-helmet, .forge, .skip, .hero-hint, #replay { display: none !important; } .ap { clip-path: none !important; } .visor-scene { height: auto; } .visor { position: relative; } .day-tab[aria-selected="true"] { border-color: currentColor; }</style></noscript>
   <!-- Facts for Google search results. Keep in sync with business.json. -->
   <script type="application/ld+json">
   {
@@ -53,7 +54,7 @@
       "addressCountry": "JO"
     },
     "openingHours": ["Mo-Su 06:00-23:00"],
-    "sameAs": ["https://www.facebook.com/fearlessgymjo/"]
+    "sameAs": ["https://www.facebook.com/fearlessgymjo/", "https://www.instagram.com/fearlessgymjo/"]
   }
   </script>
 </head>
@@ -69,6 +70,7 @@
       <a class="logo" href="#top" aria-label="Fearless Gym"><span class="logo-word">FEAR</span><svg class="logo-helmet" viewBox="0 0 100 120" aria-hidden="true"><use href="#helmet"></use></svg><span class="logo-word">LESS</span></a>
       <nav class="nav" aria-label="Main">
         <a href="#rooms" data-t="nav_rooms">The rooms</a>
+        <a href="#coach" data-t="nav_coach">Coach</a>
         <a class="nav-classes" href="#classes" data-t="nav_classes">Classes</a>
         <a href="#rule" data-t="nav_rule">The rule</a>
         <a href="#visit" data-t="nav_visit">Visit</a>
@@ -80,11 +82,21 @@
 
   <main id="top">
     <!-- Hero and intro are the same thing: you are inside the helmet, looking out through the visor.
-         The intro opens the slit; scrolling lifts the visor until the gym fills the screen. -->
+         The intro forges the helmet out of sparks, lights its eyes, and you put it on: its slit becomes the visor.
+         Scrolling lifts the visor until the gym fills the screen. -->
     <section class="visor-scene" id="hero" aria-label="Fearless Gym">
       <div class="visor">
-        <!-- The intro's first act: the helmet in the dark, eyes lighting up. Then you put it on, and its slit becomes the visor below. -->
-        <div class="intro-helmet" aria-hidden="true"><svg viewBox="0 0 100 120"><use href="#helmet"></use></svg><span class="eye eye-l"></span><span class="eye eye-r"></span></div>
+        <!-- Sparks (canvas, first visit only). -->
+        <canvas class="forge" id="forge" aria-hidden="true"></canvas>
+        <!-- The intro's first act: the helmet drawn in ember, cooling to metal, eyes lighting up. -->
+        <div class="intro-helmet" id="intro-helmet" aria-hidden="true">
+          <svg viewBox="0 0 100 120" overflow="visible">
+            <path class="hm-fill" d="M50 2L24.1 27Q15.4 36.1 15.4 49.8L15.4 79.3L36.3 118L39.9 118L41.4 65.7L24.8 57.7L20.5 50.9L45.7 56.6L50 88.4L54.3 56.6L79.5 50.9L75.2 57.7L58.6 65.7L60.1 118L63.7 118L84.6 79.3L84.6 49.8Q84.6 36.1 75.9 27Z"></path>
+            <path class="hm-glow" id="hm-glow" d="M50 2L24.1 27Q15.4 36.1 15.4 49.8L15.4 79.3L36.3 118L39.9 118L41.4 65.7L24.8 57.7L20.5 50.9L45.7 56.6L50 88.4L54.3 56.6L79.5 50.9L75.2 57.7L58.6 65.7L60.1 118L63.7 118L84.6 79.3L84.6 49.8Q84.6 36.1 75.9 27Z"></path>
+            <path class="hm-line" id="hm-line" d="M50 2L24.1 27Q15.4 36.1 15.4 49.8L15.4 79.3L36.3 118L39.9 118L41.4 65.7L24.8 57.7L20.5 50.9L45.7 56.6L50 88.4L54.3 56.6L79.5 50.9L75.2 57.7L58.6 65.7L60.1 118L63.7 118L84.6 79.3L84.6 49.8Q84.6 36.1 75.9 27Z"></path>
+          </svg>
+          <span class="eye eye-l"></span><span class="eye eye-r"></span>
+        </div>
         <p class="hero-place" data-t="hero_place">Khalda · Amman</p>
         <h1 class="wordmark" aria-label="Fearless">
           <span class="wm wm-fear" data-t="hero_fear">FEAR</span>
@@ -113,38 +125,69 @@
       <div class="wrap chapter-grid">
         <div class="rail"><span class="numeral" data-t="rooms_num">I</span><h2 class="display ap" data-t="rooms_title">Two rooms</h2><p class="rail-text" data-t="rooms_text">The strength floor upstairs. The combat room below. A kitchen for after. One membership, every door.</p></div>
         <div class="bands">
-          <figure class="band ap" id="band-strength" tabindex="0">
-            <div class="band-img band-img-floor"></div>
+          <figure class="band ap" id="band-strength">
+            <div class="band-img"><span class="band-pic band-pic-floor"></span></div>
             <figcaption><h3 class="display" data-t="strength_title">The strength floor</h3><p data-t="strength_text">Free weights, racks and machines by Technogym. Built for bodybuilding and strength training.</p></figcaption>
           </figure>
-          <figure class="band ap" id="band-combat" tabindex="0">
-            <div class="band-img band-img-combat"></div>
+          <figure class="band ap" id="band-combat">
+            <div class="band-img"><span class="band-pic band-pic-combat"></span></div>
             <figcaption><h3 class="display" data-t="combat_title">The combat room</h3><p data-t="combat_text">Heavy bags, mats and a martial arts school: Muay Thai, boxing, kickboxing, BJJ, MMA and wrestling. Classes for kids, beginners and fighters.</p><p><a class="note more-link" href="#classes" data-t="combat_note">See the class times</a></p></figcaption>
           </figure>
-          <figure class="band ap" id="band-kitchen" tabindex="0">
-            <div class="band-img band-img-kitchen"></div>
+          <figure class="band ap" id="band-kitchen">
+            <div class="band-img"><span class="band-pic band-pic-kitchen"></span></div>
             <figcaption><h3 class="display" data-t="kitchen_title">The kitchen</h3><p data-t="kitchen_text">Eat better. Fresh bowls made at the gym, for after training.</p></figcaption>
           </figure>
           <div class="recovery"><h3 class="display" data-t="recovery_title">Recovery</h3><p data-t="recovery_text">Cryosauna sessions to recover faster between hard days.</p></div>
-          <p class="note photo-note" data-t="photo_note">Photos from the gym's Instagram, low resolution. Originals to come.</p>
+          <p class="note photo-note" data-t="photo_note">Photos and video from the gym's and Murad's Instagram, sharpened. Originals to come.</p>
         </div>
       </div>
     </section>
 
-    <section id="classes" class="chapter chapter-black">
+    <!-- Chapter II: the coach. Murad's stage video plays in black and white; the pro card leans on it. -->
+    <section id="coach" class="chapter chapter-black chapter-coach">
+      <div class="wrap coach-grid">
+        <figure class="coach-media ap">
+          <div class="coach-frame">
+            <video class="coach-video" id="coach-video" muted="" playsinline="" loop="" preload="none" poster="assets/img/murad-poster.jpg" aria-label="Coach Murad Khmous posing on stage at the Lyft Oman Pro Qualifier" data-src="assets/img/murad-loop.mp4"></video>
+            <span class="coach-grain" aria-hidden="true"></span>
+          </div>
+          <img class="coach-card" src="assets/img/murad-card.jpg" width="420" height="560" alt="Murad on stage with his IFBB Pro card" loading="lazy">
+          <figcaption class="note coach-cap" data-t="coach_card_cap">The pro card. Muscat, October 2026.</figcaption>
+        </figure>
+        <div class="coach-copy">
+          <span class="numeral" data-t="coach_num">II</span>
+          <p class="eyebrow" data-t="coach_eyebrow">IFBB Pro · Classic Physique</p>
+          <h2 class="display ap" data-t="coach_title">Train with the best</h2>
+          <p class="coach-name display" data-t="coach_name">Coach Murad Khmous</p>
+          <p class="rail-text" data-t="coach_text">Fearless's bodybuilding coach earned his IFBB Pro card at the Lyft Oman Pro Qualifier in Muscat, October 2026. Ten years of chasing it. Now he coaches on this floor.</p>
+          <p data-t="coach_text2">Bodybuilding coaching at Fearless. Ask for Murad at the desk, or send a WhatsApp.</p>
+          <div class="hero-actions coach-actions">
+            <a class="btn btn-primary coach-wa" id="coach-wa" href="https://wa.me/962792925017?text=Hi%20Fearless%2C%20I%20want%20to%20train%20with%20Coach%20Murad." target="_blank" rel="noopener" data-t="coach_cta">Train with Murad</a>
+            <a class="btn" id="coach-ig" href="https://www.instagram.com/ifbb_pro_murad_khmous/" target="_blank" rel="noopener" data-t="coach_ig">Murad on Instagram</a>
+          </div>
+          <p class="note" data-t="coach_note">Video and photos from Murad's Instagram.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapter III: the timetable, one day at a time. -->
+    <section id="classes" class="chapter chapter-black chapter-classes">
+      <div class="strip ap" aria-hidden="true"><span class="strip-pic"></span></div>
       <div class="wrap chapter-grid">
-        <div class="rail"><span class="numeral" data-t="classes_num">II</span><h2 class="display ap" data-t="classes_title">Fearless time</h2><p class="rail-text" data-t="classes_text">Group classes in the combat room, by day. Save your spot: call or WhatsApp the gym.</p><p class="note" data-t="classes_note">Times copied from the gym's Instagram timetable. Check the current week at the desk.</p></div>
-        <!-- Group classes, read from SCHEDULE in content.js and drawn per day. -->
-        <div class="timetables" id="timetables"><div class="team"><h3 class="display">Team Martial Arts</h3><p class="note">Muay Thai by Kru Team · Boxing by Coach Osama · Kickboxing by Coach Mohd Wasfi</p><div class="tt"><div class="tt-day"><h4>Sat</h4><ul><li><time>5 PM</time><span>Muay Thai kids</span></li><li><time>6 PM</time><span>Muay Thai adults</span></li><li><time>7 PM</time><span>Muay Thai adults 2</span></li><li><time>7 PM</time><span>Boxing</span></li><li><time>8 PM</time><span>Muay Thai advanced</span></li><li><time>8 PM</time><span>Kickboxing</span></li></ul></div><div class="tt-day"><h4>Mon</h4><ul><li><time>5 PM</time><span>Muay Thai kids</span></li><li><time>6 PM</time><span>Muay Thai adults</span></li><li><time>7 PM</time><span>Muay Thai adults 2</span></li><li><time>7 PM</time><span>Boxing</span></li><li><time>8 PM</time><span>Muay Thai advanced</span></li><li><time>8 PM</time><span>Kickboxing</span></li></ul></div><div class="tt-day"><h4>Wed</h4><ul><li><time>5 PM</time><span>Muay Thai kids</span></li><li><time>6 PM</time><span>Muay Thai adults</span></li><li><time>7 PM</time><span>Muay Thai adults 2</span></li><li><time>7 PM</time><span>Boxing</span></li><li><time>8 PM</time><span>Muay Thai advanced</span></li><li><time>8 PM</time><span>Kickboxing</span></li></ul></div></div></div><div class="team"><h3 class="display">Team Combat</h3><p class="note">Taught by Team Combat</p><div class="tt"><div class="tt-day"><h4>Sat</h4><ul><li><time>12 PM</time><span>BJJ adults</span></li><li><time>5 PM</time><span>BJJ kids</span></li><li><time>6 PM</time><span>MMA</span></li></ul></div><div class="tt-day"><h4>Sun</h4><ul><li><time>6 PM</time><span>Wrestling</span></li><li><time>7 PM</time><span>BJJ adults</span></li></ul></div><div class="tt-day"><h4>Mon</h4><ul><li><time>4 PM</time><span>BJJ kids</span></li><li><time>6 PM</time><span>MMA</span></li></ul></div><div class="tt-day"><h4>Tue</h4><ul><li><time>6 PM</time><span>Wrestling</span></li><li><time>7 PM</time><span>BJJ adults</span></li></ul></div><div class="tt-day"><h4>Wed</h4><ul><li><time>12 PM</time><span>BJJ kids</span></li><li><time>4 PM</time><span>MMA</span></li><li><time>5 PM</time><span>BJJ adults</span></li></ul></div><div class="tt-day"><h4>Thu</h4><ul><li><time>5:30 PM</time><span>Wrestling</span></li><li><time>6:30 PM</time><span>BJJ adults</span></li></ul></div></div></div></div>
+        <div class="rail"><span class="numeral" data-t="classes_num">III</span><h2 class="display ap" data-t="classes_title">Fearless time</h2><p class="rail-text" data-t="classes_text">Group classes in the combat room. Pick a day. Save your spot: call or WhatsApp the gym.</p><p class="note" data-t="classes_note">October 2026 timetable, from the gym's Instagram. Check the current week at the desk.</p></div>
+        <div class="timetable">
+          <div class="day-tabs" id="day-tabs" role="tablist" aria-label="Pick a day"><button class="day-tab" role="tab" type="button" id="day-tab-6" data-day="6" aria-selected="true" tabindex="0">Sat</button><button class="day-tab" role="tab" type="button" id="day-tab-0" data-day="0" aria-selected="false" tabindex="-1">Sun</button><button class="day-tab" role="tab" type="button" id="day-tab-1" data-day="1" aria-selected="false" tabindex="-1">Mon</button><button class="day-tab" role="tab" type="button" id="day-tab-2" data-day="2" aria-selected="false" tabindex="-1">Tue</button><button class="day-tab" role="tab" type="button" id="day-tab-3" data-day="3" aria-selected="false" tabindex="-1">Wed</button><button class="day-tab" role="tab" type="button" id="day-tab-4" data-day="4" aria-selected="false" tabindex="-1">Thu</button><button class="day-tab" role="tab" type="button" id="day-tab-5" data-day="5" aria-selected="false" tabindex="-1">Fri</button><span class="tab-ink" aria-hidden="true"></span></div>
+          <div class="day-list" id="day-list" role="tabpanel" aria-labelledby="day-tab-6"><ul><li><time>12 PM</time><span class="cls">BJJ adults</span><span class="team">Team Kombat</span></li><li><time>5 PM</time><span class="cls">BJJ kids</span><span class="team">Team Kombat</span></li><li><time>5 PM</time><span class="cls">Muay Thai kids</span><span class="team">Team Kru · Muay Thai</span></li><li><time>6 PM</time><span class="cls">MMA</span><span class="team">Team Kombat</span></li><li><time>6 PM</time><span class="cls">Muay Thai adults</span><span class="team">Team Kru · Muay Thai</span></li><li><time>7 PM</time><span class="cls">Muay Thai adults 2</span><span class="team">Team Kru · Muay Thai</span></li><li><time>7 PM</time><span class="cls">Boxing</span><span class="team">Team Osama Maaita</span></li><li><time>8 PM</time><span class="cls">Muay Thai advanced</span><span class="team">Team Kru · Muay Thai</span></li><li><time>8 PM</time><span class="cls">Kickboxing</span><span class="team">Team Sultan Mashaqi</span></li></ul></div>
+        </div>
       </div>
     </section>
 
     <section id="rule" class="chapter chapter-bone">
       <div class="wrap chapter-grid">
-        <div class="rail"><span class="numeral" data-t="wall_num">III</span><h2 class="display ap" data-t="wall_title">The rule on the wall</h2><p class="rail-text" data-t="wall_text">Two words, painted above the racks. Everything else follows from them.</p></div>
+        <div class="rail"><span class="numeral" data-t="wall_num">IV</span><h2 class="display ap" data-t="wall_title">The rule on the wall</h2><p class="rail-text" data-t="wall_text">Two words, painted above the racks. Everything else follows from them.</p></div>
         <div>
           <!-- The two words painted on the gym's wall. Outlined type that fills as you scroll past. -->
-          <div class="wall" id="wall" aria-hidden="true"><span class="wall-outline" data-t="wall">PLAY HARD</span><span class="wall-fill" data-t="wall">PLAY HARD</span></div>
+          <div class="wall" id="wall" aria-hidden="true"><span class="wall-outline" data-t="wall">PLAY HARD</span><span class="wall-fill" id="wall-fill" data-t="wall">PLAY HARD</span></div>
           <ol class="rules" id="rules"><li>Show up.</li><li>Lift heavier than last week.</li><li>Respect the mat.</li><li>Leave the fear at the door.</li></ol>
         </div>
       </div>
@@ -152,10 +195,10 @@
 
     <section id="trial" class="chapter chapter-black">
       <div class="wrap chapter-grid">
-        <div class="rail"><span class="numeral" data-t="trial_num">IV</span><h2 class="display ap" data-t="trial_title">Come and see it</h2><p class="rail-text" data-t="trial_text">Call or send a WhatsApp and say when you want to come. A coach will walk you through both rooms.</p><p class="contact-lines" id="contact-lines"><a href="tel:+962792925017" dir="ltr">079 292 5017</a> · <a href="https://wa.me/962792925017" target="_blank" rel="noopener">WhatsApp</a></p></div>
+        <div class="rail"><span class="numeral" data-t="trial_num">V</span><h2 class="display ap" data-t="trial_title">Come and see it</h2><p class="rail-text" data-t="trial_text">Call or send a WhatsApp and say when you want to come. A coach will walk you through both rooms.</p><p class="contact-lines" id="contact-lines"><a href="tel:+962792925017" dir="ltr">079 292 5017</a> · <a href="https://wa.me/962792925017" target="_blank" rel="noopener">WhatsApp</a></p></div>
         <form class="trial-form ap" id="trial-form">
-          <label><span data-t="f_name">Your name</span><input name="name" type="text" autocomplete="name" maxlength="60"></label>
-          <fieldset><legend data-t="f_goal">I want to train</legend><div class="chips" id="goal-chips"><label class="chip"><input type="radio" name="goal" value="0" checked=""><span>Strength</span></label><label class="chip"><input type="radio" name="goal" value="1"><span>Combat</span></label><label class="chip"><input type="radio" name="goal" value="2"><span>Both</span></label><label class="chip"><input type="radio" name="goal" value="3"><span>A class</span></label></div></fieldset>
+          <label><span data-t="f_name">Your name</span><input name="name" type="text" autocomplete="name" enterkeyhint="send" maxlength="60"></label>
+          <fieldset><legend data-t="f_goal">I want to train</legend><div class="chips" id="goal-chips"><label class="chip"><input type="radio" name="goal" value="0" checked=""><span>Strength</span></label><label class="chip"><input type="radio" name="goal" value="1"><span>Combat</span></label><label class="chip"><input type="radio" name="goal" value="2"><span>Both</span></label><label class="chip"><input type="radio" name="goal" value="3"><span>A class</span></label><label class="chip"><input type="radio" name="goal" value="4"><span>With Coach Murad</span></label></div></fieldset>
           <fieldset><legend data-t="f_when">I can come</legend><div class="chips" id="when-chips"><label class="chip"><input type="radio" name="when" value="0" checked=""><span>Mornings</span></label><label class="chip"><input type="radio" name="when" value="1"><span>Afternoons</span></label><label class="chip"><input type="radio" name="when" value="2"><span>Evenings</span></label></div></fieldset>
           <button class="btn btn-primary" type="submit" data-t="f_send">Send on WhatsApp</button>
         </form>
@@ -164,7 +207,7 @@
 
     <section id="visit" class="chapter chapter-bone">
       <div class="wrap chapter-grid">
-        <div class="rail"><span class="numeral" data-t="visit_num">V</span><h2 class="display ap" data-t="visit_title">Khalda</h2>
+        <div class="rail"><span class="numeral" data-t="visit_num">VI</span><h2 class="display ap" data-t="visit_title">Khalda</h2>
           <p class="address" data-t="address">Wasfi At-Tall Street, Building 347, Khalda, Amman</p><p class="note" data-t="address_note">Same building as Buffalo Wings &amp; Rings. Step-free access.</p>
           <p class="plate-line" data-t="every_day">Seven days a week</p><p class="plate-line" data-t="since">Training in Amman since 2013</p>
           <p><a class="btn" id="directions" href="https://www.google.com/maps/search/?api=1&amp;query=Fearless+Gym+Khalda+Amman" target="_blank" rel="noopener" data-t="directions">Get directions</a></p>
@@ -181,7 +224,7 @@
   <footer class="site-footer">
     <div class="wrap foot-row">
       <p><svg class="logo-helmet" viewBox="0 0 100 120" aria-hidden="true"><use href="#helmet"></use></svg> <span data-t="foot_line">Fearless Gym · Khalda, Amman</span> · <span id="year">2026</span></p>
-      <p class="foot-links"><span id="foot-links"><a href="https://www.facebook.com/fearlessgymjo/" target="_blank" rel="noopener">Facebook</a></span> · <button id="replay" class="linkbtn" type="button" data-t="replay">Replay the intro</button></p>
+      <p class="foot-links"><span id="foot-links"><a href="https://www.instagram.com/fearlessgymjo/" target="_blank" rel="noopener">Instagram</a> · <a href="https://www.facebook.com/fearlessgymjo/" target="_blank" rel="noopener">Facebook</a></span> · <button id="replay" class="linkbtn" type="button" data-t="replay">Replay the intro</button></p>
     </div>
     <p class="wrap foot-preview" data-t="foot_preview">Preview build by FellowFlow. Not the gym's official site.</p>
   </footer>
