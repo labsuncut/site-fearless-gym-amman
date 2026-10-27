@@ -2,6 +2,7 @@
 // Sources (2026-10-20, search snippets only): Tipntag, Accessible Jordan, Tapology, Fitely, the gym's Facebook page
 // and screenshots from its Instagram (photos, the official logo, the October 2026 class timetable, the coach cards).
 // Coach Murad: his own Instagram (@ifbb_pro_murad_khmous, post of 24 Oct 2026 with the pro card) and the gym's coach card.
+// His video and photos are approved for the site by Murad and the gym (Ali, 27 Oct 2026); the spelling Khmous is confirmed.
 // Anything marked CONFIRM is waiting for the gym (or Murad) to confirm. Never replace it with a guess.
 
 const BUSINESS = {
@@ -46,22 +47,24 @@ const TEXT = {
   en: {
     lang_btn: 'عربي',
     skip: 'Skip intro', replay: 'Replay the intro',
-    nav_rooms: 'The rooms', nav_coach: 'Coach', nav_classes: 'Classes', nav_rule: 'The rule', nav_visit: 'Visit', nav_call: 'Call',
+    nav_rooms: 'The warriors', nav_coach: 'Coach', nav_classes: 'Classes', nav_rule: 'The rule', nav_visit: 'Visit', nav_call: 'Call',
     hero_place: 'Khalda · Amman',
-    hero_fear: 'FEAR', hero_less: 'LESS',
+    hero_brand: 'FEARLESS', hero_video_label: 'Pad work in the combat room at Fearless Gym',
     hero_line: 'A gym and a martial arts school. Put the helmet on.',
-    hero_hint: 'Scroll to lift the visor',
+    hero_hint: 'Scroll to step in',
     cta_call: 'Call the gym', cta_wa: 'WhatsApp', cta_trial: 'Book a first session',
     open_now: 'Open now', closed_now: 'Closed now', closes: 'closes', opens: 'opens',
-    rooms_num: 'I', rooms_title: 'Two rooms',
-    rooms_text: 'The strength floor upstairs. The combat room below. A kitchen for after. One membership, every door.',
+    rooms_num: 'I', rooms_title: 'Two warriors',
+    rooms_text: 'One gym, two ways to fight. Pick your side.',
+    lifter_title: 'The Lifter', fighter_title: 'The Fighter', lifter_cta: 'Train with Murad', vs: 'VS', pick_hint: 'Tap a side to lean in',
+    camp_eyebrow: 'The camp', camp_text: 'What both warriors share. One membership, every door.',
     strength_title: 'The strength floor', strength_text: 'Free weights, racks and machines by Technogym. Built for bodybuilding and strength training.',
     combat_title: 'The combat room', combat_text: 'Heavy bags, mats and a martial arts school: Muay Thai, boxing, kickboxing, BJJ, MMA and wrestling. Classes for kids, beginners and fighters.',
     combat_note: 'See the class times',
     kitchen_title: 'The kitchen', kitchen_text: 'Eat better. Fresh bowls made at the gym, for after training.',
     recovery_title: 'Recovery', recovery_text: 'Cryosauna sessions to recover faster between hard days.',
-    photo_note: 'Photos and video from the gym\'s and Murad\'s Instagram, sharpened. Originals to come.',
-    // Chapter II: the coach. Facts from Murad's own Instagram post (24 Oct 2026) and the gym's coach card. CONFIRM with both before launch.
+    photo_note: 'Video from the gym\'s own reels. Photos from the gym\'s and Murad\'s Instagram, sharpened.',
+    // Chapter II: the coach. Facts from Murad's own Instagram post (24 Oct 2026) and the gym's coach card.
     coach_num: 'II', coach_eyebrow: 'IFBB Pro · Classic Physique',
     coach_title: 'Train with the best',
     coach_name: 'Coach Murad Khmous',
@@ -101,21 +104,22 @@ const TEXT = {
   ar: {
     lang_btn: 'English',
     skip: 'تخطي المقدمة', replay: 'أعد المقدمة',
-    nav_rooms: 'القاعتان', nav_coach: 'المدرب', nav_classes: 'الحصص', nav_rule: 'القاعدة', nav_visit: 'الموقع', nav_call: 'اتصل',
+    nav_rooms: 'المحاربان', nav_coach: 'المدرب', nav_classes: 'الحصص', nav_rule: 'القاعدة', nav_visit: 'الموقع', nav_call: 'اتصل',
     hero_place: 'خلدا · عمّان',
-    hero_fear: 'بلا', hero_less: 'خوف',
+    hero_brand: 'بلا خوف', hero_video_label: 'تدريب على الوسائد في قاعة القتال في فيرلس جيم',
     hero_line: 'نادي رياضي ومدرسة فنون قتالية. البس الخوذة.',
-    hero_hint: 'مرّر لترفع القناع',
+    hero_hint: 'مرّر لتدخل',
     cta_call: 'اتصل بالنادي', cta_wa: 'واتساب', cta_trial: 'احجز حصتك الأولى',
     open_now: 'مفتوح الآن', closed_now: 'مغلق الآن', closes: 'يغلق', opens: 'يفتح',
-    rooms_num: 'I', rooms_title: 'قاعتان',
-    rooms_text: 'صالة القوة في الأعلى. قاعة القتال في الأسفل. ومطبخ لما بعد التمرين. اشتراك واحد، كل الأبواب.',
-    strength_title: 'صالة القوة', strength_text: 'أوزان حرة وأجهزة من Technogym. مجهزة لكمال الأجسام وتدريب القوة.',
+    rooms_num: 'I', rooms_title: 'محاربان',
+    rooms_text: 'نادٍ واحد، وطريقتان للقتال. اختر جانبك.',
+    lifter_title: 'الرافع', fighter_title: 'المقاتل', lifter_cta: 'تدرّب مع مراد', vs: 'ضد', pick_hint: 'اضغط على جانب لتقترب',
+    camp_eyebrow: 'المعسكر', camp_text: 'ما يتشاركه المحاربان. اشتراك واحد، كل الأبواب.',    strength_title: 'صالة القوة', strength_text: 'أوزان حرة وأجهزة من Technogym. مجهزة لكمال الأجسام وتدريب القوة.',
     combat_title: 'قاعة القتال', combat_text: 'أكياس ثقيلة وبساط ومدرسة فنون قتالية: مواي تاي، ملاكمة، كيك بوكسينغ، جوجيتسو، MMA ومصارعة. حصص للأطفال والمبتدئين والمقاتلين.',
     combat_note: 'شاهد مواعيد الحصص',
     kitchen_title: 'المطبخ', kitchen_text: 'كُل أفضل. أطباق طازجة تُحضَّر في النادي، لما بعد التمرين.',
     recovery_title: 'الاستشفاء', recovery_text: 'جلسات كرايو ساونا لتتعافى أسرع بين الأيام الصعبة.',
-    photo_note: 'الصور والفيديو من إنستغرام النادي ومراد، بعد تحسين الدقة. الأصلية قادمة.',
+    photo_note: 'الفيديو من ريلز النادي. الصور من إنستغرام النادي ومراد، بعد تحسين الدقة.',
     coach_num: 'II', coach_eyebrow: 'IFBB Pro · كلاسيك فيزيك',
     coach_title: 'تدرّب مع الأفضل',
     coach_name: 'الكوتش مراد خموس',

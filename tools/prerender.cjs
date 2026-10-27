@@ -34,6 +34,9 @@ const root = join(__dirname, '..');
     document.querySelectorAll('.intro-helmet.drawn').forEach((el) => el.classList.remove('drawn'));
     document.querySelectorAll('.ap-probe').forEach((el) => el.remove());
     const forge = document.getElementById('forge'); if (forge) { forge.removeAttribute('width'); forge.removeAttribute('height'); }
+    ['brand'].forEach((id) => { const c = document.getElementById(id); if (c) { c.removeAttribute('width'); c.removeAttribute('height'); } });
+    const hv = document.getElementById('hero-video'); if (hv) hv.removeAttribute('src');
+    document.querySelectorAll('.side.dim').forEach((el) => el.classList.remove('dim'));
     // The timetable opens on today's day: bake Saturday (the gym's first day) with no 'today' mark instead.
     window.fearless.showDay(6);
     document.querySelectorAll('.day-tab small').forEach((s) => s.remove());

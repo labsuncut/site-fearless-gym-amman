@@ -1,6 +1,7 @@
-// FEARLESS v6: language, the forge intro and the visor scroll scene, aperture reveals, the coach's video,
-// the day-by-day timetable, open badge, WhatsApp form, hours. Scroll-driven values are written straight to the
-// elements (clip-path, transform, opacity): nothing changes its size, and no CSS variable is updated per frame.
+// FEARLESS v7: language, the forge intro, the stamp (FEARLESS painted on a canvas with the gym's reel inside the
+// letters), the zoom-through on scroll, the two-warriors split, lazy reels, the day-by-day timetable, open badge,
+// WhatsApp form, hours. Scroll- and pointer-driven values are written straight to the elements (clip-path,
+// transform, opacity): nothing changes its size, and no CSS variable is updated per frame.
 (function () {
   'use strict';
   const $ = (s, r) => (r || document).querySelector(s);
@@ -24,6 +25,7 @@
     $('#map').title = T.map_title;
     $('#day-tabs').setAttribute('aria-label', T.day_tabs);
     $('#coach-video').setAttribute('aria-label', T.coach_video_label);
+    $('#hero-video').setAttribute('aria-label', T.hero_video_label);
 
     $$('.call-link').forEach((a) => { a.href = 'tel:' + BUSINESS.phone; });
     const wa = (msg) => `https://wa.me/${BUSINESS.whatsapp}?text=${encodeURIComponent(msg)}`;
@@ -47,6 +49,7 @@
     hoursTable();
     openBadge();
     measure();
+    if (window.brand) brand.refit();
   }
 
   function chips(sel, name, opts) {
@@ -136,15 +139,83 @@
     window.open(`https://wa.me/${BUSINESS.whatsapp}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener');
   });
 
-  // ---------- The coach's video: loads only when the chapter is near, plays only while on screen ----------
-  const video = $('#coach-video');
-  if (!calm && !saveData && 'IntersectionObserver' in window) {
+  // ---------- Reels: each loads only when its chapter is near and plays only while on screen. Never with Reduce Motion or Data Saver. ----------
+  const reels = !calm && !saveData;
+  if (reels && 'IntersectionObserver' in window) {
     const vio = new IntersectionObserver((es) => es.forEach((e) => {
-      if (e.isIntersecting) { if (!video.getAttribute('src')) { video.src = video.dataset.src; video.load(); } video.play().catch(() => {}); }
-      else video.pause();
+      const v = e.target;
+      if (e.isIntersecting) { if (!v.getAttribute('src')) { v.src = v.dataset.src; v.load(); } v.play().catch(() => {}); }
+      else v.pause();
     }), { rootMargin: '240px 0px' });
-    vio.observe(video);
+    $$('video[data-src]:not(#hero-video)').forEach((v) => vio.observe(v));
   }
+  // The hero's reel starts loading at once: it has to be moving by the time the word stamps in.
+  const heroVideo = $('#hero-video');
+  if (reels) { heroVideo.src = heroVideo.dataset.src; heroVideo.load(); heroVideo.play().catch(() => {}); }
+
+  // ---------- The stamp: FEARLESS on a canvas, the reel showing through the letters ----------
+  // Each frame: fill the word in blood red, lay the reel over it in 'luminosity' (the reel's light and shade, the
+  // word's red), then cut everything outside the letters away with a text mask (destination-in).
+  // The reel drifts a little toward the pointer (or the phone's tilt). With Reduce Motion the poster is drawn once.
+  const brand = (() => {
+    const canvas = $('#brand'), ctx = canvas.getContext('2d');
+    const mask = document.createElement('canvas'), mctx = mask.getContext('2d');
+    const poster = new Image(); poster.src = canvas.dataset.poster;
+    let W = 0, H = 0, dpr = 1, font = '', word = '', px = 0, py = 0, tx = 0, ty = 0, raf = 0, on = false;
+    function size() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = canvas.clientWidth; H = canvas.clientHeight;
+      canvas.width = mask.width = Math.round(W * dpr); canvas.height = mask.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0); mctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      fit();
+      if (on) draw();  // resizing clears the canvas
+    }
+    function fit() {
+      word = T.hero_brand;
+      const ar = lang === 'ar', fam = ar ? "'Changa', 'IBM Plex Sans Arabic', sans-serif" : "'Anton', Impact, sans-serif", weight = ar ? 800 : 400;
+      ctx.font = `${weight} 100px ${fam}`;
+      const w = ctx.measureText(word).width || 1;
+      const fs = Math.min(100 * (W * (W < 761 ? .95 : .9)) / w, H * (ar ? .6 : .72));
+      font = `${weight} ${fs.toFixed(1)}px ${fam}`;
+      mctx.clearRect(0, 0, W, H); mctx.font = font; mctx.textAlign = 'center'; mctx.textBaseline = 'middle'; mctx.fillStyle = '#fff';
+      mctx.fillText(word, W / 2, H / 2 + H * (ar ? -.02 : .015));
+    }
+    function draw() {
+      tx += (px - tx) * .06; ty += (py - ty) * .06;
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = '#b3121b'; ctx.fillRect(0, 0, W, H);
+      const v = heroVideo, src = (v.readyState >= 2 && !v.paused && !v.ended) ? v : (poster.complete && poster.naturalWidth ? poster : null);
+      if (src) {
+        const sw = src.videoWidth || src.naturalWidth, sh = src.videoHeight || src.naturalHeight;
+        const k = Math.max(W / sw, H / sh) * 1.1, dw = sw * k, dh = sh * k;
+        ctx.globalCompositeOperation = 'luminosity';
+        ctx.globalAlpha = .85;
+        ctx.drawImage(src, (W - dw) / 2 - tx * W * .03, (H - dh) / 2 - ty * H * .03, dw, dh);
+        ctx.globalAlpha = 1;
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.fillStyle = 'rgba(150, 12, 20, .34)'; ctx.fillRect(0, 0, W, H);
+      }
+      ctx.globalCompositeOperation = 'destination-in';
+      ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.drawImage(mask, 0, 0); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.globalCompositeOperation = 'source-over';
+    }
+    function frame() { raf = 0; if (!on) return; draw(); raf = requestAnimationFrame(frame); }
+    function run(want) {
+      if (calm) { if (want && !on) { on = true; draw(); } else if (!want) on = false; return; }
+      if (want && !on) { on = true; if (!raf) raf = requestAnimationFrame(frame); }
+      if (!want && on) { on = false; cancelAnimationFrame(raf); raf = 0; }
+    }
+    function refit() { fit(); if (on || calm) draw(); }
+    if (!calm) {
+      $('.visor').addEventListener('pointermove', (e) => { if (e.pointerType === 'mouse') { px = (e.clientX / W - .5) * 2; py = (e.clientY / H - .5) * 2; } }, { passive: true });
+      window.addEventListener('deviceorientation', (e) => { if (e.gamma == null) return; px = clamp((e.gamma + 30) / 60) * 2 - 1; py = clamp((e.beta - 15) / 60) * 2 - 1; }, { passive: true });
+      heroVideo.addEventListener('playing', () => { if (on) draw(); });
+    }
+    poster.onload = () => { if (on || calm) draw(); };
+    return { el: canvas, size, run, refit, draw };
+  })();
+  window.brand = brand;
 
   // ---------- The forge: sparks on a canvas, drawing the helmet's outline (first visit, motion allowed) ----------
   const forge = (() => {
@@ -154,7 +225,7 @@
     if (!calm) { [line, glow].forEach((p) => { p.style.strokeDasharray = L; p.style.strokeDashoffset = L; }); }
     const ctx = canvas.getContext('2d');
     const DRAW_MS = 1300;
-    let W = 0, H = 0, parts = [], raf = 0, mode = 'off', drawStart = 0, last = 0, blowStart = 0, cx = 0, cy = 0;
+    let W = 0, H = 0, parts = [], raf = 0, mode = 'off', drawStart = 0, last = 0, blowStart = 0, stampStart = 0, cx = 0, cy = 0;
     const ease = (t) => (t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
     function size() {
       const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
@@ -191,10 +262,16 @@
         if (k < .25) for (let i = 0; i < 14; i++) { const pt = toScreen(line.getPointAtLength(Math.random() * L)); const a = Math.atan2(pt.y - cy, pt.x - cx); const v = 300 + Math.random() * 500; parts.push({ x: pt.x, y: pt.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: .5 + Math.random() * .4, t: 0, s: 2.2, hot: Math.random() }); }
         if (k >= 1 && parts.length === 0) { stop(); return; }
       }
+      if (mode === 'stamp') {
+        // The word lands: sparks fly off its top and bottom edges.
+        const k = (now - stampStart) / 800, hh = Math.min(W * .11, H * .3);
+        if (k < .14) for (let i = 0; i < 26; i++) { const top = Math.random() < .5; const x = W / 2 + (Math.random() - .5) * W * .86, y = H / 2 + (top ? -hh : hh); const a = (top ? -Math.PI / 2 : Math.PI / 2) + (Math.random() - .5) * 1.6; const v = 160 + Math.random() * 420; parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: .4 + Math.random() * .5, t: 0, s: 2, hot: Math.random() }); }
+        if (k >= 1 && parts.length === 0) { stop(); return; }
+      }
       for (let i = parts.length - 1; i >= 0; i--) {
         const q = parts[i];
         q.t += dt; if (q.t >= q.life) { parts.splice(i, 1); continue; }
-        if (mode === 'blow') { q.vx += (q.x - cx) * dt * 6; q.vy += (q.y - cy) * dt * 6; } else { q.vy += 260 * dt; q.vx *= (1 - .9 * dt); }
+        if (mode === 'blow') { q.vx += (q.x - cx) * dt * 6; q.vy += (q.y - cy) * dt * 6; } else { q.vy += (mode === 'stamp' ? 420 : 260) * dt; q.vx *= (1 - .9 * dt); }
         q.x += q.vx * dt; q.y += q.vy * dt;
         const a = 1 - q.t / q.life;
         ctx.fillStyle = q.hot > .6 ? `rgba(255,220,160,${a})` : `rgba(255,${Math.round(90 + 90 * a)},60,${a * .9})`;
@@ -209,7 +286,8 @@
       if (n === 1) { helmet.classList.add('drawn'); if (!calm) { drawStart = performance.now(); mode = 'draw'; } }
       if (n === 2 && !calm) { line.style.strokeDashoffset = 0; glow.style.strokeDashoffset = 0; mode = 'cool'; }
       if (n === 3 && !calm && raf) { const r = svg.getBoundingClientRect(); cx = r.left + r.width / 2; cy = r.top + r.height / 2; blowStart = performance.now(); mode = 'blow'; }
-      if (n >= 4) stop();
+      if (n === 4 && !calm) { if (!W) size(); stampStart = performance.now(); mode = 'stamp'; if (!raf) { last = performance.now(); raf = requestAnimationFrame(frame); } }
+      if (n >= 5) stop();
     }
     function reset() { stop(); helmet.classList.remove('drawn'); if (!calm) { line.style.strokeDashoffset = L; glow.style.strokeDashoffset = L; } }
     return { start, stop, stage, reset };
@@ -217,13 +295,13 @@
 
   // ---------- The intro ----------
   // Stage 0: dark, an ember at the top of the helmet.  Stage 1: sparks draw the outline.  Stage 2: the metal cools and fills, the eyes ignite.
-  // Stage 3: you put it on; the helmet rushes past, the slit opens on the gym.  Stage 4: FEAR and LESS stamp in.  Stage 5: everything else.
+  // Stage 3: you put it on; the helmet rushes past.  Stage 4: FEARLESS stamps down, the reel moving inside it.  Stage 5: everything else.
   // About 5.3 s on a first visit; 2.5 s with reduced motion (cross-fades only). The hero is the intro's last frame.
   const STAGES = calm ? [0, 300, 900, 1500, 2000, 2500] : [0, 350, 1800, 2900, 3800, 4600];
   const timers = [];
   const visor = $('.visor');
   let live = false;
-  function setStage(n) { body.className = body.className.replace(/\bstage-\d\b/g, '').trim() + ' stage-' + n; forge.stage(n); }
+  function setStage(n) { body.className = body.className.replace(/\bstage-\d\b/g, '').trim() + ' stage-' + n; forge.stage(n); if (n >= 4) brand.run(true); }
   function goLive() { live = true; visor.classList.add('live'); measure(); paint(); }
   function finishIntro() {
     timers.forEach(clearTimeout); timers.length = 0;
@@ -246,24 +324,23 @@
     try { sessionStorage.removeItem('fearless-intro'); } catch (e) {}
     html.classList.remove('intro-seen'); html.classList.add('intro-fresh');
     live = false; visor.classList.remove('live');
-    [aperture, edgeT, edgeB, wmF, wmL, apHelmet, meta, place, hint].forEach((el) => el.removeAttribute('style'));
+    brand.run(false);
+    [brand.el, veil, meta, place, hint].forEach((el) => el.removeAttribute('style'));
     forge.reset();
     window.scrollTo({ top: 0, behavior: 'auto' });
     setStage(0); playIntro();
   });
 
-  // ---------- Scroll: lift the visor, fill PLAY HARD, show the call bar ----------
-  const scene = $('#hero'), aperture = $('#aperture'), edgeT = $('.aperture-edge-t'), edgeB = $('.aperture-edge-b');
-  const wmF = $('.wm-fear'), wmL = $('.wm-less'), apHelmet = $('.aperture-helmet'), meta = $('.hero-meta'), place = $('.hero-place'), hint = $('.hero-hint');
+  // ---------- Scroll: push the word toward you, fill PLAY HARD, show the call bar ----------
+  const scene = $('#hero'), veil = $('#hero-veil'), meta = $('.hero-meta'), place = $('.hero-place'), hint = $('.hero-hint');
   const wall = $('#wall'), wallFill = $('#wall-fill');
-  const probe = document.createElement('span'); probe.className = 'ap-probe'; visor.appendChild(probe);
-  let apH = 0, range = 1, wallTop = 0, vh = 0, ticking = false;
+  let range = 1, wallTop = 0, vh = 0, ticking = false;
   // Measured once per layout change, never per frame.
   function measure() {
     vh = window.innerHeight;
-    apH = probe.offsetHeight;
     range = Math.max(1, scene.offsetHeight - vh);
     wallTop = wall.getBoundingClientRect().top + window.scrollY;
+    brand.size();
   }
   function paint() {
     ticking = false;
@@ -273,16 +350,13 @@
     body.classList.toggle('visor-open', open > 0.3);
     body.classList.toggle('scrolled', y > 40);
     if (live) {
-      const h = apH + (vh - apH) * open, top = Math.max(0, (vh - h) / 2);
-      aperture.style.clipPath = `inset(${top.toFixed(2)}px 0 ${top.toFixed(2)}px 0)`;
-      edgeT.style.transform = `translateY(${(-h / 2).toFixed(2)}px)`;
-      edgeB.style.transform = `translateY(${(h / 2).toFixed(2)}px)`;
-      edgeT.style.opacity = edgeB.style.opacity = Math.max(0, .9 - open).toFixed(3);
-      const shift = open * vh * 0.4, wo = clamp(1 - open * 2.5).toFixed(3);
-      wmF.style.transform = `translateY(${(-shift).toFixed(1)}px)`; wmF.style.opacity = wo;
-      wmL.style.transform = `translateY(${shift.toFixed(1)}px)`; wmL.style.opacity = wo;
-      apHelmet.style.opacity = clamp(1 - open * 2).toFixed(3);
+      // The word grows toward you (ease-in, so it starts slow and rushes at the end); you pass between the letters.
+      const e = open * open, s = calm ? 1 : 1 + e * 16;
+      brand.el.style.transform = `scale(${s.toFixed(3)})`;
+      brand.el.style.opacity = (calm ? clamp(1 - open * 1.6) : clamp(1 - Math.max(0, open - .7) * 3.4)).toFixed(3);
+      veil.style.opacity = (.9 - open * .62).toFixed(3);
       meta.style.opacity = place.style.opacity = hint.style.opacity = clamp(1 - open * 4).toFixed(3);
+      brand.run(y < range + vh);
     }
     const fill = clamp((vh * 0.85 - (wallTop - y)) / (vh * 0.6));
     wallFill.style.clipPath = `inset(0 ${((1 - fill) * 100).toFixed(1)}% 0 0)`;
@@ -293,6 +367,43 @@
   window.addEventListener('resize', onResize);
   if ('ResizeObserver' in window) new ResizeObserver(onResize).observe(document.body);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(onResize);
+
+  // ---------- Two warriors: the split leans toward your pointer, or toward the side you tap ----------
+  const versus = $('#versus');
+  if (versus) {
+    const lifter = $('#side-lifter'), fighter = $('#side-fighter'), vs = $('#vs');
+    const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    let x = 50, target = 50, vraf = 0, vw = versus.clientWidth;
+    function apply() {
+      lifter.style.clipPath = `inset(0 ${(100 - x).toFixed(2)}% 0 0)`;
+      fighter.style.clipPath = `inset(0 0 0 ${x.toFixed(2)}%)`;
+      vs.style.transform = `translateX(${(vw * x / 100).toFixed(1)}px)`;
+    }
+    function tick() {
+      vraf = 0;
+      x += (target - x) * .14;
+      if (Math.abs(target - x) < .05) { x = target; apply(); return; }
+      apply(); vraf = requestAnimationFrame(tick);
+    }
+    function lean(t) {
+      target = Math.max(32, Math.min(68, t));
+      lifter.classList.toggle('dim', target < 44); fighter.classList.toggle('dim', target > 56);
+      if (calm) { x = target; apply(); return; }
+      if (!vraf) vraf = requestAnimationFrame(tick);
+    }
+    if (fine) {
+      versus.addEventListener('pointermove', (e) => { const r = versus.getBoundingClientRect(); vw = r.width; lean(50 - ((e.clientX - r.left) / r.width - .5) * 36); }, { passive: true });
+      versus.addEventListener('pointerleave', () => lean(50));
+    } else {
+      versus.addEventListener('click', (e) => {
+        if (e.target.closest('a, button')) return;
+        const r = versus.getBoundingClientRect(); vw = r.width;
+        const onLifter = (e.clientX - r.left) < r.width * x / 100, t = onLifter ? 68 : 32;
+        lean(target === t ? 50 : t);
+      });
+    }
+    window.addEventListener('resize', () => { vw = versus.clientWidth; apply(); });
+  }
 
   // Aperture reveals: sections open from a line when they come into view.
   if ('IntersectionObserver' in window && !calm) {
