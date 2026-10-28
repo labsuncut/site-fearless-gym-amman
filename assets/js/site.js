@@ -166,10 +166,14 @@
     function ask(i, keepFocus) {
       if (pending !== null || asked.includes(i)) return;
       const pos = Array.prototype.indexOf.call(asks.children, asks.querySelector(`[data-i="${i}"]`));
+      // list() rebuilds the buttons, so remember which one had keyboard focus (the auto-ask can fire while you Tab through them)
+      const had = asks.contains(document.activeElement) ? document.activeElement : null;
+      const hadI = had && had.dataset.i !== undefined ? +had.dataset.i : null;
       asked.push(i); pending = i;
       thread.insertAdjacentHTML('beforeend', msg('msg-out new', T.faq[i].q) + '<p class="typing" aria-hidden="true"><i></i><i></i><i></i></p>');
       list();
-      if (keepFocus) { const next = asks.children[Math.min(pos, asks.children.length - 1)]; if (next) next.focus(); }
+      if (keepFocus || (had && hadI === i)) { const next = asks.children[Math.min(pos, asks.children.length - 1)]; if (next) next.focus(); }
+      else if (had) { const same = hadI === null ? $('.ask-wa', asks) : asks.querySelector(`[data-i="${hadI}"]`); if (same) same.focus({ preventScroll: true }); }
       toEnd();
       const me = run;
       setTimeout(() => {
