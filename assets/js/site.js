@@ -32,7 +32,7 @@
     $$('.wa-link').forEach((a) => { a.href = wa(T.wa_msg); });
     $('#coach-wa').href = wa(T.coach_wa);
     $('#coach-ig').href = $('#coach-note').href = BUSINESS.coachInstagram;
-    $('#recovery-img').alt = T.recovery_img_label;
+    $('#physio-video').setAttribute('aria-label', T.physio_video_label);
     $('#directions').href = BUSINESS.google;
     if ($('#map').src !== BUSINESS.mapEmbed) $('#map').src = BUSINESS.mapEmbed;
     $('#contact-lines').innerHTML = `<a href="tel:${esc(BUSINESS.phone)}" dir="ltr">${esc(BUSINESS.phoneDisplay)}</a>` +
