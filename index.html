@@ -26,9 +26,10 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/fonts/anton-latin-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/instrument-serif-latin-400italic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/img/hero-poster.jpg" as="image">
-  <link rel="stylesheet" href="assets/css/fonts.css?v=10">
-  <link rel="stylesheet" href="assets/css/site.css?v=10">
+  <link rel="stylesheet" href="assets/css/fonts.css?v=11">
+  <link rel="stylesheet" href="assets/css/site.css?v=11">
   <!-- Remembers the visitor's language before the page paints, so there is no flash. -->
   <script>
     (function () {
@@ -196,7 +197,7 @@
           <div class="side-copy">
             <span class="eyebrow" data-t="strength_title">The strength floor</span>
             <h3 class="display" data-t="lifter_title">The Lifter</h3>
-            <p data-t="strength_text">Free weights, racks and machines by Technogym. Built for bodybuilding and strength training.</p>
+            <p class="copy" data-t="strength_text">Free weights, racks and machines by Technogym. Built for bodybuilding and strength training.</p>
             <a class="btn btn-primary" href="#trial" data-t="lifter_cta">Become fearless</a>
           </div>
         </article>
@@ -205,29 +206,29 @@
           <div class="side-copy">
             <span class="eyebrow" data-t="combat_title">The combat room</span>
             <h3 class="display" data-t="fighter_title">The Fighter</h3>
-            <p data-t="combat_text">Heavy bags, mats and a martial arts school: Muay Thai, boxing, kickboxing, BJJ, MMA and wrestling. Classes for kids, beginners and fighters.</p>
+            <p class="copy" data-t="combat_text">Heavy bags, mats and a martial arts school: Muay Thai, boxing, kickboxing, BJJ, MMA and wrestling. Classes for kids, beginners and fighters.</p>
             <a class="btn" href="#classes" data-t="combat_note">See the class times</a>
           </div>
         </article>
         <div class="vs" id="vs" aria-hidden="true"><span class="vs-line"></span>
           <!-- Yin and yang: the lifter and the fighter are two halves of one thing, not opponents. It turns with the lean. -->
-          <svg class="yy" id="yy" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#e9e3d6"></circle><path d="M50 4A46 46 0 0 1 50 96A23 23 0 0 1 50 50A23 23 0 0 0 50 4Z" fill="#0b0b0c"></path><circle cx="50" cy="73" r="6.5" fill="#e9e3d6"></circle><circle cx="50" cy="27" r="6.5" fill="#0b0b0c"></circle><circle cx="50" cy="50" r="46" fill="none" stroke="#e4202b" stroke-width="3"></circle></svg></div>
+          <svg class="yy" id="yy" viewBox="0 0 100 100" aria-hidden="true"><g class="yy-spin"><circle cx="50" cy="50" r="46" fill="#e9e3d6"></circle><path d="M50 4A46 46 0 0 1 50 96A23 23 0 0 1 50 50A23 23 0 0 0 50 4Z" fill="#0b0b0c"></path><circle cx="50" cy="73" r="6.5" fill="#e9e3d6"></circle><circle cx="50" cy="27" r="6.5" fill="#0b0b0c"></circle></g><circle cx="50" cy="50" r="46" fill="none" stroke="#e4202b" stroke-width="3"></circle></svg></div>
       </div>
       <div class="wrap warriors-notes" aria-hidden="true">
         <p class="pick-hint note" data-t="pick_hint">Tap a side to lean in</p>
-        <div class="warriors-note"><p data-t="strength_text">Free weights, racks and machines by Technogym. Built for bodybuilding and strength training.</p><a class="btn btn-primary" href="#trial" data-t="lifter_cta">Become fearless</a></div>
-        <div class="warriors-note"><p data-t="combat_text">Heavy bags, mats and a martial arts school: Muay Thai, boxing, kickboxing, BJJ, MMA and wrestling. Classes for kids, beginners and fighters.</p><a class="btn" href="#classes" data-t="combat_note">See the class times</a></div>
+        <div class="warriors-note"><p class="copy" data-t="strength_text">Free weights, racks and machines by Technogym. Built for bodybuilding and strength training.</p><a class="btn btn-primary" href="#trial" data-t="lifter_cta">Become fearless</a></div>
+        <div class="warriors-note"><p class="copy" data-t="combat_text">Heavy bags, mats and a martial arts school: Muay Thai, boxing, kickboxing, BJJ, MMA and wrestling. Classes for kids, beginners and fighters.</p><a class="btn" href="#classes" data-t="combat_note">See the class times</a></div>
       </div>
       <div class="wrap camp">
         <div class="camp-head"><span class="eyebrow" data-t="camp_eyebrow">The camp</span><p class="rail-text" data-t="camp_text">What both warriors share. One membership, every door.</p></div>
         <figure class="camp-card ap">
           <div class="camp-media"><video muted="" playsinline="" loop="" preload="none" poster="assets/img/kitchen-poster.jpg" data-src="assets/img/kitchen.mp4" aria-label="A bowl being made in the Fearless Gym kitchen"></video></div>
-          <figcaption><h3 class="display" data-t="kitchen_title">The kitchen</h3><p data-t="kitchen_text">Eat better. Fresh bowls made at the gym, for after training.</p></figcaption>
+          <figcaption><h3 class="display" data-t="kitchen_title">The kitchen</h3><p class="copy" data-t="kitchen_text">Eat better. Fresh bowls made at the gym, for after training.</p></figcaption>
         </figure>
         <figure class="camp-card ap">
           <!-- PLACEHOLDER image: an AI picture of a cryotherapy cabin, until the gym sends a photo of its own. -->
           <div class="camp-media"><img id="recovery-img" src="assets/img/recovery.jpg" width="1200" height="750" alt="A cryotherapy cabin in a dark recovery room. Placeholder until the gym sends its own photo." loading="lazy"></div>
-          <figcaption><h3 class="display" data-t="recovery_title">Recovery</h3><p data-t="recovery_text">Cryosauna sessions to recover faster between hard days.</p></figcaption>
+          <figcaption><h3 class="display" data-t="recovery_title">Recovery</h3><p class="copy" data-t="recovery_text">Cryosauna sessions to recover faster between hard days.</p></figcaption>
         </figure>
         <p class="note photo-note" data-t="photo_note">Video from the gym's own reels. The recovery picture is a stand-in until the gym sends its own.</p>
       </div>
@@ -250,7 +251,7 @@
           <h2 class="display ap" data-t="coach_title">Train with the best</h2>
           <p class="coach-name display" data-t="coach_name">Coach Murad Khmous</p>
           <p class="rail-text" data-t="coach_text">Fearless's bodybuilding coach earned his IFBB Pro card at the Lyft Oman Pro Qualifier in Muscat, October 2026. Ten years of chasing it. Now he coaches on this floor.</p>
-          <p data-t="coach_text2">Bodybuilding coaching at Fearless. Ask for Murad at the desk, or send a WhatsApp.</p>
+          <p class="copy" data-t="coach_text2">Bodybuilding coaching at Fearless. Ask for Murad at the desk, or send a WhatsApp.</p>
           <div class="hero-actions coach-actions">
             <a class="btn btn-primary coach-wa" id="coach-wa" href="https://wa.me/962792925017?text=Hi%20Fearless%2C%20I%20want%20to%20train%20with%20Coach%20Murad." target="_blank" rel="noopener" data-t="coach_cta">Train with Murad</a>
             <a class="btn" id="coach-ig" href="https://www.instagram.com/ifbb_pro_murad_khmous/" target="_blank" rel="noopener" data-t="coach_ig">Murad on Instagram</a>
@@ -337,7 +338,7 @@
 
   <aside aria-label="Call Fearless"><a class="call-bar call-link" href="tel:+962792925017" data-t="callbar">Call Fearless</a></aside>
 
-  <script src="assets/js/content.js?v=10"></script>
-  <script src="assets/js/site.js?v=10"></script>
+  <script src="assets/js/content.js?v=11"></script>
+  <script src="assets/js/site.js?v=11"></script>
 </body>
 </html>

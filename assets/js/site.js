@@ -429,23 +429,25 @@
   if (versus) {
     const lifter = $('#side-lifter'), fighter = $('#side-fighter'), vs = $('#vs'), yy = $('#yy');
     const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-    let x = 50, target = 50, vraf = 0, vw = versus.clientWidth;
+    let x = 50, target = 50, rot = 0, vraf = 0, vw = versus.clientWidth;
+    const turn = (v) => (v - 50) * 2.4;  // how far the yin and yang turns for a given lean, in degrees
     function apply() {
       lifter.style.clipPath = `inset(0 ${(100 - x).toFixed(2)}% 0 0)`;
       fighter.style.clipPath = `inset(0 0 0 ${x.toFixed(2)}%)`;
       vs.style.transform = `translateX(${(vw * x / 100).toFixed(1)}px)`;
-      yy.style.transform = `translate(-50%, -50%) rotate(${((x - 50) * 3).toFixed(1)}deg)`;  // the two halves turn with the lean
+      yy.style.transform = `translate(-50%, -50%) rotate(${rot.toFixed(2)}deg)`;  // the two halves turn a beat behind the line
     }
     function tick() {
       vraf = 0;
-      x += (target - x) * .14;
-      if (Math.abs(target - x) < .05) { x = target; apply(); return; }
+      x += (target - x) * .12;
+      rot += (turn(x) - rot) * .08;
+      if (Math.abs(target - x) < .05 && Math.abs(turn(x) - rot) < .05) { x = target; rot = turn(x); apply(); return; }
       apply(); vraf = requestAnimationFrame(tick);
     }
     function lean(t) {
       target = Math.max(32, Math.min(68, t));
       lifter.classList.toggle('dim', target < 44); fighter.classList.toggle('dim', target > 56);
-      if (calm) { x = target; apply(); return; }
+      if (calm) { x = target; rot = turn(x); apply(); return; }
       if (!vraf) vraf = requestAnimationFrame(tick);
     }
     if (fine) {
