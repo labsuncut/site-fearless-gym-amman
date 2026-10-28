@@ -1,6 +1,6 @@
 /* FEARLESS GYM, v7 "The stamp".
    Brand sheet: black #0b0b0c, bone #e9e3d6, ink #141416, blood #b3121b, ember #e4202b, concrete #8f8a82.
-   Display: Anton (EN) / Changa (AR). Body: IBM Plex Sans Arabic. Signature: the helmet forged in sparks, then the word FEARLESS
+   Display: Anton (EN) / Changa (AR). Lead lines: Instrument Serif (EN) / Amiri (AR). Body: IBM Plex Sans Arabic. Signature: the helmet forged in sparks, then the word FEARLESS
    in blood red with the gym's own reel moving inside the letters. Red is light and the word, never a banner. Bone and black alternate.
    Motion rules: only transform, opacity and clip-path animate; nothing changes its height. Hover only on fine pointers. */
 :root {
@@ -18,6 +18,9 @@
   --line-light: rgba(20, 20, 22, 0.16);
   --display: 'Anton', 'Changa', Impact, sans-serif;
   --body: 'IBM Plex Sans Arabic', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --serif: 'Instrument Serif', 'Amiri', Georgia, 'Times New Roman', serif;
+  --copy: #cfc8ba;                 /* body copy on black: a step quieter than the leads */
+  --copy-ink: #3a3732;             /* body copy on bone */
   --wrap: 1240px;
   --gutter: 24px;
   --ease: cubic-bezier(.2, .8, .2, 1);
@@ -26,20 +29,28 @@
   --t-ui: 180ms var(--ease-out);
   --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
 }
-html[lang="ar"] { --display: 'Changa', 'Anton', sans-serif; }
+html[lang="ar"] { --display: 'Changa', 'Anton', sans-serif; --serif: 'Amiri', 'Instrument Serif', serif; }
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; background: var(--black); }
-body { margin: 0; font-family: var(--body); font-size: 17px; line-height: 1.6; color: var(--bone); background: var(--black); overflow-x: clip; }
+body { margin: 0; font-family: var(--body); font-size: 17px; line-height: 1.6; color: var(--bone); background: var(--black); overflow-x: clip; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
 body.intro-lock { overflow: hidden; }
 img, svg, video { max-width: 100%; display: block; }
 a { color: inherit; }
 h1, h2, h3 { line-height: 1.05; margin: 0 0 .4em; }
-p { margin: 0 0 1em; }
+p { margin: 0 0 1em; text-wrap: pretty; }
+/* Type system. Three voices: Anton shouts (titles, labels), the serif speaks (one lead line per chapter, the hero line,
+   the address, the coach's name), Plex explains (body copy, a step quieter in colour). Nothing is left at browser default. */
+.lead, .rail-text { font-family: var(--serif); font-size: clamp(1.35rem, 1.1rem + 1vw, 1.75rem); line-height: 1.28; letter-spacing: .004em; max-width: 24em; text-wrap: pretty; }
+html[lang="ar"] .lead, html[lang="ar"] .rail-text { font-size: clamp(1.4rem, 1.15rem + 1vw, 1.85rem); line-height: 1.6; letter-spacing: 0; }
+.copy { font-size: 1.02rem; line-height: 1.62; max-width: 34em; color: var(--copy); }
+.chapter-bone .copy { color: var(--copy-ink); }
+.ital { font-style: italic; }
+html[lang="ar"] .ital { font-style: normal; }
 .display { font-family: var(--display); font-weight: 400; letter-spacing: .01em; text-transform: uppercase; }
 html[lang="ar"] .display { font-weight: 800; text-transform: none; letter-spacing: 0; }
 .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--gutter); }
-.note { color: var(--concrete); font-size: .92rem; }
+.note { color: var(--concrete); font-size: .86rem; line-height: 1.5; letter-spacing: .01em; max-width: 40em; }
 :focus-visible { outline: 3px solid var(--ember); outline-offset: 3px; }
 .linkbtn { background: none; border: 0; padding: 12px 0; font: inherit; color: inherit; text-decoration: underline; cursor: pointer; }
 /* Controls feel native on a phone: no 300 ms wait, no text selection on a long press, press feedback on the way down. */
@@ -63,9 +74,11 @@ html[lang="ar"] .btn { letter-spacing: 0; font-weight: 800; text-transform: none
 .site-header { position: fixed; top: 0; left: 0; right: 0; z-index: 20; opacity: 0; padding-top: env(safe-area-inset-top, 0px); transition: opacity 600ms var(--ease), background 300ms; }
 body.stage-5 .site-header { opacity: 1; }
 body.scrolled .site-header { background: var(--black); box-shadow: 0 1px 0 var(--line-dark); }
+/* The header runs the full width: the logo sits in the top left corner, the menu in the top right. */
+.site-header .wrap { max-width: none; padding: 0 clamp(20px, 2.2vw, 36px); }
 .header-row { display: flex; align-items: center; justify-content: space-between; min-height: 64px; gap: 16px; }
 .logo { display: inline-flex; direction: ltr; align-items: center; gap: 5px; text-decoration: none; color: var(--bone); font-family: var(--display); font-size: 1.2rem; letter-spacing: .08em; }
-.logo-helmet { width: 22px; height: 26px; fill: var(--blood); flex: none; }
+.logo-helmet { width: 22px; height: 26px; fill: var(--blood); flex: none; margin-top: 1px; }  /* optically centred on the capitals */
 .nav { display: flex; align-items: center; gap: 22px; font-size: .95rem; }
 .nav > a { color: var(--bone); text-decoration: none; opacity: .8; transition: opacity var(--t-ui); }
 .nav-call { font-family: var(--display); letter-spacing: .06em; text-transform: uppercase; border-bottom: 2px solid var(--ember); opacity: 1 !important; }
@@ -105,9 +118,9 @@ body.stage-4 .intro-helmet, body.stage-5 .intro-helmet, html.intro-seen .intro-h
 
 /* ---------- Hero: the stamp ----------
    The gym's own reel plays full-bleed under a dark veil. The canvas paints the word in blood red with the same reel moving
-   inside its letters. Scrolling pushes the word toward you (one transform) until you pass between the letters and the gym
-   fills the screen; the veil thins as you go. */
-.visor-scene { height: 200vh; position: relative; }
+   inside its letters. The scene is half a screen taller than the screen: the word stays pinned for that half while the
+   first chapter slides up over it (negative margin, see .chapter-warriors), the word fading as it goes. */
+.visor-scene { height: 150vh; position: relative; }
 .visor { position: sticky; top: 0; height: 100svh; overflow: hidden; background: var(--black); }
 .hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 900ms var(--ease); }
 body.stage-4 .hero-video, body.stage-5 .hero-video { opacity: 1; }
@@ -121,7 +134,8 @@ body.stage-4 .brand, body.stage-5 .brand { opacity: 1; transform: none; }
 .hero-place { position: absolute; top: calc(64px + 16px + env(safe-area-inset-top, 0px)); left: 0; right: 0; margin: 0; text-align: center; font-size: .8rem; letter-spacing: .22em; text-transform: uppercase; color: var(--concrete); }
 html[lang="ar"] .hero-place { letter-spacing: 0; font-size: .95rem; }
 .hero-meta { position: absolute; left: 0; right: 0; bottom: max(28px, env(safe-area-inset-bottom, 0px)); padding: 0 var(--gutter); text-align: center; }
-.hero-line { font-size: clamp(1rem, 1.4vw, 1.2rem); color: var(--bone); margin: 0 auto 16px; max-width: 32em; text-wrap: balance; }
+.hero-line { font-family: var(--serif); font-style: italic; font-size: clamp(1.3rem, 1rem + 1.2vw, 1.8rem); line-height: 1.25; color: var(--bone); margin: 0 auto 18px; max-width: 26em; text-wrap: balance; }
+html[lang="ar"] .hero-line { font-style: normal; font-size: clamp(1.4rem, 1.1rem + 1.2vw, 1.9rem); line-height: 1.55; }
 .hero-actions { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px; }
 .open-badge { display: inline-flex; align-items: center; gap: 8px; font-size: .88rem; color: var(--concrete); padding: 6px 4px; }
 .open-badge::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--concrete); }
@@ -152,7 +166,6 @@ body.stage-5 .skip, html.intro-seen .skip { display: none; }
 .chapter-bone .plate-line, .chapter-bone .hours-title { color: #6c675f; }
 h2.display { font-size: clamp(2.6rem, 6vw, 5rem); line-height: .95; margin-bottom: .35em; }
 html[lang="ar"] h2.display { line-height: 1.2; }
-.rail-text { font-size: 1.1rem; max-width: 28em; }
 .eyebrow { font-family: 'Anton', var(--display); font-size: .85rem; letter-spacing: .25em; text-transform: uppercase; color: var(--ember-text); margin: 0 0 12px; }
 html[lang="ar"] .eyebrow { letter-spacing: 0; font-size: .95rem; }
 
@@ -165,7 +178,8 @@ html[lang="ar"] .eyebrow { letter-spacing: 0; font-size: .95rem; }
    Two of the gym's own reels side by side. Each side is a full-width layer clipped to its half (clip-path only);
    the split leans toward your pointer, or toward the side you tap. The reels sit in 60% of the width at their own
    edge so they stay centred as their side grows. */
-.chapter-warriors { padding-top: 0; }
+/* Chapter I rides up over the pinned hero like a curtain: half a screen of overlap, a soft edge. */
+.chapter-warriors { padding-top: 0; margin-top: -50vh; z-index: 2; box-shadow: 0 -40px 80px rgba(0, 0, 0, .7); }
 .warriors-head { display: grid; grid-template-columns: minmax(260px, 1fr) 2fr; gap: 16px clamp(32px, 6vw, 96px); align-items: end; padding: clamp(56px, 8vw, 110px) 0 32px; }
 .warriors-head .display { margin-bottom: 0; }
 .warriors-head .rail-text { margin: 0 0 .4em; }
@@ -185,28 +199,28 @@ html[lang="ar"] .eyebrow { letter-spacing: 0; font-size: .95rem; }
 .side-lifter .side-copy { left: 0; } .side-fighter .side-copy { right: 0; text-align: end; }
 .side-fighter .side-copy p { margin-inline-start: auto; }
 .side-copy h3 { font-size: clamp(2.4rem, 6vw, 5.6rem); line-height: .95; margin: .05em 0 .25em; }
-.side-copy p { max-width: 28em; margin-bottom: 18px; }
+.side-copy p { max-width: 26em; margin-bottom: 18px; }
 .vs { position: absolute; top: 0; bottom: 0; left: 0; width: 0; z-index: 3; pointer-events: none; will-change: transform; }
 .vs-line { position: absolute; top: 0; bottom: 0; left: -1px; width: 2px; background: var(--ember); box-shadow: 0 0 14px 2px rgba(228, 32, 43, .9), 0 0 40px rgba(228, 32, 43, .5); }
-.vs-badge { position: absolute; top: 50%; left: 0; transform: translate(-50%, -50%); width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; background: var(--black); border: 2px solid var(--ember);
-  font-family: 'Anton', var(--display); font-size: 1.1rem; letter-spacing: .08em; color: var(--bone); box-shadow: 0 0 24px rgba(228, 32, 43, .6); }
-html[lang="ar"] .vs-badge { font-family: var(--display); font-weight: 800; letter-spacing: 0; }
+.yy { position: absolute; top: 50%; left: 0; transform: translate(-50%, -50%); width: 60px; height: 60px; max-width: none; display: block; overflow: visible; filter: drop-shadow(0 0 10px rgba(228, 32, 43, .55)); will-change: transform; }
+.yy-spin { transform-origin: 50px 50px; animation: yy-spin 36s linear infinite; }
+@keyframes yy-spin { to { transform: rotate(360deg); } }
 .warriors-notes { display: none; }
-/* The camp: the kitchen reel takes the room; recovery is words only (no footage of it yet), set against the reel's foot. */
-.camp { display: grid; grid-template-columns: 1.7fr 1fr; gap: 28px clamp(32px, 6vw, 96px); align-items: end; padding-top: clamp(56px, 7vw, 96px); }
-.camp-head { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(260px, 1fr) 2fr; gap: 8px clamp(32px, 6vw, 96px); align-items: baseline; }
-.camp-head .rail-text { margin: 0; }
+/* The camp: the kitchen reel and the recovery picture side by side, level with each other. */
+.camp { display: grid; grid-template-columns: 1fr 1fr; gap: 36px clamp(32px, 6vw, 96px); align-items: start; padding-top: 0; }
+.camp-head { grid-column: 1 / -1; display: grid; justify-items: center; text-align: center; gap: 0; padding-bottom: clamp(8px, 2vw, 20px); }
+.camp-head::before { content: ''; display: block; width: 2px; height: clamp(56px, 8vw, 110px); margin: 0 auto 26px; background: linear-gradient(var(--ember), rgba(228, 32, 43, 0)); }  /* the split's red line runs on into the camp */
+.camp-head .eyebrow { margin-bottom: 14px; }
+.camp-head .rail-text { margin: 0 auto; max-width: 20em; font-size: clamp(1.6rem, 1.2rem + 1.5vw, 2.4rem); line-height: 1.2; text-wrap: balance; }
+html[lang="ar"] .camp-head .rail-text { font-size: clamp(1.7rem, 1.3rem + 1.5vw, 2.5rem); line-height: 1.5; }
 .camp-card { margin: 0; position: relative; }
 .camp-media { position: relative; aspect-ratio: 16 / 10; overflow: hidden; border-top: 2px solid var(--blood); background: var(--black-2); }
-.camp-media video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 40%; }
-.camp-card-text { border-top: 2px solid var(--blood); padding-top: 22px; }
-.camp-card-text figcaption { padding: 0; }
-.camp-mark { display: block; width: 34px; height: auto; fill: none; stroke: var(--blood); stroke-width: 4; margin-bottom: 18px; }
+.camp-media video, .camp-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 40%; }
 .camp-card figcaption { padding: 16px 0 0; }
 .camp-card h3 { font-size: clamp(1.5rem, 2.6vw, 2.2rem); margin-bottom: .2em; }
-.camp-card p { margin-bottom: .4em; max-width: 36em; }
+.camp-card p { margin-bottom: .4em; max-width: 30em; }
 .camp .photo-note { grid-column: 1 / -1; margin: 0; }
-.photo-note { font-size: .8rem; }
+.photo-note { font-size: .8rem; text-align: center; margin-inline: auto !important; padding-top: 8px; }
 
 /* Chapter II: the coach. Black and white stage footage, grain, the pro card leaning on the frame. */
 .chapter-coach { overflow: hidden; }
@@ -221,7 +235,9 @@ html[lang="ar"] .vs-badge { font-family: var(--display); font-weight: 800; lette
 .coach-card { position: absolute; inset-inline-end: 0; bottom: 8%; width: 36%; height: auto; transform: rotate(6deg); border: 5px solid var(--bone); box-shadow: 0 24px 60px rgba(0, 0, 0, .65); }
 html[dir="rtl"] .coach-card { transform: rotate(-6deg); }
 .coach-cap { margin: 14px 0 0; }
-.coach-name { font-size: clamp(1.6rem, 3vw, 2.6rem); line-height: 1.05; margin: 0 0 .7em; }
+.coach-name.display { font-family: var(--serif); font-style: italic; font-weight: 400; text-transform: none; letter-spacing: 0; font-size: clamp(2rem, 1.4rem + 2.2vw, 3.4rem); line-height: 1.05; margin: 0 0 .5em; color: var(--bone); }
+html[lang="ar"] .coach-name.display { font-style: normal; line-height: 1.4; }
+.coach-copy .copy { margin-bottom: 1.4em; }
 .coach-actions { justify-content: flex-start; margin: 8px 0 20px; }
 
 /* Chapter III: Fearless time. A photo strip opens the chapter; the week is one day at a time. */
@@ -298,8 +314,12 @@ html[dir="rtl"] .msg-out.new { transform-origin: bottom left; }
 .ask:active { transform: scale(.97); }
 .ask-wa { display: inline-flex; align-items: center; border-color: var(--bone); background: var(--bone); color: var(--ink); font-weight: 700; text-decoration: none; }
 .faq-all dt { font-weight: 700; margin-top: 14px; }
+.chat-who strong { font-family: var(--display); letter-spacing: .06em; font-size: 1.05rem; text-transform: uppercase; }
+html[lang="ar"] .chat-who strong { letter-spacing: 0; text-transform: none; }
 .faq-all dd { margin: 4px 0 0; }
-.contact-lines { font-size: 1.15rem; font-weight: 700; margin-top: 8px; }
+.contact-lines { font-family: var(--display); font-size: clamp(1.3rem, 1rem + 1vw, 1.7rem); letter-spacing: .03em; margin-top: 14px; color: var(--bone); }
+.contact-lines a { text-decoration: none; border-bottom: 2px solid var(--ember); padding-bottom: 2px; transition: border-color var(--t-ui); }
+html[lang="ar"] .contact-lines { letter-spacing: 0; font-weight: 700; }
 .trial-form { display: grid; gap: 18px; padding: 28px; border: 1.5px solid var(--line-dark); border-radius: 2px; background: var(--black-2); }
 .trial-form label, .trial-form legend { display: block; font-weight: 700; font-size: .95rem; margin-bottom: 6px; }
 .trial-form fieldset { border: 0; padding: 0; margin: 0; }
@@ -313,13 +333,17 @@ html[dir="rtl"] .msg-out.new { transform-origin: bottom left; }
 .chip input:focus-visible + span { outline: 3px solid var(--ember); outline-offset: 2px; }
 
 /* Chapter VI: visit (on bone) */
-.address { font-size: 1.15rem; font-weight: 500; margin-bottom: .3em; }
-.plate-line { margin: 0 0 .3em; color: var(--concrete); }
+.address { font-family: var(--serif); font-size: clamp(1.4rem, 1.1rem + 1.2vw, 1.9rem); line-height: 1.25; margin-bottom: .45em; max-width: 16em; text-wrap: balance; }
+html[lang="ar"] .address { line-height: 1.5; }
+.plate-line { margin: 0 0 .45em; color: var(--concrete); font-size: .82rem; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; }
+html[lang="ar"] .plate-line { letter-spacing: 0; text-transform: none; font-size: .95rem; }
 .plate-line + p { margin-top: 20px; }
 .hours-title { font-size: .8rem; text-transform: uppercase; letter-spacing: .22em; color: var(--concrete); margin: 6px 0 10px; }
 html[lang="ar"] .hours-title { letter-spacing: 0; text-transform: none; font-size: .95rem; }
 .hours { border-collapse: collapse; width: 100%; margin-bottom: 28px; }
-.hours th, .hours td { text-align: start; padding: 9px 0; border-bottom: 1px solid var(--line-light); font-weight: 400; }
+.hours th, .hours td { text-align: start; padding: 10px 0; border-bottom: 1px solid var(--line-light); font-weight: 400; }
+.hours th { font-weight: 500; }
+.hours td { font-variant-numeric: tabular-nums; color: var(--copy-ink); }
 .hours td { text-align: end; }
 .hours th small { color: var(--blood); font-size: .78rem; margin-inline-start: 8px; letter-spacing: .1em; text-transform: uppercase; }
 .hours .today { color: #000; font-weight: 700; }
@@ -371,13 +395,13 @@ html[lang="ar"] .call-bar { letter-spacing: 0; font-weight: 800; text-transform:
   .side-copy p, .side-copy .btn { display: none; }
   .side-copy h3 { font-size: clamp(1.9rem, 9vw, 2.6rem); }
   .side-copy .eyebrow { font-size: .72rem; letter-spacing: .14em; }
-  .vs-badge { width: 44px; height: 44px; font-size: .9rem; }
+  .yy { width: 46px; height: 46px; }
   .warriors-notes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding-top: 18px; }
   .warriors-notes .pick-hint { grid-column: 1 / -1; margin: 0; }
   .warriors-note p { font-size: .95rem; margin-bottom: 12px; }
   .warriors-note .btn { width: 100%; }
-  .camp { grid-template-columns: 1fr; }
-  .camp-head { grid-template-columns: 1fr; }
+  .camp { grid-template-columns: 1fr; gap: 32px; }
+  .camp-head::before { height: 48px; margin-bottom: 18px; }
   .coach-grid { grid-template-columns: 1fr; gap: 36px; }
   .coach-media { padding-inline-end: 10%; }
   .coach-frame { aspect-ratio: 4 / 5; max-height: 70svh; }
@@ -397,6 +421,7 @@ html[lang="ar"] .call-bar { letter-spacing: 0; font-weight: 800; text-transform:
   .chat-thread { height: clamp(260px, 44svh, 380px); }
 }
 @media (prefers-reduced-motion: reduce) {
+  .yy-spin { animation: none; }
   /* The intro still happens (team rule) but as cross-fades: nothing flies, nothing drifts. The sparks are off. */
   .forge { display: none; }
   .intro-helmet { transition: opacity 500ms !important; }

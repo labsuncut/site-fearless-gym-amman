@@ -31,7 +31,8 @@
     const wa = (msg) => `https://wa.me/${BUSINESS.whatsapp}?text=${encodeURIComponent(msg)}`;
     $$('.wa-link').forEach((a) => { a.href = wa(T.wa_msg); });
     $('#coach-wa').href = wa(T.coach_wa);
-    $('#coach-ig').href = BUSINESS.coachInstagram;
+    $('#coach-ig').href = $('#coach-note').href = BUSINESS.coachInstagram;
+    $('#recovery-img').alt = T.recovery_img_label;
     $('#directions').href = BUSINESS.google;
     if ($('#map').src !== BUSINESS.mapEmbed) $('#map').src = BUSINESS.mapEmbed;
     $('#contact-lines').innerHTML = `<a href="tel:${esc(BUSINESS.phone)}" dir="ltr">${esc(BUSINESS.phoneDisplay)}</a>` +
@@ -210,9 +211,8 @@
     const mask = document.createElement('canvas'), mctx = mask.getContext('2d');
     const poster = new Image(); poster.src = canvas.dataset.poster;
     let W = 0, H = 0, dpr = 1, font = '', word = '', px = 0, py = 0, tx = 0, ty = 0, raf = 0, on = false;
-    // Where the camera flies through (a hole inside a letter, found on the mask) and how far it must zoom
-    // for that hole to cover the screen. box = the word's top and bottom, for the stamp's sparks.
-    const hole = { x: .5, y: .5, zoom: 18 }, box = { top: 0, bottom: 0 };
+    // box = the word's top and bottom, for the stamp's sparks.
+    const box = { top: 0, bottom: 0 };
     function size() {
       dpr = Math.min(window.devicePixelRatio || 1, 2);
       W = canvas.clientWidth; H = canvas.clientHeight;
@@ -235,45 +235,6 @@
       const cy = n > 1 ? H * .45 : H / 2 + H * (ar ? -.02 : .015);
       lines.forEach((l, i) => mctx.fillText(l, W / 2, cy + (i - (n - 1) / 2) * fs * lh));
       box.top = cy - n * fs * lh / 2; box.bottom = cy + n * fs * lh / 2;
-      // Fly through the inside of the A when there is one (the English word): its column is where the A is drawn.
-      let aim = null;
-      lines.forEach((l, i) => { const j = l.indexOf('A'); if (j < 0 || aim) return;
-        const left = W / 2 - mctx.measureText(l).width / 2 + mctx.measureText(l.slice(0, j)).width;
-        aim = { x: left + mctx.measureText('A').width / 2, y: cy + (i - (n - 1) / 2) * fs * lh, h: fs * lh }; });
-      findHole(fs, aim);
-    }
-    // Scan the mask for the hole to fly through: an empty run fully enclosed by a letter. With an A, the topmost
-    // hole in its column (the triangle above the crossbar); otherwise (Arabic) the hole nearest the middle of the
-    // screen, or the middle itself if there is none.
-    function findHole(fs, aim) {
-      hole.x = .5; hole.y = .5; hole.zoom = 18;
-      let data;
-      try { data = mctx.getImageData(0, 0, mask.width, mask.height).data; } catch (e) { return; }
-      const mw = mask.width, mh = mask.height, k = dpr, at = (x, y) => data[(y * mw + x) * 4 + 3] > 127;
-      // Scan only the A's own line, so the gap under its legs (closed off by the line below) does not count.
-      const top = aim ? aim.y - aim.h / 2 : box.top, bottom = aim ? aim.y + aim.h / 2 : box.bottom;
-      const y0 = Math.max(0, Math.floor(top * k)), y1 = Math.min(mh - 1, Math.ceil(bottom * k));
-      // A real hole is closed left and right too, within one letter's width (not the gap between two lines).
-      const reach = fs * k * .5;
-      const closedSides = (x, y) => { let l = x, r = x; while (l > 0 && x - l < reach && !at(l - 1, y)) l--; while (r < mw - 1 && r - x < reach && !at(r + 1, y)) r++; return l > 0 && x - l < reach && r < mw - 1 && r - x < reach; };
-      let best = null;
-      const xs = aim ? [Math.round(aim.x * k)] : Array.from({ length: Math.ceil(mw / 2) }, (_, i) => i * 2);
-      for (const x of xs) {
-        let inside = false, start = -1;
-        for (let y = y0; y <= y1; y++) {
-          const o = at(x, y);
-          if (o) { if (start >= 0 && inside) { const len = y - start; if (len > fs * k * .06 && closedSides(x, Math.round((start + y) / 2))) { const c = { x, y: (start + y) / 2, len }; const d = aim ? c.y : Math.hypot(c.x - mw / 2, c.y - mh / 2); if (!best || d < best.d) best = { ...c, d }; } } inside = true; start = -1; }
-          else if (inside && start < 0) start = y;
-        }
-      }
-      if (!best) return;
-      // Width of the hole at its middle: walk left and right until the letter.
-      const yy = Math.round(best.y); let l = best.x, r = best.x;
-      while (l > 0 && !at(l - 1, yy)) l--; while (r < mw - 1 && !at(r + 1, yy)) r++;
-      const cx = (l + r + 1) / 2, hw = Math.max(2, r - l + 1) / k, hh = best.len / k;
-      hole.x = cx / k / W; hole.y = best.y / k / H;
-      // Zoom until the hole is wider and taller than the screen.
-      hole.zoom = Math.min(160, Math.max(18, 1.25 * Math.max(W / hw, H / hh)));
     }
     function draw() {
       tx += (px - tx) * .06; ty += (py - ty) * .06;
@@ -308,7 +269,7 @@
       heroVideo.addEventListener('playing', () => { if (on) draw(); });
     }
     poster.onload = () => { if (on || calm) draw(); };
-    return { el: canvas, size, run, refit, draw, hole, box };
+    return { el: canvas, size, run, refit, draw, box };
   })();
   window.brand = brand;
 
@@ -426,7 +387,7 @@
     setStage(0); playIntro();
   });
 
-  // ---------- Scroll: push the word toward you, fill PLAY HARD, show the call bar ----------
+  // ---------- Scroll: hand the stamp over to the warriors, fill PLAY HARD, show the call bar ----------
   const scene = $('#hero'), veil = $('#hero-veil'), meta = $('.hero-meta'), place = $('.hero-place'), hint = $('.hero-hint');
   const wall = $('#wall'), wallFill = $('#wall-fill');
   let range = 1, wallTop = 0, vh = 0, ticking = false;
@@ -445,14 +406,12 @@
     body.classList.toggle('visor-open', open > 0.3);
     body.classList.toggle('scrolled', y > 40);
     if (live) {
-      // The camera flies toward the hole inside a letter at a steady speed (scale grows exponentially) and passes
-      // through it: by the end the hole is bigger than the screen and only the gym is left.
-      const s = calm ? 1 : Math.pow(brand.hole.zoom, Math.min(1, open / .86));
-      brand.el.style.transformOrigin = `${(brand.hole.x * 100).toFixed(2)}% ${(brand.hole.y * 100).toFixed(2)}%`;
-      brand.el.style.transform = `scale(${s.toFixed(3)})`;
-      brand.el.style.opacity = (calm ? clamp(1 - open * 1.6) : clamp(1 - Math.max(0, open - .8) * 6)).toFixed(3);
-      veil.style.opacity = (.9 - open * .62).toFixed(3);
-      meta.style.opacity = place.style.opacity = hint.style.opacity = clamp(1 - open * 4).toFixed(3);
+      // The stamp stays where it is. As the next chapter slides up over it, the word drifts a touch closer and
+      // fades, and the veil closes to black, so the hand-over to the two warriors is one smooth motion.
+      brand.el.style.transform = calm ? 'none' : `scale(${(1 + open * .06).toFixed(3)})`;
+      brand.el.style.opacity = clamp(1 - open * 1.25).toFixed(3);
+      veil.style.opacity = (.9 + open * .1).toFixed(3);
+      meta.style.opacity = place.style.opacity = hint.style.opacity = clamp(1 - open * 3).toFixed(3);
       brand.run(y < range + vh);
     }
     const fill = clamp((vh * 0.85 - (wallTop - y)) / (vh * 0.6));
@@ -468,24 +427,27 @@
   // ---------- Two warriors: the split leans toward your pointer, or toward the side you tap ----------
   const versus = $('#versus');
   if (versus) {
-    const lifter = $('#side-lifter'), fighter = $('#side-fighter'), vs = $('#vs');
+    const lifter = $('#side-lifter'), fighter = $('#side-fighter'), vs = $('#vs'), yy = $('#yy');
     const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-    let x = 50, target = 50, vraf = 0, vw = versus.clientWidth;
+    let x = 50, target = 50, rot = 0, vraf = 0, vw = versus.clientWidth;
+    const turn = (v) => (v - 50) * 2.4;  // how far the yin and yang turns for a given lean, in degrees
     function apply() {
       lifter.style.clipPath = `inset(0 ${(100 - x).toFixed(2)}% 0 0)`;
       fighter.style.clipPath = `inset(0 0 0 ${x.toFixed(2)}%)`;
       vs.style.transform = `translateX(${(vw * x / 100).toFixed(1)}px)`;
+      yy.style.transform = `translate(-50%, -50%) rotate(${rot.toFixed(2)}deg)`;  // the two halves turn a beat behind the line
     }
     function tick() {
       vraf = 0;
-      x += (target - x) * .14;
-      if (Math.abs(target - x) < .05) { x = target; apply(); return; }
+      x += (target - x) * .12;
+      rot += (turn(x) - rot) * .08;
+      if (Math.abs(target - x) < .05 && Math.abs(turn(x) - rot) < .05) { x = target; rot = turn(x); apply(); return; }
       apply(); vraf = requestAnimationFrame(tick);
     }
     function lean(t) {
       target = Math.max(32, Math.min(68, t));
       lifter.classList.toggle('dim', target < 44); fighter.classList.toggle('dim', target > 56);
-      if (calm) { x = target; apply(); return; }
+      if (calm) { x = target; rot = turn(x); apply(); return; }
       if (!vraf) vraf = requestAnimationFrame(tick);
     }
     if (fine) {
