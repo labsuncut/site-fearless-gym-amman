@@ -239,6 +239,7 @@ html[dir="rtl"] .coach-card { transform: rotate(-6deg); }
 html[lang="ar"] .coach-name.display { font-style: normal; line-height: 1.4; }
 .coach-copy .copy { margin-bottom: 1.4em; }
 .coach-actions { justify-content: flex-start; margin: 8px 0 20px; }
+#coach-note { display: inline-block; padding: 8px 0; }  /* a 24 px+ tap target on a phone */
 
 /* Chapter III: Fearless time. A photo strip opens the chapter; the week is one day at a time. */
 .chapter-classes { padding-top: 0; border-top: 1px solid var(--line-dark); }
