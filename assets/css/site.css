@@ -63,9 +63,11 @@ html[lang="ar"] .btn { letter-spacing: 0; font-weight: 800; text-transform: none
 .site-header { position: fixed; top: 0; left: 0; right: 0; z-index: 20; opacity: 0; padding-top: env(safe-area-inset-top, 0px); transition: opacity 600ms var(--ease), background 300ms; }
 body.stage-5 .site-header { opacity: 1; }
 body.scrolled .site-header { background: var(--black); box-shadow: 0 1px 0 var(--line-dark); }
+/* The header runs the full width: the logo sits in the top left corner, the menu in the top right. */
+.site-header .wrap { max-width: none; padding: 0 clamp(20px, 2.2vw, 36px); }
 .header-row { display: flex; align-items: center; justify-content: space-between; min-height: 64px; gap: 16px; }
 .logo { display: inline-flex; direction: ltr; align-items: center; gap: 5px; text-decoration: none; color: var(--bone); font-family: var(--display); font-size: 1.2rem; letter-spacing: .08em; }
-.logo-helmet { width: 22px; height: 26px; fill: var(--blood); flex: none; }
+.logo-helmet { width: 22px; height: 26px; fill: var(--blood); flex: none; margin-top: 1px; }  /* optically centred on the capitals */
 .nav { display: flex; align-items: center; gap: 22px; font-size: .95rem; }
 .nav > a { color: var(--bone); text-decoration: none; opacity: .8; transition: opacity var(--t-ui); }
 .nav-call { font-family: var(--display); letter-spacing: .06em; text-transform: uppercase; border-bottom: 2px solid var(--ember); opacity: 1 !important; }
@@ -105,9 +107,9 @@ body.stage-4 .intro-helmet, body.stage-5 .intro-helmet, html.intro-seen .intro-h
 
 /* ---------- Hero: the stamp ----------
    The gym's own reel plays full-bleed under a dark veil. The canvas paints the word in blood red with the same reel moving
-   inside its letters. Scrolling pushes the word toward you (one transform) until you pass between the letters and the gym
-   fills the screen; the veil thins as you go. */
-.visor-scene { height: 200vh; position: relative; }
+   inside its letters. The scene is half a screen taller than the screen: the word stays pinned for that half while the
+   first chapter slides up over it (negative margin, see .chapter-warriors), the word fading as it goes. */
+.visor-scene { height: 150vh; position: relative; }
 .visor { position: sticky; top: 0; height: 100svh; overflow: hidden; background: var(--black); }
 .hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 900ms var(--ease); }
 body.stage-4 .hero-video, body.stage-5 .hero-video { opacity: 1; }
@@ -165,7 +167,8 @@ html[lang="ar"] .eyebrow { letter-spacing: 0; font-size: .95rem; }
    Two of the gym's own reels side by side. Each side is a full-width layer clipped to its half (clip-path only);
    the split leans toward your pointer, or toward the side you tap. The reels sit in 60% of the width at their own
    edge so they stay centred as their side grows. */
-.chapter-warriors { padding-top: 0; }
+/* Chapter I rides up over the pinned hero like a curtain: half a screen of overlap, a soft edge. */
+.chapter-warriors { padding-top: 0; margin-top: -50vh; z-index: 2; box-shadow: 0 -40px 80px rgba(0, 0, 0, .7); }
 .warriors-head { display: grid; grid-template-columns: minmax(260px, 1fr) 2fr; gap: 16px clamp(32px, 6vw, 96px); align-items: end; padding: clamp(56px, 8vw, 110px) 0 32px; }
 .warriors-head .display { margin-bottom: 0; }
 .warriors-head .rail-text { margin: 0 0 .4em; }
@@ -188,20 +191,15 @@ html[lang="ar"] .eyebrow { letter-spacing: 0; font-size: .95rem; }
 .side-copy p { max-width: 28em; margin-bottom: 18px; }
 .vs { position: absolute; top: 0; bottom: 0; left: 0; width: 0; z-index: 3; pointer-events: none; will-change: transform; }
 .vs-line { position: absolute; top: 0; bottom: 0; left: -1px; width: 2px; background: var(--ember); box-shadow: 0 0 14px 2px rgba(228, 32, 43, .9), 0 0 40px rgba(228, 32, 43, .5); }
-.vs-badge { position: absolute; top: 50%; left: 0; transform: translate(-50%, -50%); width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; background: var(--black); border: 2px solid var(--ember);
-  font-family: 'Anton', var(--display); font-size: 1.1rem; letter-spacing: .08em; color: var(--bone); box-shadow: 0 0 24px rgba(228, 32, 43, .6); }
-html[lang="ar"] .vs-badge { font-family: var(--display); font-weight: 800; letter-spacing: 0; }
+.yy { position: absolute; top: 50%; left: 0; transform: translate(-50%, -50%); width: 60px; height: 60px; max-width: none; border-radius: 50%; display: block; box-shadow: 0 0 24px rgba(228, 32, 43, .6); will-change: transform; }
 .warriors-notes { display: none; }
-/* The camp: the kitchen reel takes the room; recovery is words only (no footage of it yet), set against the reel's foot. */
-.camp { display: grid; grid-template-columns: 1.7fr 1fr; gap: 28px clamp(32px, 6vw, 96px); align-items: end; padding-top: clamp(56px, 7vw, 96px); }
+/* The camp: the kitchen reel and the recovery picture side by side, level with each other. */
+.camp { display: grid; grid-template-columns: 1fr 1fr; gap: 28px clamp(32px, 6vw, 96px); align-items: start; padding-top: clamp(56px, 7vw, 96px); }
 .camp-head { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(260px, 1fr) 2fr; gap: 8px clamp(32px, 6vw, 96px); align-items: baseline; }
 .camp-head .rail-text { margin: 0; }
 .camp-card { margin: 0; position: relative; }
 .camp-media { position: relative; aspect-ratio: 16 / 10; overflow: hidden; border-top: 2px solid var(--blood); background: var(--black-2); }
-.camp-media video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 40%; }
-.camp-card-text { border-top: 2px solid var(--blood); padding-top: 22px; }
-.camp-card-text figcaption { padding: 0; }
-.camp-mark { display: block; width: 34px; height: auto; fill: none; stroke: var(--blood); stroke-width: 4; margin-bottom: 18px; }
+.camp-media video, .camp-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 40%; }
 .camp-card figcaption { padding: 16px 0 0; }
 .camp-card h3 { font-size: clamp(1.5rem, 2.6vw, 2.2rem); margin-bottom: .2em; }
 .camp-card p { margin-bottom: .4em; max-width: 36em; }
@@ -371,7 +369,7 @@ html[lang="ar"] .call-bar { letter-spacing: 0; font-weight: 800; text-transform:
   .side-copy p, .side-copy .btn { display: none; }
   .side-copy h3 { font-size: clamp(1.9rem, 9vw, 2.6rem); }
   .side-copy .eyebrow { font-size: .72rem; letter-spacing: .14em; }
-  .vs-badge { width: 44px; height: 44px; font-size: .9rem; }
+  .yy { width: 46px; height: 46px; }
   .warriors-notes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding-top: 18px; }
   .warriors-notes .pick-hint { grid-column: 1 / -1; margin: 0; }
   .warriors-note p { font-size: .95rem; margin-bottom: 12px; }
