@@ -196,8 +196,8 @@ html[lang="ar"] .eyebrow { letter-spacing: 0; font-size: .95rem; }
 .side-media::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(11, 11, 12, .25), transparent 35%, transparent 55%, rgba(11, 11, 12, .92)); z-index: 1; }
 .side-copy { position: absolute; bottom: clamp(24px, 4vw, 48px); width: 50%; max-width: 560px; padding: 0 var(--gutter); z-index: 2; transition: opacity 400ms var(--ease-out); }
 .side.dim .side-copy { opacity: 0; }  /* a shrunken side hides its words instead of cutting them */
-.side-lifter .side-copy { left: 0; } .side-fighter .side-copy { right: 0; text-align: end; }
-.side-fighter .side-copy p { margin-inline-start: auto; }
+.side-lifter .side-copy { left: 0; text-align: left; } .side-fighter .side-copy { right: 0; text-align: right; }  /* physical, like the reels: Arabic keeps each title on its outer edge */
+.side-fighter .side-copy p { margin-left: auto; } .side-lifter .side-copy p { margin-right: auto; }
 .side-copy h3 { font-size: clamp(2.4rem, 6vw, 5.6rem); line-height: .95; margin: .05em 0 .25em; }
 .side-copy p { max-width: 26em; margin-bottom: 18px; }
 .vs { position: absolute; top: 0; bottom: 0; left: 0; width: 0; z-index: 3; pointer-events: none; will-change: transform; }
@@ -394,15 +394,24 @@ html[lang="ar"] .call-bar { letter-spacing: 0; font-weight: 800; text-transform:
   .versus { height: min(72svh, 640px); }
   .side-copy { bottom: 16px; padding: 0 14px; width: 50%; }
   .side-copy p, .side-copy .btn { display: none; }
-  .side-copy h3 { font-size: clamp(1.9rem, 9vw, 2.6rem); }
+  .side-copy h3 { font-size: clamp(1.7rem, 8.4vw, 2.5rem); white-space: nowrap; }  /* both titles on one line, so both sides line up */
   .side-copy .eyebrow { font-size: .72rem; letter-spacing: .14em; }
   .yy { width: 46px; height: 46px; }
-  .warriors-notes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding-top: 18px; }
-  .warriors-notes .pick-hint { grid-column: 1 / -1; margin: 0; }
-  .warriors-note p { font-size: .95rem; margin-bottom: 12px; }
-  .warriors-note .btn { width: 100%; }
+  /* Phone: the two notes mirror the two sides above them. Same outer edges as the titles (18px), the lifter's words
+     flush left and the fighter's flush right, buttons the same size on one line, and the split's red line running
+     on between them, through the hint, into the camp. */
+  .side-copy { padding: 0 18px; }
+  .warriors-notes { position: relative; display: grid; grid-template-columns: 1fr 1fr; column-gap: 36px; row-gap: 18px; padding: 0 18px; }
+  .notes-line { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; margin-left: -1px; background: var(--ember); box-shadow: 0 0 14px 2px rgba(228, 32, 43, .9), 0 0 40px rgba(228, 32, 43, .5); transition: opacity 200ms ease; }
+  .warriors-notes .pick-hint { grid-column: 1 / -1; justify-self: center; position: relative; z-index: 1; margin: 18px 0 0; padding: 7px 16px; background: var(--black); border: 1px solid rgba(228, 32, 43, .55); border-radius: 999px; font-size: .78rem; letter-spacing: .04em; color: var(--bone); }
+  .warriors-notes { direction: ltr; }  /* columns follow the reels above (lifter left, fighter right) in both languages */
+  html[lang="ar"] .warriors-notes > * { direction: rtl; }
+  .warriors-note { display: flex; flex-direction: column; text-align: left; }
+  .warriors-note:last-child { text-align: right; }
+  .warriors-note p { flex: 1; font-size: .95rem; margin-bottom: 14px; }
+  .warriors-note .btn { width: 100%; height: 72px; padding: 0 10px; text-align: center; text-wrap: balance; line-height: 1.15; }  /* one size for both, however the words wrap */
   .camp { grid-template-columns: 1fr; gap: 32px; }
-  .camp-head::before { height: 48px; margin-bottom: 18px; }
+  .camp-head::before { height: 72px; margin-bottom: 18px; }
   .coach-grid { grid-template-columns: 1fr; gap: 36px; }
   .coach-media { padding-inline-end: 10%; }
   .coach-frame { aspect-ratio: 4 / 5; max-height: 70svh; }
