@@ -195,12 +195,24 @@
   // ---------- Reels: each loads only when its chapter is near and plays only while on screen. Never with Reduce Motion or Data Saver. ----------
   const reels = !calm && !saveData;
   if (reels && 'IntersectionObserver' in window) {
-    const vio = new IntersectionObserver((es) => es.forEach((e) => {
+    // Two observers: one starts the download a little early, the other plays only once the reel is really on screen.
+    // iPhone Safari stops a muted reel that is told to play while it is hidden (the camp cards are still closed by
+    // their reveal then), so playing early left the kitchen reel frozen on its poster.
+    const load = new IntersectionObserver((es) => es.forEach((e) => {
       const v = e.target;
-      if (e.isIntersecting) { if (!v.getAttribute('src')) { v.src = v.dataset.src; v.load(); } v.play().catch(() => {}); }
-      else v.pause();
+      if (e.isIntersecting && !v.getAttribute('src')) { v.autoplay = true; v.src = v.dataset.src; v.load(); load.unobserve(v); }
     }), { rootMargin: '240px 0px' });
-    $$('video[data-src]:not(#hero-video)').forEach((v) => vio.observe(v));
+    const play = new IntersectionObserver((es) => es.forEach((e) => {
+      const v = e.target;
+      if (e.isIntersecting) { if (!v.getAttribute('src')) { v.autoplay = true; v.src = v.dataset.src; v.load(); } v.play().catch(() => {}); }
+      else v.pause();
+    }), { threshold: .25 });
+    $$('video[data-src]:not(#hero-video)').forEach((v) => { load.observe(v); play.observe(v); });
+    // When a reveal finishes opening, nudge the reels inside it (Safari may have refused them while they were closed).
+    document.addEventListener('transitionend', (e) => {
+      if (e.propertyName !== 'clip-path' || !e.target.classList || !e.target.classList.contains('ap')) return;
+      e.target.querySelectorAll('video[src]').forEach((v) => { const r = v.getBoundingClientRect(); if (v.paused && r.bottom > 0 && r.top < innerHeight) v.play().catch(() => {}); });
+    });
   }
   // The hero's reel starts loading at once: it has to be moving by the time the word stamps in.
   const heroVideo = $('#hero-video');
@@ -431,7 +443,7 @@
   // ---------- Two warriors: the split leans toward your pointer, or toward the side you tap ----------
   const versus = $('#versus');
   if (versus) {
-    const lifter = $('#side-lifter'), fighter = $('#side-fighter'), vs = $('#vs'), yy = $('#yy');
+    const lifter = $('#side-lifter'), fighter = $('#side-fighter'), vs = $('#vs'), yy = $('#yy'), join = $('#notes-line');
     const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
     let x = 50, target = 50, rot = 0, vraf = 0, vw = versus.clientWidth;
     const turn = (v) => (v - 50) * 2.4;  // how far the yin and yang turns for a given lean, in degrees
@@ -439,6 +451,7 @@
       lifter.style.clipPath = `inset(0 ${(100 - x).toFixed(2)}% 0 0)`;
       fighter.style.clipPath = `inset(0 0 0 ${x.toFixed(2)}%)`;
       vs.style.transform = `translateX(${(vw * x / 100).toFixed(1)}px)`;
+      if (join) join.style.opacity = Math.max(0, 1 - Math.abs(x - 50) / 6).toFixed(2);  // the line below the split joins it only at rest
       yy.style.transform = `translate(-50%, -50%) rotate(${rot.toFixed(2)}deg)`;  // the two halves turn a beat behind the line
     }
     function tick() {
