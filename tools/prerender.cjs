@@ -42,6 +42,9 @@ const root = join(__dirname, '..');
     document.querySelectorAll('.day-tab small').forEach((s) => s.remove());
     document.querySelectorAll('[style]').forEach((el) => { if (el.closest('svg[width="0"]')) return; el.removeAttribute('style'); });
     document.querySelectorAll('#hours tr.today').forEach((tr) => { tr.classList.remove('today'); if (!tr.getAttribute('class')) tr.removeAttribute('class'); const s = tr.querySelector('small'); if (s) { s.previousSibling && s.previousSibling.nodeType === 3 && (s.previousSibling.textContent = s.previousSibling.textContent.replace(/\s+$/, '')); s.remove(); } });
+    // The floor count is time-of-day state (and a sample): bake the stamp and the sheet empty, not the reading.
+    ['live-n', 'live-big', 'live-counted', 'bars', 'bar-axis'].forEach((id) => { const el = document.getElementById(id); if (el) el.textContent = ''; });
+    const av = document.getElementById('log-avg'); if (av) { av.removeAttribute('style'); av.querySelector('i').textContent = ''; }
     const b = document.getElementById('open-badge'); b.textContent = ''; b.className = 'open-badge'; b.hidden = true;
     document.getElementById('map').setAttribute('src', '');
     document.querySelectorAll('.wa-link').forEach((a) => a.setAttribute('href', '#'));

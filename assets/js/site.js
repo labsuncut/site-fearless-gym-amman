@@ -43,6 +43,8 @@
     if (BUSINESS.instagram) links.push(`<a href="${esc(BUSINESS.instagram)}" target="_blank" rel="noopener">${esc(T.foot_ig)}</a>`);
     if (BUSINESS.facebook) links.push(`<a href="${esc(BUSINESS.facebook)}" target="_blank" rel="noopener">${esc(T.foot_fb)}</a>`);
     $('#foot-links').innerHTML = links.join(' · ');
+    renderEvents();
+    floorNow();
     chips('#goal-chips', 'goal', T.goals);
     chips('#when-chips', 'when', T.whens);
     buildTabs();
@@ -110,6 +112,46 @@
     if (n >= 0) { e.preventDefault(); showDay(ORDER[n], true); }
   });
   window.fearless = { showDay };  // used by tools/prerender.cjs
+
+  // ---------- Beyond the walls: this week's tickets and the floor level (both samples until the gym feeds them) ----------
+  function renderEvents() {
+    const box = $('#events'); if (!box) return;
+    const wa = (msg) => `https://wa.me/${BUSINESS.whatsapp}?text=${encodeURIComponent(msg)}`;
+    box.innerHTML = EVENTS.map(([key, d, time, every]) => {
+      const e = T.ev[key] || { title: key, place: '', tags: [] };
+      const msg = T.ev_wa.replace('{event}', e.title).replace('{day}', T.days[d]).replace('{time}', fmt(time));
+      const tags = [T.every[every]].concat(e.tags).filter(Boolean);
+      return `<article class="ticket"><div class="stub"><span class="d">${esc(T.day_short[d])}</span><time>${esc(fmt(time))}</time></div>` +
+        `<div class="ticket-body"><h3 class="display">${esc(e.title)}</h3><p class="place">${esc(e.place)}</p><p class="tags">${tags.map((t) => `<span>${esc(t)}</span>`).join('')}</p></div>` +
+        `<a class="btn" href="${wa(msg)}" target="_blank" rel="noopener">${esc(T.ev_cta)}</a></article>`;
+    }).join('') +
+      `<article class="ticket ticket-idea"><div class="stub"><span class="d">?</span></div>` +
+      `<div class="ticket-body"><h3 class="display">${esc(T.ev_idea_title)}</h3><p class="place">${esc(T.ev_idea_text)}</p></div>` +
+      `<a class="btn" href="${wa(T.ev_idea_wa)}" target="_blank" rel="noopener">${esc(T.ev_idea_cta)}</a></article>`;
+  }
+  // The floor stamp and its log: SAMPLE counts by hour (FLOOR_SAMPLE) until the desk feeds a real hourly number.
+  function floorNow() {
+    const st = $('#live-stamp'); if (!st) return;
+    const { mins } = ammanNow(); const h = Math.floor(mins / 60);
+    const n = FLOOR_SAMPLE[h] || 0;
+    $('#live-n').textContent = n; $('#live-big').textContent = n;
+    $('#live-counted').textContent = T.live_counted.replace('{time}', fmt(String(h).padStart(2, '0') + ':00'));
+    const open = FLOOR_HOURS.filter((hh) => hh <= h).map((hh) => FLOOR_SAMPLE[hh] || 0);
+    const avg = open.length ? Math.round(open.reduce((a, b) => a + b, 0) / open.length) : 0;
+    const max = Math.max(1, ...FLOOR_HOURS.map((hh) => FLOOR_SAMPLE[hh] || 0));
+    $('#bars').innerHTML = FLOOR_HOURS.map((hh) => { const x = FLOOR_SAMPLE[hh] || 0; return `<i style="--h:${Math.max(4, Math.round(x / max * 100))}%"${hh === h ? ' class="now"' : hh > h ? ' class="later"' : ''}></i>`; }).join('');
+    const av = $('#log-avg'); av.style.bottom = Math.round(avg / max * 100) + '%'; av.querySelector('i').textContent = T.live_avg.replace('{n}', avg);
+    $('#bar-axis').innerHTML = T.live_axis.map((l) => `<span>${esc(l)}</span>`).join('');
+    st.setAttribute('aria-label', T.live_open);
+  }
+  (function liveSheet() {
+    const st = $('#live-stamp'), sh = $('#live-sheet'); if (!st || !sh) return;
+    const open = () => { sh.hidden = false; st.setAttribute('aria-expanded', 'true'); body.classList.add('sheet-open'); $('.sheet-close', sh).focus(); };
+    const close = () => { sh.hidden = true; st.setAttribute('aria-expanded', 'false'); body.classList.remove('sheet-open'); st.focus(); };
+    st.addEventListener('click', open);
+    sh.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', close));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !sh.hidden) close(); });
+  })();
 
   function hoursTable() {
     const { day: d } = ammanNow();
@@ -493,5 +535,5 @@
   // The intro starts last: everything it writes to (the scroll engine's elements and measurements) exists by now.
   if (html.classList.contains('intro-seen')) { setStage(5); goLive(); }
   else { playIntro(); }
-  setInterval(() => { openBadge(); const t = ammanNow().day; if (t !== today) { today = t; buildTabs(); renderDay(); } }, 60000);
+  setInterval(() => { openBadge(); floorNow(); const t = ammanNow().day; if (t !== today) { today = t; buildTabs(); renderDay(); } }, 60000);
 })();

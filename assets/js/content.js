@@ -43,11 +43,24 @@ const SCHEDULE = [
   [4, '17:30', 'wrestling', 'kombat'], [4, '18:30', 'bjj_adults', 'kombat']
 ];
 
+// Chapter V, Beyond the walls: the camp outside the gym. SAMPLE events to show the idea (Kareem to Ali, 29 Oct 2026:
+// weekly runs, football games, members sign up on the site). CONFIRM: Fearless sets the real programme; replace these.
+// Each event is [key (TEXT.ev), day (0 = Sunday), 'HH:MM', how often (TEXT.every)].
+const EVENTS = [
+  ['run', 5, '07:00', 'weekly'],
+  ['football', 2, '21:00', 'biweekly']
+];
+// The floor count: SAMPLE people on the floor by hour (0 to 23), shaped like Google's busy times for the gym (busiest 6 to 9 PM).
+// Shown in the corner stamp with a visible "Sample" tag; tapping it opens the floor log (today's hours and the average).
+// The real one: the desk counts the floor once an hour and types one number; nothing here is a live count.
+const FLOOR_SAMPLE = [0, 0, 0, 0, 0, 0, 14, 22, 18, 11, 9, 10, 16, 15, 14, 22, 30, 41, 48, 47, 40, 27, 15, 0];
+const FLOOR_HOURS = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
+
 const TEXT = {
   en: {
     lang_btn: 'عربي',
     skip: 'Skip intro', replay: 'Replay the intro',
-    nav_rooms: 'The warriors', nav_coach: 'Coach', nav_classes: 'Classes', nav_rule: 'The rule', nav_visit: 'Visit', nav_call: 'Call',
+    nav_rooms: 'The warriors', nav_coach: 'Coach', nav_classes: 'Classes', nav_rule: 'The rule', nav_outside: 'Outside', nav_visit: 'Visit', nav_call: 'Call',
     hero_place: 'Khalda · Amman',
     hero_brand: 'FEARLESS', hero_brand_lines: 'FEAR|LESS', hero_video_label: 'Pad work in the combat room at Fearless Gym',
     hero_line: 'A gym and a martial arts school. Put the helmet on.',
@@ -88,9 +101,27 @@ const TEXT = {
     wall: 'PLAY HARD',
     wall_text: 'Two words, painted above the racks. Everything else follows from them.',
     rules: ['Show up.', 'Lift heavier than last week.', 'Respect the mat.', 'Leave the fear at the door.'],
-    // Chapter V: Ask the coach. A chat of the questions people ask most. Answers use only facts already on this page.
+    // Chapter V: Beyond the walls. Kareem's vision (29 Oct 2026): a community, not just a gym. Sample events and a sample floor level.
+    outside_num: 'V', outside_title: 'Beyond the walls',
+    outside_text: 'A gym is a building. Fearless is the people in it. Once a week, the camp goes out the door.',
+    outside_note: 'Sample events to show the idea. Fearless sets the real programme, and it goes here.',
+    live_label: 'On the floor', live_sample: 'Sample', live_open: 'Open the floor log',
+    live_title: 'The floor log', live_now: 'on the floor now', live_counted: 'Counted by the desk at {time}',
+    live_avg: 'Average today: {n}', live_axis: ['6 AM', '12', '6 PM', '11 PM'],
+    live_how: 'Sample numbers to show the idea. The real log: the desk counts the floor once an hour and types one number. No names, no cameras.',
+    live_close: 'Close',
+    events_eyebrow: 'This week outside',
+    every: { weekly: 'Every week', biweekly: 'Every other week' },
+    ev: {
+      run: { title: 'Run Club', place: 'Meet at the gym · 5 km · easy pace', tags: ['Friends welcome', 'All levels'] },
+      football: { title: 'Football night', place: 'A pitch near the gym · 7-a-side', tags: ['Members and friends'] }
+    },
+    ev_cta: 'Save my spot', ev_wa: 'Hi Fearless, save my spot for {event}, {day} at {time}. My name: ',
+    ev_idea_title: 'Your call', ev_idea_text: 'A hike, a swim, fight night at the gym? Tell us what the camp does next.',
+    ev_idea_cta: 'Suggest it', ev_idea_wa: 'Hi Fearless, an idea for outside the gym: ',
+    // Chapter VI: Ask the coach. A chat of the questions people ask most. Answers use only facts already on this page.
     // Items with wait: true are placeholders until the gym answers (CONFIRM at launch); they stay out of the FAQ data for Google.
-    faq_num: 'V', faq_title: 'Ask the coach',
+    faq_num: 'VI', faq_title: 'Ask the coach',
     faq_text: 'The questions people ask us most. Tap one and the gym answers.',
     faq_who: 'Fearless Gym', faq_status: 'Common questions', faq_asks: 'Questions',
     faq_hello: 'Hey. Ask us anything. Tap a question below.',
@@ -108,13 +139,13 @@ const TEXT = {
       { q: 'Are there women-only hours?', a: 'Send us a WhatsApp and we\'ll tell you the options that fit your week.', wait: true },
       { q: 'What should I bring?', a: 'Comfortable training clothes and water. For combat classes, ask us on WhatsApp what gear you need for your first session.', wait: true }
     ],
-    trial_num: 'VI', trial_title: 'Come and see it',
+    trial_num: 'VII', trial_title: 'Come and see it',
     trial_text: 'Call or send a WhatsApp and say when you want to come. A coach will walk you through both rooms.',
     f_name: 'Your name', f_goal: 'I want to train', f_when: 'I can come', f_send: 'Send on WhatsApp',
     goals: ['Strength', 'Combat', 'Both', 'A class', 'With Coach Murad'], whens: ['Mornings', 'Afternoons', 'Evenings'],
     wa_msg: 'Hi Fearless, I want to book a first session.',
     wa_tpl: 'Hi Fearless, I am {name}. I want to train: {goal}. I can come: {when}.',
-    visit_num: 'VII', visit_title: 'Khalda',
+    visit_num: 'VIII', visit_title: 'Khalda',
     address: 'Wasfi At-Tall Street, Building 347, Khalda, Amman', address_note: 'Same building as Buffalo Wings & Rings. Step-free access.',
     hours_title: 'Hours', days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], today: 'today',
     every_day: 'Seven days a week', since: 'Training in Amman since 2013',
@@ -126,7 +157,7 @@ const TEXT = {
   ar: {
     lang_btn: 'English',
     skip: 'تخطي المقدمة', replay: 'أعد المقدمة',
-    nav_rooms: 'المحاربان', nav_coach: 'المدرب', nav_classes: 'الحصص', nav_rule: 'القاعدة', nav_visit: 'الموقع', nav_call: 'اتصل',
+    nav_rooms: 'المحاربان', nav_coach: 'المدرب', nav_classes: 'الحصص', nav_rule: 'القاعدة', nav_outside: 'خارج النادي', nav_visit: 'الموقع', nav_call: 'اتصل',
     hero_place: 'خلدا · عمّان',
     hero_brand: 'بلا خوف', hero_brand_lines: 'بلا|خوف', hero_video_label: 'تدريب على الوسائد في قاعة القتال في فيرلس جيم',
     hero_line: 'نادي رياضي ومدرسة فنون قتالية. البس الخوذة.',
@@ -164,7 +195,24 @@ const TEXT = {
     wall: 'PLAY HARD',
     wall_text: 'كلمتان مرسومتان فوق الرفوف. كل ما عداهما يأتي بعدهما.',
     rules: ['احضر.', 'ارفع أثقل من الأسبوع الماضي.', 'احترم البساط.', 'اترك الخوف عند الباب.'],
-    faq_num: 'V', faq_title: 'اسأل المدرب',
+    outside_num: 'V', outside_title: 'خارج الجدران',
+    outside_text: 'النادي مبنى. فيرلس هم الناس الذين فيه. مرة في الأسبوع، يخرج المعسكر من الباب.',
+    outside_note: 'نشاطات تجريبية لعرض الفكرة. فيرلس يحدد البرنامج الحقيقي، ويُعرض هنا.',
+    live_label: 'على الأرضية', live_sample: 'نموذج', live_open: 'افتح سجل الأرضية',
+    live_title: 'سجل الأرضية', live_now: 'على الأرضية الآن', live_counted: 'عدّهم الاستقبال الساعة {time}',
+    live_avg: 'معدل اليوم: {n}', live_axis: ['٦ ص', '١٢', '٦ م', '١١ م'],
+    live_how: 'أرقام تجريبية لعرض الفكرة. السجل الحقيقي: الاستقبال يعدّ الأرضية مرة كل ساعة ويكتب رقماً واحداً. بلا أسماء، بلا كاميرات.',
+    live_close: 'إغلاق',
+    events_eyebrow: 'هذا الأسبوع خارج النادي',
+    every: { weekly: 'كل أسبوع', biweekly: 'كل أسبوعين' },
+    ev: {
+      run: { title: 'نادي الجري', place: 'نلتقي عند النادي · ٥ كم · وتيرة سهلة', tags: ['الأصدقاء مرحب بهم', 'كل المستويات'] },
+      football: { title: 'ليلة كرة القدم', place: 'ملعب قريب من النادي · ٧ لاعبين', tags: ['أعضاء وأصدقاء'] }
+    },
+    ev_cta: 'احجزوا لي مكاناً', ev_wa: 'مرحباً فيرلس، احجزوا لي مكاناً في {event}، يوم {day} الساعة {time}. اسمي: ',
+    ev_idea_title: 'اقتراحك', ev_idea_text: 'رحلة مشي، سباحة، ليلة قتال في النادي؟ قل لنا ماذا يفعل المعسكر بعد ذلك.',
+    ev_idea_cta: 'اقترح', ev_idea_wa: 'مرحباً فيرلس، عندي فكرة لنشاط خارج النادي: ',
+    faq_num: 'VI', faq_title: 'اسأل المدرب',
     faq_text: 'أكثر الأسئلة التي تصلنا. اضغط على سؤال ويجيبك النادي.',
     faq_who: 'فيرلس جيم', faq_status: 'أسئلة شائعة', faq_asks: 'الأسئلة',
     faq_hello: 'أهلاً. اسألنا أي شيء. اضغط على سؤال في الأسفل.',
@@ -182,13 +230,13 @@ const TEXT = {
       { q: 'هل توجد ساعات مخصصة للسيدات؟', a: 'أرسل لنا واتساب وسنخبرك بالخيارات التي تناسب أسبوعك.' },
       { q: 'ماذا أحضر معي؟', a: 'ملابس تمرين مريحة وماء. لحصص القتال، اسألنا على واتساب عن المعدات التي تحتاجها في حصتك الأولى.' }
     ],
-    trial_num: 'VI', trial_title: 'تعال وشاهد بنفسك',
+    trial_num: 'VII', trial_title: 'تعال وشاهد بنفسك',
     trial_text: 'اتصل أو أرسل واتساب وقل متى تريد أن تأتي. سيأخذك مدرب في جولة على القاعتين.',
     f_name: 'اسمك', f_goal: 'أريد أن أتدرب', f_when: 'أستطيع الحضور', f_send: 'أرسل على واتساب',
     goals: ['قوة', 'قتال', 'الاثنين', 'حصة جماعية', 'مع الكوتش مراد'], whens: ['صباحاً', 'بعد الظهر', 'مساءً'],
     wa_msg: 'مرحباً فيرلس، أريد حجز حصة أولى.',
     wa_tpl: 'مرحباً فيرلس، أنا {name}. أريد أن أتدرب: {goal}. أستطيع الحضور: {when}.',
-    visit_num: 'VII', visit_title: 'خلدا',
+    visit_num: 'VIII', visit_title: 'خلدا',
     address: 'شارع وصفي التل، عمارة ٣٤٧، خلدا، عمّان', address_note: 'في نفس عمارة Buffalo Wings & Rings. مدخل بدون درج.',
     hours_title: 'ساعات العمل', days: ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'], today: 'اليوم',
     every_day: 'سبعة أيام في الأسبوع', since: 'ندرّب في عمّان منذ ٢٠١٣',

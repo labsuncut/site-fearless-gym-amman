@@ -370,7 +370,66 @@ html[lang="ar"] .call-bar { letter-spacing: 0; font-weight: 800; text-transform:
 .call-bar:active { transform: scale(.97); }
 
 /* Hover only where a pointer can hover; on a phone the first tap would otherwise stick. */
+/* ---------- Chapter V: beyond the walls. The floor level (sample), the red line leaving the building, this week's tickets. ---------- */
+.chapter-outside { border-top: 1px solid var(--line-dark); }
+.chapter-outside::before { content: ''; position: absolute; inset: 0; background: radial-gradient(50% 40% at 85% 20%, rgba(179, 18, 27, .12), transparent 70%); pointer-events: none; }
+.outside-stack { display: grid; gap: clamp(36px, 5vw, 64px); }
+/* The floor stamp: a small black stamp in the corner with the count as red light. Tap for the floor log sheet. */
+.live-stamp { position: fixed; z-index: 31; inset-inline-end: 14px; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); display: grid; grid-template-columns: auto auto; grid-template-rows: auto auto; column-gap: 10px; align-items: center; padding: 8px 14px 8px 12px; border: 1.5px solid var(--line-dark); border-radius: 2px; background: rgba(12, 11, 11, .9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color: var(--bone); cursor: pointer; box-shadow: 0 12px 34px rgba(0, 0, 0, .55); transform: translateY(0); transition: transform 200ms var(--ease-out), border-color 200ms var(--ease); font: inherit; text-align: start; }
+.live-stamp:hover, .live-stamp:focus-visible { border-color: var(--ember); transform: translateY(-2px); }
+.live-stamp:active { transform: scale(.97); }
+.live-stamp b { grid-row: 1 / 3; font-family: var(--display); font-weight: 400; font-size: 2rem; line-height: 1; color: var(--ember); text-shadow: 0 0 18px rgba(228, 32, 43, .7); min-width: 1.2em; font-variant-numeric: tabular-nums; }
+.live-stamp span { font-family: 'Anton', var(--display); font-size: .72rem; letter-spacing: .18em; text-transform: uppercase; }
+.live-stamp em { font-style: normal; font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; color: var(--concrete); }
+html[lang="ar"] .live-stamp span { font-family: var(--body); font-weight: 700; letter-spacing: 0; font-size: .85rem; }
+html[lang="ar"] .live-stamp em { letter-spacing: 0; font-size: .72rem; }
+body:not(.past-hero) .live-stamp { transform: translateY(140%); pointer-events: none; }
+.sheet-wrap { position: fixed; inset: 0; z-index: 40; display: grid; place-items: end center; }
+.sheet-wrap[hidden] { display: none; }
+.sheet-back { position: absolute; inset: 0; background: rgba(0, 0, 0, .7); animation: fade 200ms var(--ease-out); }
+.sheet { position: relative; width: min(100%, 560px); max-height: calc(100dvh - 24px); overflow: auto; margin: 0 12px; padding: 22px 22px calc(22px + env(safe-area-inset-bottom, 0px)); border: 1.5px solid var(--line-dark); border-bottom: 0; border-radius: 4px 4px 0 0; background: var(--black-2); color: var(--bone); animation: rise 320ms var(--ease-out); }
+@keyframes fade { from { opacity: 0; } }
+@keyframes rise { from { transform: translateY(40px); opacity: 0; } }
+.sheet-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.sheet-head .eyebrow { margin: 0; }
+.sample { font-family: 'Anton', var(--display); font-size: .7rem; letter-spacing: .18em; text-transform: uppercase; color: var(--concrete); padding: 5px 10px; border: 1px solid var(--line-dark); border-radius: 2px; }
+html[lang="ar"] .sample { font-family: var(--body); font-weight: 700; letter-spacing: 0; font-size: .8rem; }
+.live-big { display: flex; align-items: baseline; gap: 14px; margin: 14px 0 4px; }
+.live-big b { font-family: var(--display); font-weight: 400; font-size: clamp(3.4rem, 10vw, 5rem); line-height: 1; color: var(--ember); text-shadow: 0 0 30px rgba(228, 32, 43, .6); font-variant-numeric: tabular-nums; }
+.live-big span { font-family: var(--serif); font-size: 1.2rem; color: var(--copy); }
+.live-counted { margin: 0 0 18px; }
+.log { position: relative; }
+.log-avg { position: absolute; left: 0; right: 0; bottom: 0; height: 0; border-top: 1.5px dashed rgba(233, 227, 214, .45); pointer-events: none; }
+.log-avg i { position: absolute; inset-inline-end: 0; bottom: 4px; font-style: normal; font-size: .72rem; letter-spacing: .08em; color: var(--concrete); background: var(--black-2); padding-inline-start: 6px; }
+.bars { display: flex; align-items: flex-end; gap: 4px; height: 128px; direction: ltr; }
+.bars i { flex: 1; min-width: 0; height: var(--h, 4%); background: var(--line-dark); border-radius: 2px 2px 0 0; }
+.bars i.now { background: var(--ember); box-shadow: 0 0 16px rgba(228, 32, 43, .85); }
+.bars i.later { opacity: .35; }
+.bar-axis { display: flex; justify-content: space-between; margin-top: 6px; font-size: .74rem; letter-spacing: .08em; color: var(--concrete); direction: ltr; }
+.live-how { margin: 16px 0 0; }
+.sheet-close { width: 100%; margin-top: 18px; }
+
+/* Tickets: the day on the stub, the plan in the middle, one button. Perforated like a stub you keep. */
+.events { display: grid; gap: 14px; }
+.ticket { position: relative; display: grid; grid-template-columns: 7.2em minmax(0, 1fr) 11.5em; align-items: center; gap: 16px clamp(18px, 3vw, 36px); padding-inline-end: clamp(18px, 3vw, 28px); border: 1.5px solid var(--line-dark); border-radius: 2px; background: var(--black-2); overflow: hidden; }
+.ticket::before, .ticket::after { content: ''; position: absolute; inset-inline-start: calc(7.2em - 9px); width: 18px; height: 18px; border-radius: 50%; background: var(--black); border: 1.5px solid var(--line-dark); }
+.ticket::before { top: -10px; } .ticket::after { bottom: -10px; }
+.stub { position: relative; align-self: stretch; display: grid; align-content: center; justify-items: center; padding: 22px 10px; border-inline-end: 1.5px dashed var(--line-dark); text-align: center; transition: box-shadow 400ms var(--ease); }
+.stub .d { font-family: var(--display); font-size: clamp(1.9rem, 3.6vw, 2.8rem); line-height: 1; text-transform: uppercase; }
+html[lang="ar"] .stub .d { font-weight: 800; text-transform: none; font-size: clamp(1.4rem, 3vw, 2rem); }
+.stub time { display: block; font-size: .9rem; color: var(--concrete); margin-top: 6px; font-variant-numeric: tabular-nums; }
+.ticket-body { padding: 20px 0; min-width: 0; }
+.ticket-body h3 { font-size: clamp(1.5rem, 2.6vw, 2.1rem); margin-bottom: .15em; }
+.ticket-body .place { font-family: var(--serif); font-size: clamp(1.1rem, 1rem + .4vw, 1.3rem); line-height: 1.3; color: var(--copy); margin: 0 0 10px; }
+html[lang="ar"] .ticket-body .place { line-height: 1.6; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
+.tags span { font-size: .78rem; letter-spacing: .05em; padding: 4px 9px; border: 1px solid var(--line-dark); border-radius: 2px; color: var(--concrete); }
+.ticket .btn { white-space: nowrap; width: 100%; }
+.ticket-idea { border-style: dashed; background: transparent; }
+.ticket-idea .stub .d { color: var(--ember-text); }
+
 @media (hover: hover) and (pointer: fine) {
+  .ticket:hover .stub { box-shadow: inset 0 0 44px rgba(228, 32, 43, .28); }
   .btn:hover::after { transform: scaleX(1); }
   .btn-primary:hover { background: #fff; }
   .btn-ink:hover { background: #000; }
@@ -424,6 +483,15 @@ html[lang="ar"] .call-bar { letter-spacing: 0; font-weight: 800; text-transform:
   .call-bar { display: block; }
   body.past-hero .call-bar { transform: none; }
   .map { min-height: 240px; }
+  .bars { height: 96px; }
+  .live-stamp { bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
+  .sheet { margin: 0; width: 100%; border-inline: 0; border-radius: 6px 6px 0 0; }
+  .ticket { grid-template-columns: 1fr; gap: 0; padding: 0 18px 18px; }
+  .ticket::before, .ticket::after { display: none; }
+  .stub { grid-auto-flow: column; justify-content: start; align-items: baseline; gap: 12px; padding: 14px 0; border-inline-end: 0; border-bottom: 1.5px dashed var(--line-dark); text-align: start; }
+  .stub time { margin: 0; }
+  .ticket-body { padding: 16px 0; }
+  .ticket .btn { width: 100%; }
   /* Phone: the questions sit in one row you swipe, like quick replies in a chat app. */
   .chat-asks { flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x proximity; scroll-padding-inline: var(--gutter); margin-inline: calc(var(--gutter) * -1); padding: 2px var(--gutter) 6px; scrollbar-width: none; }
   .chat-asks::-webkit-scrollbar { display: none; }
@@ -447,4 +515,6 @@ html[lang="ar"] .call-bar { letter-spacing: 0; font-weight: 800; text-transform:
   .msg.new, .typing { animation: none; }
   .ask { transition: none; }
   .tab-ink { transition: none; }
+  .sheet, .sheet-back { animation: none; }
+  .live-stamp, .stub { transition: none; }
 }
