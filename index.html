@@ -28,8 +28,8 @@
   <link rel="preload" href="assets/fonts/anton-latin-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/instrument-serif-latin-400italic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/img/hero-poster.jpg" as="image">
-  <link rel="stylesheet" href="assets/css/fonts.css?v=14">
-  <link rel="stylesheet" href="assets/css/site.css?v=14">
+  <link rel="stylesheet" href="assets/css/fonts.css?v=15">
+  <link rel="stylesheet" href="assets/css/site.css?v=15">
   <!-- Remembers the visitor's language before the page paints, so there is no flash. -->
   <script>
     (function () {
@@ -141,6 +141,7 @@
         <a href="#coach" data-t="nav_coach">Coach</a>
         <a class="nav-classes" href="#classes" data-t="nav_classes">Classes</a>
         <a href="#rule" data-t="nav_rule">The rule</a>
+        <a href="#outside" data-t="nav_outside">Outside</a>
         <a href="#visit" data-t="nav_visit">Visit</a>
         <button id="lang" class="lang" type="button" data-t="lang_btn">عربي</button>
         <a class="nav-call call-link" href="tel:+962792925017" data-t="nav_call">Call</a>
@@ -284,9 +285,44 @@
       </div>
     </section>
 
+    <!-- Chapter V: beyond the walls. Kareem's vision (29 Oct 2026): a community, not just a gym. The floor level and the
+         events are SAMPLES, labelled on the page; the real programme and real check-ins replace them. -->
+    <section id="outside" class="chapter chapter-black chapter-outside">
+      <div class="wrap chapter-grid">
+        <div class="rail"><span class="numeral" data-t="outside_num">V</span><h2 class="display ap" data-t="outside_title">Beyond the walls</h2><p class="rail-text" data-t="outside_text">A gym is a building. Fearless is the people in it. Once a week, the camp goes out the door.</p><p class="note" data-t="outside_note">Sample events to show the idea. Fearless sets the real programme, and it goes here.</p></div>
+        <div class="outside-stack">
+          <div class="floor ap" id="floor">
+            <div class="floor-head"><p class="eyebrow" data-t="floor_eyebrow">On the floor now</p><span class="sample" data-t="floor_sample">Sample</span></div>
+            <div class="floor-now">
+              <p class="floor-word display" id="floor-word" aria-live="polite"></p>
+              <div class="lamps" id="lamps" aria-hidden="true"><span class="lamp">Quiet</span><span class="lamp">Busy</span><span class="lamp">Packed</span></div>
+              <p class="note floor-src" data-t="floor_src">Preview with a sample pattern. The real one reads check-ins at the desk, never names.</p>
+            </div>
+            <div class="floor-best">
+              <h3 class="hours-title" data-t="floor_best">Best time to come</h3>
+              <div class="bars" id="bars" aria-hidden="true"><i class="h3"></i><i class="h4"></i><i class="h3"></i><i class="h2"></i><i class="h2"></i><i class="h2"></i><i class="h3"></i><i class="h3"></i><i class="h3"></i><i class="h4"></i><i class="h5"></i><i class="h7 pk"></i><i class="h8 pk"></i><i class="h8 pk"></i><i class="h7 pk"></i><i class="h5"></i><i class="h3"></i></div>
+              <div class="bar-axis" id="bar-axis"><span>6 AM</span><span>12</span><span>6 PM</span><span>11 PM</span></div>
+            </div>
+          </div>
+          <div class="route-wrap ap" id="route-wrap">
+            <div class="route-labels"><span data-t="route_from">Fearless · Khalda</span><span data-t="route_to">Out there</span></div>
+            <svg class="route" viewBox="0 0 1000 120" aria-hidden="true" preserveAspectRatio="none">
+              <path class="route-line" id="route-line" d="M28 72 C 170 72, 230 24, 380 40 S 620 112, 760 70 S 910 26, 972 44"></path>
+              <circle class="route-dot" cx="28" cy="72" r="6"></circle>
+              <path class="route-flag" d="M972 44 v-30 l22 7 l-22 7"></path>
+            </svg>
+          </div>
+          <div>
+            <p class="eyebrow" data-t="events_eyebrow">This week outside</p>
+            <div class="events ap" id="events"><article class="ticket"><div class="stub"><span class="d">Fri</span><time>7 AM</time></div><div class="ticket-body"><h3 class="display">Run Club</h3><p class="place">Meet at the gym · 5 km · easy pace</p><p class="tags"><span>Every week</span><span>Friends welcome</span><span>All levels</span></p></div><a class="btn" href="https://wa.me/962792925017?text=Hi%20Fearless%2C%20save%20my%20spot%20for%20Run%20Club%2C%20Friday%20at%207%20AM.%20My%20name%3A%20" target="_blank" rel="noopener">Save my spot</a></article><article class="ticket"><div class="stub"><span class="d">Tue</span><time>9 PM</time></div><div class="ticket-body"><h3 class="display">Football night</h3><p class="place">A pitch near the gym · 7-a-side</p><p class="tags"><span>Every other week</span><span>Members and friends</span></p></div><a class="btn" href="https://wa.me/962792925017?text=Hi%20Fearless%2C%20save%20my%20spot%20for%20Football%20night%2C%20Tuesday%20at%209%20PM.%20My%20name%3A%20" target="_blank" rel="noopener">Save my spot</a></article><article class="ticket ticket-idea"><div class="stub"><span class="d">?</span></div><div class="ticket-body"><h3 class="display">Your call</h3><p class="place">A hike, a swim, fight night at the gym? Tell us what the camp does next.</p></div><a class="btn" href="https://wa.me/962792925017?text=Hi%20Fearless%2C%20an%20idea%20for%20outside%20the%20gym%3A%20" target="_blank" rel="noopener">Suggest it</a></article></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section id="faq" class="chapter chapter-black chapter-faq">
       <div class="wrap chapter-grid">
-        <div class="rail"><span class="numeral" data-t="faq_num">V</span><h2 class="display ap" data-t="faq_title">Ask the coach</h2><p class="rail-text" data-t="faq_text">The questions people ask us most. Tap one and the gym answers.</p></div>
+        <div class="rail"><span class="numeral" data-t="faq_num">VI</span><h2 class="display ap" data-t="faq_title">Ask the coach</h2><p class="rail-text" data-t="faq_text">The questions people ask us most. Tap one and the gym answers.</p></div>
         <div class="faq">
           <!-- A chat: tap a question, the gym answers. Questions and answers live in content.js (TEXT.faq). -->
           <div class="chat ap" id="chat">
@@ -302,7 +338,7 @@
 
     <section id="trial" class="chapter chapter-black">
       <div class="wrap chapter-grid">
-        <div class="rail"><span class="numeral" data-t="trial_num">VI</span><h2 class="display ap" data-t="trial_title">Come and see it</h2><p class="rail-text" data-t="trial_text">Call or send a WhatsApp and say when you want to come. A coach will walk you through both rooms.</p><p class="contact-lines" id="contact-lines"><a href="tel:+962792925017" dir="ltr">079 292 5017</a> · <a href="https://wa.me/962792925017" target="_blank" rel="noopener">WhatsApp</a></p></div>
+        <div class="rail"><span class="numeral" data-t="trial_num">VII</span><h2 class="display ap" data-t="trial_title">Come and see it</h2><p class="rail-text" data-t="trial_text">Call or send a WhatsApp and say when you want to come. A coach will walk you through both rooms.</p><p class="contact-lines" id="contact-lines"><a href="tel:+962792925017" dir="ltr">079 292 5017</a> · <a href="https://wa.me/962792925017" target="_blank" rel="noopener">WhatsApp</a></p></div>
         <form class="trial-form ap" id="trial-form">
           <label><span data-t="f_name">Your name</span><input name="name" type="text" autocomplete="name" enterkeyhint="send" maxlength="60"></label>
           <fieldset><legend data-t="f_goal">I want to train</legend><div class="chips" id="goal-chips"><label class="chip"><input type="radio" name="goal" value="0" checked=""><span>Strength</span></label><label class="chip"><input type="radio" name="goal" value="1"><span>Combat</span></label><label class="chip"><input type="radio" name="goal" value="2"><span>Both</span></label><label class="chip"><input type="radio" name="goal" value="3"><span>A class</span></label><label class="chip"><input type="radio" name="goal" value="4"><span>With Coach Murad</span></label></div></fieldset>
@@ -314,7 +350,7 @@
 
     <section id="visit" class="chapter chapter-bone">
       <div class="wrap chapter-grid">
-        <div class="rail"><span class="numeral" data-t="visit_num">VII</span><h2 class="display ap" data-t="visit_title">Khalda</h2>
+        <div class="rail"><span class="numeral" data-t="visit_num">VIII</span><h2 class="display ap" data-t="visit_title">Khalda</h2>
           <p class="address" data-t="address">Wasfi At-Tall Street, Building 347, Khalda, Amman</p><p class="note" data-t="address_note">Same building as Buffalo Wings &amp; Rings. Step-free access.</p>
           <p class="plate-line" data-t="every_day">Seven days a week</p><p class="plate-line" data-t="since">Training in Amman since 2013</p>
           <p><a class="btn" id="directions" href="https://www.google.com/maps/search/?api=1&amp;query=Fearless+Gym+Khalda+Amman" target="_blank" rel="noopener" data-t="directions">Get directions</a></p>
@@ -338,7 +374,7 @@
 
   <aside aria-label="Call Fearless"><a class="call-bar call-link" href="tel:+962792925017" data-t="callbar">Call Fearless</a></aside>
 
-  <script src="assets/js/content.js?v=14"></script>
-  <script src="assets/js/site.js?v=14"></script>
+  <script src="assets/js/content.js?v=15"></script>
+  <script src="assets/js/site.js?v=15"></script>
 </body>
 </html>

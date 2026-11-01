@@ -42,6 +42,8 @@ const root = join(__dirname, '..');
     document.querySelectorAll('.day-tab small').forEach((s) => s.remove());
     document.querySelectorAll('[style]').forEach((el) => { if (el.closest('svg[width="0"]')) return; el.removeAttribute('style'); });
     document.querySelectorAll('#hours tr.today').forEach((tr) => { tr.classList.remove('today'); if (!tr.getAttribute('class')) tr.removeAttribute('class'); const s = tr.querySelector('small'); if (s) { s.previousSibling && s.previousSibling.nodeType === 3 && (s.previousSibling.textContent = s.previousSibling.textContent.replace(/\s+$/, '')); s.remove(); } });
+    // The floor level is time-of-day state (and a sample): bake the frame, not the reading.
+    const fl = document.getElementById('floor'); if (fl) { fl.className = 'floor ap'; fl.querySelector('#floor-word').textContent = ''; fl.querySelectorAll('.lamp.on').forEach((l) => l.classList.remove('on')); fl.querySelectorAll('#bars i.now').forEach((b) => b.classList.remove('now')); }
     const b = document.getElementById('open-badge'); b.textContent = ''; b.className = 'open-badge'; b.hidden = true;
     document.getElementById('map').setAttribute('src', '');
     document.querySelectorAll('.wa-link').forEach((a) => a.setAttribute('href', '#'));

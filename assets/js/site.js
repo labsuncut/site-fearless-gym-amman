@@ -43,6 +43,8 @@
     if (BUSINESS.instagram) links.push(`<a href="${esc(BUSINESS.instagram)}" target="_blank" rel="noopener">${esc(T.foot_ig)}</a>`);
     if (BUSINESS.facebook) links.push(`<a href="${esc(BUSINESS.facebook)}" target="_blank" rel="noopener">${esc(T.foot_fb)}</a>`);
     $('#foot-links').innerHTML = links.join(' · ');
+    renderEvents();
+    floorNow();
     chips('#goal-chips', 'goal', T.goals);
     chips('#when-chips', 'when', T.whens);
     buildTabs();
@@ -110,6 +112,36 @@
     if (n >= 0) { e.preventDefault(); showDay(ORDER[n], true); }
   });
   window.fearless = { showDay };  // used by tools/prerender.cjs
+
+  // ---------- Beyond the walls: this week's tickets and the floor level (both samples until the gym feeds them) ----------
+  function renderEvents() {
+    const box = $('#events'); if (!box) return;
+    const wa = (msg) => `https://wa.me/${BUSINESS.whatsapp}?text=${encodeURIComponent(msg)}`;
+    box.innerHTML = EVENTS.map(([key, d, time, every]) => {
+      const e = T.ev[key] || { title: key, place: '', tags: [] };
+      const msg = T.ev_wa.replace('{event}', e.title).replace('{day}', T.days[d]).replace('{time}', fmt(time));
+      const tags = [T.every[every]].concat(e.tags).filter(Boolean);
+      return `<article class="ticket"><div class="stub"><span class="d">${esc(T.day_short[d])}</span><time>${esc(fmt(time))}</time></div>` +
+        `<div class="ticket-body"><h3 class="display">${esc(e.title)}</h3><p class="place">${esc(e.place)}</p><p class="tags">${tags.map((t) => `<span>${esc(t)}</span>`).join('')}</p></div>` +
+        `<a class="btn" href="${wa(msg)}" target="_blank" rel="noopener">${esc(T.ev_cta)}</a></article>`;
+    }).join('') +
+      `<article class="ticket ticket-idea"><div class="stub"><span class="d">?</span></div>` +
+      `<div class="ticket-body"><h3 class="display">${esc(T.ev_idea_title)}</h3><p class="place">${esc(T.ev_idea_text)}</p></div>` +
+      `<a class="btn" href="${wa(T.ev_idea_wa)}" target="_blank" rel="noopener">${esc(T.ev_idea_cta)}</a></article>`;
+    $('#lamps').innerHTML = T.floor_levels.map((l) => `<span class="lamp">${esc(l)}</span>`).join('');
+    $('#bar-axis').innerHTML = T.floor_axis.map((l) => `<span>${esc(l)}</span>`).join('');
+    const line = $('#route-line');
+    if (line && line.getTotalLength) line.style.setProperty('--len', Math.ceil(line.getTotalLength()));
+  }
+  function floorNow() {
+    const f = $('#floor'); if (!f) return;
+    const { mins } = ammanNow(); const h = Math.floor(mins / 60);
+    const v = FLOOR_SAMPLE[h] || 0, lv = v >= 7 ? 2 : v >= 4 ? 1 : 0;
+    f.classList.remove('lv-0', 'lv-1', 'lv-2'); f.classList.add('lv-' + lv);
+    $('#floor-word').textContent = T.floor_levels[lv];
+    $$('.lamp', f).forEach((l, i) => l.classList.toggle('on', i === lv));
+    $('#bars').innerHTML = FLOOR_HOURS.map((hh) => { const x = FLOOR_SAMPLE[hh] || 0; return `<i class="h${x}${x >= 7 ? ' pk' : ''}${hh === h ? ' now' : ''}"></i>`; }).join('');
+  }
 
   function hoursTable() {
     const { day: d } = ammanNow();
@@ -493,5 +525,5 @@
   // The intro starts last: everything it writes to (the scroll engine's elements and measurements) exists by now.
   if (html.classList.contains('intro-seen')) { setStage(5); goLive(); }
   else { playIntro(); }
-  setInterval(() => { openBadge(); const t = ammanNow().day; if (t !== today) { today = t; buildTabs(); renderDay(); } }, 60000);
+  setInterval(() => { openBadge(); floorNow(); const t = ammanNow().day; if (t !== today) { today = t; buildTabs(); renderDay(); } }, 60000);
 })();

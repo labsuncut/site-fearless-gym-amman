@@ -370,7 +370,65 @@ html[lang="ar"] .call-bar { letter-spacing: 0; font-weight: 800; text-transform:
 .call-bar:active { transform: scale(.97); }
 
 /* Hover only where a pointer can hover; on a phone the first tap would otherwise stick. */
+/* ---------- Chapter V: beyond the walls. The floor level (sample), the red line leaving the building, this week's tickets. ---------- */
+.chapter-outside { border-top: 1px solid var(--line-dark); }
+.chapter-outside::before { content: ''; position: absolute; inset: 0; background: radial-gradient(50% 40% at 85% 20%, rgba(179, 18, 27, .12), transparent 70%); pointer-events: none; }
+.outside-stack { display: grid; gap: clamp(36px, 5vw, 64px); }
+/* The floor: one word, three lamps, the day's shape. Red is light: the lamp and the lit hour glow, nothing is painted red. */
+.floor { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 20px clamp(24px, 4vw, 56px); padding: 26px 28px 28px; border: 1.5px solid var(--line-dark); border-radius: 2px; background: var(--black-2); overflow: hidden; }
+.floor::before { content: ''; position: absolute; inset: 0; background: radial-gradient(55% 70% at 18% 55%, rgba(228, 32, 43, .18), transparent 70%); pointer-events: none; opacity: 0; transition: opacity 700ms var(--ease); }
+.floor.lv-1::before { opacity: .55; } .floor.lv-2::before { opacity: 1; }
+.floor-head { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.floor-head .eyebrow { margin: 0; }
+.sample { font-family: 'Anton', var(--display); font-size: .7rem; letter-spacing: .22em; text-transform: uppercase; color: var(--concrete); border: 1px solid var(--line-dark); padding: 5px 9px 4px; border-radius: 2px; }
+html[lang="ar"] .sample { font-family: var(--body); font-weight: 700; letter-spacing: 0; }
+.floor-now, .floor-best { position: relative; min-width: 0; }
+.floor-word { font-size: clamp(3.2rem, 8vw, 6rem); line-height: .95; margin: 0 0 16px; min-height: 1em; transition: color 500ms var(--ease), text-shadow 500ms var(--ease); }
+.floor.lv-2 .floor-word { color: var(--ember); text-shadow: 0 0 34px rgba(228, 32, 43, .6); }
+.lamps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.lamp { font-family: 'Anton', var(--display); font-size: .78rem; letter-spacing: .18em; text-transform: uppercase; text-align: center; padding: 10px 4px; border: 1px solid var(--line-dark); border-radius: 2px; color: var(--concrete); transition: color var(--t-ui), box-shadow 400ms var(--ease), border-color var(--t-ui); }
+.lamp.on { color: var(--bone); border-color: var(--ember); box-shadow: inset 0 0 0 1px var(--ember), 0 0 18px rgba(228, 32, 43, .55); }
+html[lang="ar"] .lamp { font-family: var(--body); font-weight: 700; letter-spacing: 0; font-size: .9rem; }
+.floor-src { margin: 16px 0 0; max-width: 24em; }
+.floor-best .hours-title { margin-top: 2px; }
+.bars { display: flex; align-items: flex-end; gap: 4px; height: 128px; direction: ltr; }
+.bars i { flex: 1; min-width: 0; height: 4%; background: var(--line-dark); border-radius: 2px 2px 0 0; transition: background 300ms var(--ease), box-shadow 300ms var(--ease); }
+.bars i.h1 { height: 12%; } .bars i.h2 { height: 24%; } .bars i.h3 { height: 36%; } .bars i.h4 { height: 48%; } .bars i.h5 { height: 60%; } .bars i.h6 { height: 72%; } .bars i.h7 { height: 86%; } .bars i.h8 { height: 100%; }
+.bars i.pk { background: rgba(228, 32, 43, .5); }
+.bars i.now { background: var(--ember); box-shadow: 0 0 16px rgba(228, 32, 43, .85); }
+.bar-axis { display: flex; justify-content: space-between; margin-top: 6px; font-size: .74rem; letter-spacing: .08em; color: var(--concrete); direction: ltr; }
+/* The red line that runs through the split and the camp now leaves the building: it draws itself as the chapter comes into view. */
+.route-wrap { position: relative; }
+html[dir="rtl"] .route { transform: scaleX(-1); }
+.route-labels { display: flex; justify-content: space-between; font-family: 'Anton', var(--display); font-size: .78rem; letter-spacing: .22em; text-transform: uppercase; color: var(--concrete); margin-bottom: 4px; }
+html[lang="ar"] .route-labels { font-family: var(--body); font-weight: 700; letter-spacing: 0; }
+.route { display: block; width: 100%; height: clamp(64px, 9vw, 120px); overflow: visible; }
+.route-line { fill: none; stroke: var(--ember); stroke-width: 2; stroke-linecap: round; stroke-dasharray: var(--len, 1600); stroke-dashoffset: var(--len, 1600); filter: drop-shadow(0 0 6px rgba(228, 32, 43, .75)); transition: stroke-dashoffset 1800ms var(--ease) 250ms; }
+.ap.in .route-line { stroke-dashoffset: 0; }
+.route-dot { fill: var(--ember); filter: drop-shadow(0 0 8px rgba(228, 32, 43, .9)); }
+.route-flag { fill: var(--bone); stroke: var(--bone); stroke-width: 2; stroke-linejoin: round; opacity: 0; transition: opacity 400ms var(--ease) 1900ms; }
+.ap.in .route-flag { opacity: 1; }
+/* Tickets: the day on the stub, the plan in the middle, one button. Perforated like a stub you keep. */
+.events { display: grid; gap: 14px; }
+.ticket { position: relative; display: grid; grid-template-columns: 7.2em minmax(0, 1fr) auto; align-items: center; gap: 16px clamp(18px, 3vw, 36px); padding-inline-end: clamp(18px, 3vw, 28px); border: 1.5px solid var(--line-dark); border-radius: 2px; background: var(--black-2); overflow: hidden; }
+.ticket::before, .ticket::after { content: ''; position: absolute; inset-inline-start: calc(7.2em - 9px); width: 18px; height: 18px; border-radius: 50%; background: var(--black); border: 1.5px solid var(--line-dark); }
+.ticket::before { top: -10px; } .ticket::after { bottom: -10px; }
+.stub { position: relative; align-self: stretch; display: grid; align-content: center; justify-items: center; padding: 22px 10px; border-inline-end: 1.5px dashed var(--line-dark); text-align: center; transition: box-shadow 400ms var(--ease); }
+.stub .d { font-family: var(--display); font-size: clamp(1.9rem, 3.6vw, 2.8rem); line-height: 1; text-transform: uppercase; }
+html[lang="ar"] .stub .d { font-weight: 800; text-transform: none; font-size: clamp(1.4rem, 3vw, 2rem); }
+.stub time { display: block; font-size: .9rem; color: var(--concrete); margin-top: 6px; font-variant-numeric: tabular-nums; }
+.ticket-body { padding: 20px 0; min-width: 0; }
+.ticket-body h3 { font-size: clamp(1.5rem, 2.6vw, 2.1rem); margin-bottom: .15em; }
+.ticket-body .place { font-family: var(--serif); font-size: clamp(1.1rem, 1rem + .4vw, 1.3rem); line-height: 1.3; color: var(--copy); margin: 0 0 10px; }
+html[lang="ar"] .ticket-body .place { line-height: 1.6; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
+.tags span { font-size: .78rem; letter-spacing: .05em; padding: 4px 9px; border: 1px solid var(--line-dark); border-radius: 2px; color: var(--concrete); }
+.ticket .btn { white-space: nowrap; }
+.ticket-idea { border-style: dashed; background: transparent; }
+.ticket-idea .stub .d { color: var(--ember-text); }
+
 @media (hover: hover) and (pointer: fine) {
+  .ticket:hover .stub { box-shadow: inset 0 0 44px rgba(228, 32, 43, .28); }
   .btn:hover::after { transform: scaleX(1); }
   .btn-primary:hover { background: #fff; }
   .btn-ink:hover { background: #000; }
@@ -424,6 +482,15 @@ html[lang="ar"] .call-bar { letter-spacing: 0; font-weight: 800; text-transform:
   .call-bar { display: block; }
   body.past-hero .call-bar { transform: none; }
   .map { min-height: 240px; }
+  .floor { grid-template-columns: 1fr; padding: 20px 18px 22px; }
+  .floor-word { font-size: clamp(3rem, 16vw, 4.4rem); }
+  .bars { height: 96px; }
+  .ticket { grid-template-columns: 1fr; gap: 0; padding: 0 18px 18px; }
+  .ticket::before, .ticket::after { display: none; }
+  .stub { grid-auto-flow: column; justify-content: start; align-items: baseline; gap: 12px; padding: 14px 0; border-inline-end: 0; border-bottom: 1.5px dashed var(--line-dark); text-align: start; }
+  .stub time { margin: 0; }
+  .ticket-body { padding: 16px 0; }
+  .ticket .btn { width: 100%; }
   /* Phone: the questions sit in one row you swipe, like quick replies in a chat app. */
   .chat-asks { flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x proximity; scroll-padding-inline: var(--gutter); margin-inline: calc(var(--gutter) * -1); padding: 2px var(--gutter) 6px; scrollbar-width: none; }
   .chat-asks::-webkit-scrollbar { display: none; }
@@ -447,4 +514,6 @@ html[lang="ar"] .call-bar { letter-spacing: 0; font-weight: 800; text-transform:
   .msg.new, .typing { animation: none; }
   .ask { transition: none; }
   .tab-ink { transition: none; }
+  .route-line { stroke-dashoffset: 0; transition: none; } .route-flag { opacity: 1; transition: none; }
+  .floor::before, .floor-word, .lamp, .bars i, .stub { transition: none; }
 }
