@@ -128,20 +128,30 @@
       `<article class="ticket ticket-idea"><div class="stub"><span class="d">?</span></div>` +
       `<div class="ticket-body"><h3 class="display">${esc(T.ev_idea_title)}</h3><p class="place">${esc(T.ev_idea_text)}</p></div>` +
       `<a class="btn" href="${wa(T.ev_idea_wa)}" target="_blank" rel="noopener">${esc(T.ev_idea_cta)}</a></article>`;
-    $('#lamps').innerHTML = T.floor_levels.map((l) => `<span class="lamp">${esc(l)}</span>`).join('');
-    $('#bar-axis').innerHTML = T.floor_axis.map((l) => `<span>${esc(l)}</span>`).join('');
-    const line = $('#route-line');
-    if (line && line.getTotalLength) line.style.setProperty('--len', Math.ceil(line.getTotalLength()));
   }
+  // The floor stamp and its log: SAMPLE counts by hour (FLOOR_SAMPLE) until the desk feeds a real hourly number.
   function floorNow() {
-    const f = $('#floor'); if (!f) return;
+    const st = $('#live-stamp'); if (!st) return;
     const { mins } = ammanNow(); const h = Math.floor(mins / 60);
-    const v = FLOOR_SAMPLE[h] || 0, lv = v >= 7 ? 2 : v >= 4 ? 1 : 0;
-    f.classList.remove('lv-0', 'lv-1', 'lv-2'); f.classList.add('lv-' + lv);
-    $('#floor-word').textContent = T.floor_levels[lv];
-    $$('.lamp', f).forEach((l, i) => l.classList.toggle('on', i === lv));
-    $('#bars').innerHTML = FLOOR_HOURS.map((hh) => { const x = FLOOR_SAMPLE[hh] || 0; return `<i class="h${x}${x >= 7 ? ' pk' : ''}${hh === h ? ' now' : ''}"></i>`; }).join('');
+    const n = FLOOR_SAMPLE[h] || 0;
+    $('#live-n').textContent = n; $('#live-big').textContent = n;
+    $('#live-counted').textContent = T.live_counted.replace('{time}', fmt(String(h).padStart(2, '0') + ':00'));
+    const open = FLOOR_HOURS.filter((hh) => hh <= h).map((hh) => FLOOR_SAMPLE[hh] || 0);
+    const avg = open.length ? Math.round(open.reduce((a, b) => a + b, 0) / open.length) : 0;
+    const max = Math.max(1, ...FLOOR_HOURS.map((hh) => FLOOR_SAMPLE[hh] || 0));
+    $('#bars').innerHTML = FLOOR_HOURS.map((hh) => { const x = FLOOR_SAMPLE[hh] || 0; return `<i style="--h:${Math.max(4, Math.round(x / max * 100))}%"${hh === h ? ' class="now"' : hh > h ? ' class="later"' : ''}></i>`; }).join('');
+    const av = $('#log-avg'); av.style.bottom = Math.round(avg / max * 100) + '%'; av.querySelector('i').textContent = T.live_avg.replace('{n}', avg);
+    $('#bar-axis').innerHTML = T.live_axis.map((l) => `<span>${esc(l)}</span>`).join('');
+    st.setAttribute('aria-label', T.live_open);
   }
+  (function liveSheet() {
+    const st = $('#live-stamp'), sh = $('#live-sheet'); if (!st || !sh) return;
+    const open = () => { sh.hidden = false; st.setAttribute('aria-expanded', 'true'); body.classList.add('sheet-open'); $('.sheet-close', sh).focus(); };
+    const close = () => { sh.hidden = true; st.setAttribute('aria-expanded', 'false'); body.classList.remove('sheet-open'); st.focus(); };
+    st.addEventListener('click', open);
+    sh.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', close));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !sh.hidden) close(); });
+  })();
 
   function hoursTable() {
     const { day: d } = ammanNow();

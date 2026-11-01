@@ -28,8 +28,8 @@
   <link rel="preload" href="assets/fonts/anton-latin-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/instrument-serif-latin-400italic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/img/hero-poster.jpg" as="image">
-  <link rel="stylesheet" href="assets/css/fonts.css?v=15">
-  <link rel="stylesheet" href="assets/css/site.css?v=15">
+  <link rel="stylesheet" href="assets/css/fonts.css?v=16">
+  <link rel="stylesheet" href="assets/css/site.css?v=16">
   <!-- Remembers the visitor's language before the page paints, so there is no flash. -->
   <script>
     (function () {
@@ -285,33 +285,12 @@
       </div>
     </section>
 
-    <!-- Chapter V: beyond the walls. Kareem's vision (29 Oct 2026): a community, not just a gym. The floor level and the
-         events are SAMPLES, labelled on the page; the real programme and real check-ins replace them. -->
+    <!-- Chapter V: beyond the walls. Kareem's vision (29 Oct 2026): a community, not just a gym. The events are SAMPLES,
+         labelled on the page; the real programme replaces them. The floor count lives in the corner stamp (bottom of the file). -->
     <section id="outside" class="chapter chapter-black chapter-outside">
       <div class="wrap chapter-grid">
         <div class="rail"><span class="numeral" data-t="outside_num">V</span><h2 class="display ap" data-t="outside_title">Beyond the walls</h2><p class="rail-text" data-t="outside_text">A gym is a building. Fearless is the people in it. Once a week, the camp goes out the door.</p><p class="note" data-t="outside_note">Sample events to show the idea. Fearless sets the real programme, and it goes here.</p></div>
         <div class="outside-stack">
-          <div class="floor ap" id="floor">
-            <div class="floor-head"><p class="eyebrow" data-t="floor_eyebrow">On the floor now</p><span class="sample" data-t="floor_sample">Sample</span></div>
-            <div class="floor-now">
-              <p class="floor-word display" id="floor-word" aria-live="polite"></p>
-              <div class="lamps" id="lamps" aria-hidden="true"><span class="lamp">Quiet</span><span class="lamp">Busy</span><span class="lamp">Packed</span></div>
-              <p class="note floor-src" data-t="floor_src">Preview with a sample pattern. The real one reads check-ins at the desk, never names.</p>
-            </div>
-            <div class="floor-best">
-              <h3 class="hours-title" data-t="floor_best">Best time to come</h3>
-              <div class="bars" id="bars" aria-hidden="true"><i class="h3"></i><i class="h4"></i><i class="h3"></i><i class="h2"></i><i class="h2"></i><i class="h2"></i><i class="h3"></i><i class="h3"></i><i class="h3"></i><i class="h4"></i><i class="h5"></i><i class="h7 pk"></i><i class="h8 pk"></i><i class="h8 pk"></i><i class="h7 pk"></i><i class="h5"></i><i class="h3"></i></div>
-              <div class="bar-axis" id="bar-axis"><span>6 AM</span><span>12</span><span>6 PM</span><span>11 PM</span></div>
-            </div>
-          </div>
-          <div class="route-wrap ap" id="route-wrap">
-            <div class="route-labels"><span data-t="route_from">Fearless · Khalda</span><span data-t="route_to">Out there</span></div>
-            <svg class="route" viewBox="0 0 1000 120" aria-hidden="true" preserveAspectRatio="none">
-              <path class="route-line" id="route-line" d="M28 72 C 170 72, 230 24, 380 40 S 620 112, 760 70 S 910 26, 972 44"></path>
-              <circle class="route-dot" cx="28" cy="72" r="6"></circle>
-              <path class="route-flag" d="M972 44 v-30 l22 7 l-22 7"></path>
-            </svg>
-          </div>
           <div>
             <p class="eyebrow" data-t="events_eyebrow">This week outside</p>
             <div class="events ap" id="events"><article class="ticket"><div class="stub"><span class="d">Fri</span><time>7 AM</time></div><div class="ticket-body"><h3 class="display">Run Club</h3><p class="place">Meet at the gym · 5 km · easy pace</p><p class="tags"><span>Every week</span><span>Friends welcome</span><span>All levels</span></p></div><a class="btn" href="https://wa.me/962792925017?text=Hi%20Fearless%2C%20save%20my%20spot%20for%20Run%20Club%2C%20Friday%20at%207%20AM.%20My%20name%3A%20" target="_blank" rel="noopener">Save my spot</a></article><article class="ticket"><div class="stub"><span class="d">Tue</span><time>9 PM</time></div><div class="ticket-body"><h3 class="display">Football night</h3><p class="place">A pitch near the gym · 7-a-side</p><p class="tags"><span>Every other week</span><span>Members and friends</span></p></div><a class="btn" href="https://wa.me/962792925017?text=Hi%20Fearless%2C%20save%20my%20spot%20for%20Football%20night%2C%20Tuesday%20at%209%20PM.%20My%20name%3A%20" target="_blank" rel="noopener">Save my spot</a></article><article class="ticket ticket-idea"><div class="stub"><span class="d">?</span></div><div class="ticket-body"><h3 class="display">Your call</h3><p class="place">A hike, a swim, fight night at the gym? Tell us what the camp does next.</p></div><a class="btn" href="https://wa.me/962792925017?text=Hi%20Fearless%2C%20an%20idea%20for%20outside%20the%20gym%3A%20" target="_blank" rel="noopener">Suggest it</a></article></div>
@@ -372,9 +351,26 @@
     <p class="wrap foot-preview" data-t="foot_preview">Preview build by FellowFlow. Not the gym's official site.</p>
   </footer>
 
+  <!-- The floor stamp: how many people are on the floor right now, always in view. SAMPLE numbers (FLOOR_SAMPLE) until the
+       desk feeds the real hourly count. Tap it for the floor log: today's hours and the average. -->
+  <button class="live-stamp" id="live-stamp" type="button" aria-haspopup="dialog" aria-controls="live-sheet" aria-expanded="false" aria-label="Open the floor log">
+    <b id="live-n" aria-live="polite"></b><span data-t="live_label">On the floor</span><em data-t="live_sample">Sample</em>
+  </button>
+  <div class="sheet-wrap" id="live-sheet" hidden="">
+    <div class="sheet-back" data-close=""></div>
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="live-title">
+      <div class="sheet-head"><p class="eyebrow" id="live-title" data-t="live_title">The floor log</p><span class="sample" data-t="live_sample">Sample</span></div>
+      <p class="live-big"><b id="live-big"></b><span data-t="live_now">on the floor now</span></p>
+      <p class="note live-counted" id="live-counted"></p>
+      <div class="log" id="log" aria-hidden="true"><div class="log-avg" id="log-avg"><i></i></div><div class="bars" id="bars"></div></div>
+      <div class="bar-axis" id="bar-axis" aria-hidden="true"></div>
+      <p class="note live-how" data-t="live_how">Sample numbers to show the idea. The real log: the desk counts the floor once an hour and types one number. No names, no cameras.</p>
+      <button class="btn sheet-close" type="button" data-close="" data-t="live_close">Close</button>
+    </div>
+  </div>
   <aside aria-label="Call Fearless"><a class="call-bar call-link" href="tel:+962792925017" data-t="callbar">Call Fearless</a></aside>
 
-  <script src="assets/js/content.js?v=15"></script>
-  <script src="assets/js/site.js?v=15"></script>
+  <script src="assets/js/content.js?v=16"></script>
+  <script src="assets/js/site.js?v=16"></script>
 </body>
 </html>

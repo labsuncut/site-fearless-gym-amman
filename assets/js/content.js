@@ -50,9 +50,10 @@ const EVENTS = [
   ['run', 5, '07:00', 'weekly'],
   ['football', 2, '21:00', 'biweekly']
 ];
-// The floor level: a SAMPLE pattern by hour (0 to 23), shaped like Google's busy times for the gym (busiest 6 to 9 PM).
-// It is shown with a visible "Sample" tag. The real one reads check-ins at the desk; nothing here is a live count.
-const FLOOR_SAMPLE = [0, 0, 0, 0, 0, 0, 3, 4, 3, 2, 2, 2, 3, 3, 3, 4, 5, 7, 8, 8, 7, 5, 3, 0];
+// The floor count: SAMPLE people on the floor by hour (0 to 23), shaped like Google's busy times for the gym (busiest 6 to 9 PM).
+// Shown in the corner stamp with a visible "Sample" tag; tapping it opens the floor log (today's hours and the average).
+// The real one: the desk counts the floor once an hour and types one number; nothing here is a live count.
+const FLOOR_SAMPLE = [0, 0, 0, 0, 0, 0, 14, 22, 18, 11, 9, 10, 16, 15, 14, 22, 30, 41, 48, 47, 40, 27, 15, 0];
 const FLOOR_HOURS = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
 
 const TEXT = {
@@ -104,10 +105,11 @@ const TEXT = {
     outside_num: 'V', outside_title: 'Beyond the walls',
     outside_text: 'A gym is a building. Fearless is the people in it. Once a week, the camp goes out the door.',
     outside_note: 'Sample events to show the idea. Fearless sets the real programme, and it goes here.',
-    floor_eyebrow: 'On the floor now', floor_levels: ['Quiet', 'Busy', 'Packed'], floor_sample: 'Sample',
-    floor_src: 'Preview with a sample pattern. The real one reads check-ins at the desk, never names.',
-    floor_best: 'Best time to come', floor_axis: ['6 AM', '12', '6 PM', '11 PM'],
-    route_from: 'Fearless · Khalda', route_to: 'Out there',
+    live_label: 'On the floor', live_sample: 'Sample', live_open: 'Open the floor log',
+    live_title: 'The floor log', live_now: 'on the floor now', live_counted: 'Counted by the desk at {time}',
+    live_avg: 'Average today: {n}', live_axis: ['6 AM', '12', '6 PM', '11 PM'],
+    live_how: 'Sample numbers to show the idea. The real log: the desk counts the floor once an hour and types one number. No names, no cameras.',
+    live_close: 'Close',
     events_eyebrow: 'This week outside',
     every: { weekly: 'Every week', biweekly: 'Every other week' },
     ev: {
@@ -196,10 +198,11 @@ const TEXT = {
     outside_num: 'V', outside_title: 'خارج الجدران',
     outside_text: 'النادي مبنى. فيرلس هم الناس الذين فيه. مرة في الأسبوع، يخرج المعسكر من الباب.',
     outside_note: 'نشاطات تجريبية لعرض الفكرة. فيرلس يحدد البرنامج الحقيقي، ويُعرض هنا.',
-    floor_eyebrow: 'على الأرضية الآن', floor_levels: ['هادئ', 'مزدحم', 'ممتلئ'], floor_sample: 'نموذج',
-    floor_src: 'معاينة بنمط تجريبي. النسخة الحقيقية تقرأ تسجيل الدخول عند الاستقبال، بلا أسماء.',
-    floor_best: 'أفضل وقت للحضور', floor_axis: ['٦ ص', '١٢', '٦ م', '١١ م'],
-    route_from: 'فيرلس · خلدا', route_to: 'إلى الخارج',
+    live_label: 'على الأرضية', live_sample: 'نموذج', live_open: 'افتح سجل الأرضية',
+    live_title: 'سجل الأرضية', live_now: 'على الأرضية الآن', live_counted: 'عدّهم الاستقبال الساعة {time}',
+    live_avg: 'معدل اليوم: {n}', live_axis: ['٦ ص', '١٢', '٦ م', '١١ م'],
+    live_how: 'أرقام تجريبية لعرض الفكرة. السجل الحقيقي: الاستقبال يعدّ الأرضية مرة كل ساعة ويكتب رقماً واحداً. بلا أسماء، بلا كاميرات.',
+    live_close: 'إغلاق',
     events_eyebrow: 'هذا الأسبوع خارج النادي',
     every: { weekly: 'كل أسبوع', biweekly: 'كل أسبوعين' },
     ev: {
